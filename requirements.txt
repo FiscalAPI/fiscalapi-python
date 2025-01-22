@@ -1,0 +1,15 @@
+annotated-types==0.7.0
+build==1.2.2.post1
+certifi==2024.12.14
+charset-normalizer==3.4.1
+colorama==0.4.6
+idna==3.10
+packaging==24.2
+pydantic==2.10.5
+pydantic_core==2.27.2
+pyproject_hooks==1.2.0
+requests==2.32.3
+setuptools==75.8.0
+typing_extensions==4.12.2
+urllib3==2.3.0
+wheel==0.45.1
