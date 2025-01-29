@@ -1,16 +1,11 @@
 from typing import Type, TypeVar
 from pydantic import BaseModel
 import requests
-from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings
+from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, ValidationFailure
 
 T = TypeVar('T', bound=BaseModel)
 
 class BaseService:
-    """
-    Clase base que agrupa lógica repetida en los servicios,
-    como la construcción de URLs, cabeceras y manejo de responses.
-    """
-
     def __init__(self, settings: FiscalApiSettings):
         self.settings = settings
         self.api_version = settings.api_version
@@ -18,9 +13,6 @@ class BaseService:
         self.api_key = settings.api_key
 
     def _get_headers(self) -> dict:
-        """
-        Construye las cabeceras http necesarias.
-        """
         return {
             "Content-Type": "application/json",
             "X-TENANT-KEY": self.settings.tenant,
@@ -29,43 +21,77 @@ class BaseService:
         }
 
     def _request(self, method: str, endpoint: str, **kwargs) -> requests.Response:
-        """
-        Realiza una llamada HTTP con la librería requests.
-        """
         url = f"{self.base_url}/api/{self.api_version}/{endpoint}"
         headers = self._get_headers()
 
-        # Unir los headers definidos por el usuario con los headers por defecto.
         if "headers" in kwargs:
-            headers.update(kwargs["headers"])
-            del kwargs["headers"]
+            headers.update(kwargs.pop("headers"))
 
-        response = requests.request(method=method, url=url, headers=headers, **kwargs)
-        response.raise_for_status()  # Levanta excepciones para errores HTTP
-        return response
+        # Disable certificate validation (for development only!)
+        kwargs.setdefault("verify", False)
 
-    def _process_response(self, response: requests.Response, response_model: Type[BaseModel]) -> ApiResponse:
-        """
-        Procesa y valida la respuesta de la API.
-        """
+        return requests.request(method=method, url=url, headers=headers, **kwargs)
+
+    def _process_response(self, response: requests.Response, response_model: Type[T]) -> ApiResponse[T]:
+        status_code = response.status_code
+        raw_content = response.text
+
         try:
             response_data = response.json()
+        except ValueError:
+            return ApiResponse[T](
+                succeeded=False,
+                http_status_code=status_code,
+                message="Error processing server response",
+                details=raw_content,
+                data=None
+            )
 
-            # Procesar el campo `data` utilizando los modelos con alias
+        if 200 <= status_code < 300:
             if "data" in response_data and response_data["data"] is not None:
                 response_data["data"] = response_model.model_validate(response_data["data"])
+            return ApiResponse[T].model_validate(response_data)
 
-            return ApiResponse.model_validate(response_data)
-        except Exception as e:
-            print(f"Error al procesar la respuesta: {e}")
-            print(f"Response data: {response.json()}")
-            raise
+        try:
+            generic_error = ApiResponse[object].model_validate(response_data)
+        except Exception:
+            return ApiResponse[T](
+                succeeded=False,
+                http_status_code=status_code,
+                message="Error processing server error response",
+                details=raw_content,
+                data=None
+            )
 
+        if status_code == 400 and isinstance(response_data.get("data"), list):
+            try:
+                failures = [ValidationFailure.model_validate(item) for item in response_data["data"]]
+                if failures:
+                    details_str = "; ".join(f"{f.propertyName}: {f.errorMessage}" for f in failures)
+                    return ApiResponse[T](
+                        succeeded=False,
+                        http_status_code=400,
+                        message=generic_error.message,
+                        details=details_str,
+                        data=None
+                    )
+            except Exception:
+                pass
 
+        return ApiResponse[T](
+            succeeded=False,
+            http_status_code=status_code,
+            message=generic_error.message or f"HTTP Error {status_code}",
+            details=generic_error.details or raw_content,
+            data=None
+        )
 
     def send_request(self, method: str, endpoint: str, response_model: Type[T], **kwargs) -> ApiResponse[T]:
-        """
-        Envía una solicitud HTTP y devuelve la respuesta deserializada en un ApiResponse.
-        """
+        payload = kwargs.pop("payload", None)
+        if payload is not None and isinstance(payload, BaseModel):
+            # Excluir propiedades con valor None
+            kwargs["json"] = payload.model_dump(mode="json", by_alias=True, exclude_none=True)
+
+        print("Payload Request:", kwargs.get("json")) 
         response = self._request(method, endpoint, **kwargs)
         return self._process_response(response, response_model)
