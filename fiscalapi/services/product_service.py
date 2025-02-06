@@ -1,6 +1,6 @@
 from fiscalapi.models.common_models import ApiResponse, PagedList
 from fiscalapi.models.fiscalapi_models import Product
-from fiscalapi.services.common_services import BaseService
+from fiscalapi.services.base_service import BaseService
 
 
 class ProductService(BaseService):

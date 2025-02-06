@@ -3,7 +3,10 @@ from pydantic import BaseModel
 import requests
 from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, ValidationFailure
 
-T = TypeVar('T', bound=BaseModel)
+#T = TypeVar('T', bound=BaseModel)
+
+T = TypeVar('T')
+
 
 class BaseService:
     def __init__(self, settings: FiscalApiSettings):
@@ -30,7 +33,24 @@ class BaseService:
         # Disable certificate validation (for development only!)
         kwargs.setdefault("verify", False)
 
-        return requests.request(method=method, url=url, headers=headers, **kwargs)
+
+        # print payload request
+        print("***Payload Request:", kwargs.get("json"))
+        
+        # print line breaks 
+        print("\n\n")
+        
+        
+        # Send request
+        response = requests.request(method=method, url=url, headers=headers, **kwargs)
+        
+        # print payload response
+        print("***Payload Response:", response.text)
+         
+        # print line breaks 
+        print("\n\n")
+
+        return response
 
     def _process_response(self, response: requests.Response, response_model: Type[T]) -> ApiResponse[T]:
         status_code = response.status_code
@@ -48,8 +68,10 @@ class BaseService:
             )
 
         if 200 <= status_code < 300:
-            if "data" in response_data and response_data["data"] is not None:
+            
+            if issubclass(response_model, BaseModel) and isinstance(response_data["data"], dict):
                 response_data["data"] = response_model.model_validate(response_data["data"])
+                
             return ApiResponse[T].model_validate(response_data)
 
         try:
@@ -92,6 +114,5 @@ class BaseService:
             # Excluir propiedades con valor None
             kwargs["json"] = payload.model_dump(mode="json", by_alias=True, exclude_none=True)
 
-        print("Payload Request:", kwargs.get("json")) 
         response = self._request(method, endpoint, **kwargs)
         return self._process_response(response, response_model)

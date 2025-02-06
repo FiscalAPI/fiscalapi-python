@@ -3,6 +3,8 @@ build==1.2.2.post1
 certifi==2024.12.14
 charset-normalizer==3.4.1
 colorama==0.4.6
+dnspython==2.7.0
+email_validator==2.2.0
 idna==3.10
 packaging==24.2
 pydantic==2.10.5
