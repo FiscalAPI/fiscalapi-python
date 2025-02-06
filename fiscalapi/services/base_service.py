@@ -1,9 +1,10 @@
+import urllib3 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from typing import Type, TypeVar
+import certifi
 from pydantic import BaseModel
 import requests
 from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, ValidationFailure
-
-#T = TypeVar('T', bound=BaseModel)
 
 T = TypeVar('T')
 
@@ -31,7 +32,7 @@ class BaseService:
             headers.update(kwargs.pop("headers"))
 
         # Disable certificate validation (for development only!)
-        kwargs.setdefault("verify", False)
+        # kwargs.setdefault("verify", False)
 
 
         # print payload request
@@ -40,8 +41,16 @@ class BaseService:
         # print line breaks 
         print("\n\n")
         
+       
+       # *** DEV ONLY: Disable SSL verification for localhost ***
+        if "localhost" in url or "127.0.0.1" in url:
+            kwargs["verify"] = False
+        else:
+            # Use the default cert store
+            kwargs["verify"] = certifi.where()
         
-        # Send request
+        
+        # send request
         response = requests.request(method=method, url=url, headers=headers, **kwargs)
         
         # print payload response
