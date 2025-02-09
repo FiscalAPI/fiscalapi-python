@@ -173,10 +173,20 @@ def main ():
     
     # buscar en un catalogo por nombre y texto de busqueda
     # obtiene los registros del catalogo de formas de pago (SatPaymentForms) que contengan la palabra "tarjeta"
-    api_response = client.catalogs.search_catalog("SatPaymentForms", "tarjeta")
+    # api_response = client.catalogs.search_catalog("SatPaymentForms", "tarjeta")
     
-    print(api_response)
+    # print(api_response)
     
+    
+    # Listar facturas
+    #api_response = client.invoices.get_list(1, 2)
+    
+    # Obtener factura por id    
+    #api_response = client.invoices.get_by_id("05341ec6-538d-4d92-938e-acc9b33da47e",True)
+        
+    # Crear factura
+
+    #print(api_response)
     
 if __name__ == "__main__":
     main()
