@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from typing import Any, Generic, List, Optional, TypeVar
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_snake
@@ -41,8 +41,8 @@ class ValidationFailure(BaseModel):
 class BaseDto(BaseModel):
     """Modelo base para DTOs."""
     id: Optional[str] = Field(default=None, alias="id")
-    created_at: Optional[datetime.datetime] = Field(default=None, alias="createdAt")
-    updated_at: Optional[datetime.datetime] = Field(default=None, alias="updatedAt")
+    created_at: Optional[datetime] = Field(default=None, alias="createdAt")
+    updated_at: Optional[datetime] = Field(default=None, alias="updatedAt")
     
     model_config = ConfigDict(populate_by_name=True)
 

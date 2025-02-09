@@ -194,7 +194,19 @@ class BaseService:
     
     
     
-    def send_request(self, method: str, endpoint: str, response_model: Type[T], **kwargs) -> ApiResponse[T]:
+    # def send_request(self, method: str, endpoint: str, response_model: Type[T], **kwargs) -> ApiResponse[T]:
+    #     payload = kwargs.pop("payload", None)
+    #     if payload is not None and isinstance(payload, BaseModel):
+    #         # Excluir propiedades con valor None
+    #         kwargs["json"] = payload.model_dump(mode="json", by_alias=True, exclude_none=True)
+
+    #     response = self._request(method, endpoint, **kwargs)
+    #     return self._process_response(response, response_model)
+    
+    def send_request(self, method: str, endpoint: str, response_model: Type[T], details: bool = False, **kwargs) -> ApiResponse[T]:
+        if details:
+            endpoint += "?details=true"
+        
         payload = kwargs.pop("payload", None)
         if payload is not None and isinstance(payload, BaseModel):
             # Excluir propiedades con valor None
