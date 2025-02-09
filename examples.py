@@ -232,7 +232,7 @@ def main ():
         items=[
             InvoiceItem(
                 item_code="01010101",
-                quantity= Decimal(9.5),
+                quantity= Decimal("9.5"),
                 unit_of_measurement_code="E48",
                 unit_of_measurement="Unidad de servicio",
                 description="Invoicing software as a service",
