@@ -120,6 +120,7 @@ class InvoiceRecipient(BaseDto):
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social del receptor sin regimen de capital.")
     tax_regime_code: Optional[str] = Field(default=None, alias="taxRegimeCode", description="Código del régimen fiscal del receptor.")
     cfdi_use_code: Optional[str] = Field(default=None, alias="cfdiUseCode", description="Código del uso CFDI.")
+    zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del receptor. Debe coincidir con el código postal de su constancia de residencia fiscal.")
     email: Optional[str] = Field(default=None, description="Correo electrónico del receptor.")
 
 class ItemTax(BaseDto):
@@ -128,6 +129,11 @@ class ItemTax(BaseDto):
     tax_type_code: str = Field(..., alias="taxTypeCode", description="Tipo de factor.")
     tax_rate: Decimal = Field(..., alias="taxRate", description="Tasa del impuesto.")
     tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
 
 
 class InvoiceItem(BaseDto):
@@ -142,6 +148,11 @@ class InvoiceItem(BaseDto):
     tax_object_code: Optional[str] = Field(default=None, alias="taxObjectCode", description="Código SAT de obligaciones de impuesto.")
     item_sku: Optional[str] = Field(default=None, alias="itemSku", description="SKU o clave del sistema externo.")
     item_taxes: Optional[List[ItemTax]] = Field(default=None, alias="itemTaxes", description="Impuestos aplicables al producto o servicio.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
 
 class GlobalInformation(BaseDto):
     """Modelo para la información global de la factura global."""
