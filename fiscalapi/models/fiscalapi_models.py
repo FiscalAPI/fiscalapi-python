@@ -143,7 +143,7 @@ class InvoiceItem(BaseDto):
     quantity: Decimal = Field(..., alias="quantity", description="Cantidad del producto o servicio.")
     discount: Optional[Decimal] = Field(default=None, alias="discount", description="Cantidad monetaria del descuento aplicado.")
     unit_of_measurement_code: Optional[str] = Field(default=None, alias="unitOfMeasurementCode", description="Código SAT de la unidad de medida.")
-    description: str = Field(..., alias="description", description="Descripción del producto o servicio.")
+    description: Optional[str] = Field(default=None,alias="description", description="Descripción del producto o servicio.")
     unit_price: Optional[Decimal] = Field(default=None, alias="unitPrice", description="Precio unitario del producto o servicio.")
     tax_object_code: Optional[str] = Field(default=None, alias="taxObjectCode", description="Código SAT de obligaciones de impuesto.")
     item_sku: Optional[str] = Field(default=None, alias="itemSku", description="SKU o clave del sistema externo.")
@@ -165,6 +165,42 @@ class RelatedInvoice(BaseDto):
     relationship_type_code: str = Field(..., alias="relationshipTypeCode", description="Código de la relación de la factura relacionada.")
     uuid: str = Field(..., description="UUID de la factura relacionada.")
 
+class PaidInvoiceTax(BaseDto):
+    """Modelo para los impuestos aplicables a la factura pagada."""
+    tax_code: str = Field(..., alias="taxCode", description="Código del impuesto.")
+    tax_type_code: str = Field(..., alias="taxTypeCode", description="Tipo de factor.")
+    tax_rate: Decimal = Field(..., alias="taxRate", description="Tasa del impuesto.")
+    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
+    
+class PaidInvoice(BaseDto):
+    """Modelo para las facturas pagadas con el pago recibido."""
+    uuid: str = Field(..., alias="uuid", description="UUID de la factura pagada.")
+    series: str = Field(..., alias="series", description="Serie de la factura pagada.")
+       
+    partiality_number: int = Field(..., alias="partialityNumber", description="Número de parcialidad.")
+    sub_total: Decimal = Field(..., alias="subTotal", description="Subtotal de la factura pagada.")
+    previous_balance: Decimal = Field(..., alias="previousBalance", description="Saldo anterior de la factura pagada.")
+    payment_amount: Decimal = Field(..., alias="paymentAmount", description="Monto pagado de la factura.")
+    remaining_balance: Decimal = Field(..., alias="remainingBalance", description="Saldo restante de la factura pagada.")
+    
+    number: str = Field(..., alias="number", description="Folio de la factura pagada.")
+    currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en la factura pagada.")
+    tax_object_code: str = Field(..., alias="taxObjectCode", description="Código de obligaciones de impuesto.")
+    equivalence: Optional[Decimal] = Field(default=1, description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")
+    paid_invoice_taxes: List[PaidInvoiceTax] = Field(..., alias="paidInvoiceTaxes", description="Impuestos aplicables a la factura pagada.")
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
+    
+
+    
 class InvoicePayment(BaseDto):
     """Modelo para los pagos recibidos para liquidar la factura."""
     payment_date: str = Field(..., alias="paymentDate", description="Fecha de pago.")
@@ -177,29 +213,13 @@ class InvoicePayment(BaseDto):
     source_bank_account: str = Field(..., alias="sourceBankAccount", description="Cuenta bancaria origen. (Cuenta bancaria del banco emisor del pago)")
     target_bank_tin: str = Field(..., alias="targetBankTin", description="RFC del banco destino. (Rfc del banco receptor del pago)")
     target_bank_account: str = Field(..., alias="targetBankAccount", description="Cuenta bancaria destino (Cuenta bancaria del banco receptor del pago)")
+    paid_invoices: List[PaidInvoice] = Field(..., alias="paidInvoices", description="Facturas pagadas con el pago recibido.")
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
 
-class PaidInvoiceTax(BaseDto):
-    """Modelo para los impuestos aplicables a la factura pagada."""
-    base: Decimal = Field(..., description="Base del impuesto.")
-    tax_code: str = Field(..., alias="taxCode", description="Código del impuesto.")
-    tax_type_code: str = Field(..., alias="taxTypeCode", description="Tipo de factor.")
-    tax_rate: Decimal = Field(..., alias="taxRate", description="Tasa del impuesto.")
-    tax_flag_code: Literal["T", "R"] = Field(..., alias="taxFlagCode", description="Código que indica la naturaleza del impuesto.")
-
-class PaidInvoice(BaseDto):
-    """Modelo para las facturas pagadas con el pago recibido."""
-    uuid: str = Field(..., alias="uuid", description="UUID de la factura pagada.")
-    series: str = Field(..., alias="series", description="Serie de la factura pagada.")
-    amount: Decimal = Field(..., alias="amount", description="Monto pagado de la factura.")
-    number: str = Field(..., alias="number", description="Folio de la factura pagada.")
-    currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en la factura pagada.")
-    partiality_number: int = Field(..., alias="partialityNumber", description="Número de parcialidad.")
-    sub_total: Decimal = Field(..., alias="subTotal", description="Subtotal de la factura pagada.")
-    previous_balance: Decimal = Field(..., alias="previousBalance", description="Saldo anterior de la factura pagada.")
-    remaining_balance: Decimal = Field(..., alias="remainingBalance", description="Saldo restante de la factura pagada.")
-    tax_object_code: str = Field(..., alias="taxObjectCode", description="Código de obligaciones de impuesto.")
-    equivalence: Optional[Decimal] = Field(default=1, description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")
-    paid_invoice_taxes: List[PaidInvoiceTax] = Field(..., alias="paidInvoiceTaxes", description="Impuestos aplicables a la factura pagada.")
 
 
 class InvoiceResponse(BaseDto):
@@ -227,16 +247,16 @@ class Invoice(BaseDto):
     version_code: Optional[str] = Field(default="4.0", alias="versionCode", description="Código de la versión de la factura.")
     series: str = Field(..., description="Número de serie que utiliza el contribuyente para control interno.")
     date: datetime = Field(..., description="Fecha y hora de expedición del comprobante fiscal.")
-    payment_form_code: str = Field(..., alias="paymentFormCode", description="Código de la forma de pago.")
-    currency_code: Literal["MXN", "USD", "EUR"] = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada.")
+    payment_form_code: Optional[str] = Field(default=None, alias="paymentFormCode", description="Código de la forma de pago.")
+    currency_code: Literal["MXN", "USD", "EUR", "XXX"] = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada.")
     type_code: Optional[Literal["I", "E", "T", "N", "P"]] = Field(default="I", alias="typeCode", description="Código de tipo de factura.")
     expedition_zip_code: str = Field(..., alias="expeditionZipCode", description="Código postal del emisor.")
     export_code: Optional[Literal["01", "02", "03", "04"]] = Field(default="01", alias="exportCode", description="Código que identifica si la factura ampara una operación de exportación.")
-    payment_method_code: Literal["PUE", "PPD"] = Field(..., alias="paymentMethodCode", description="Código de método para la factura de pago.")
+    payment_method_code: Optional[Literal["PUE", "PPD"]] = Field(default=None, alias="paymentMethodCode", description="Código de método para la factura de pago.")
     exchange_rate: Optional[Decimal] = Field(default=1, alias="exchangeRate", description="Tipo de cambio FIX.")
     issuer: Optional[InvoiceIssuer] = Field(..., description="El emisor de la factura.")
     recipient: Optional[InvoiceRecipient] = Field(..., description="El receptor de la factura.")
-    items: List[InvoiceItem] = Field(..., description="Conceptos de la factura (productos o servicios).")
+    items: Optional[List[InvoiceItem]] = Field(default=[], description="Conceptos de la factura (productos o servicios).")
     global_information: Optional[GlobalInformation] = Field(default=None, alias="globalInformation", description="Información global de la factura.")
     related_invoices: Optional[List[RelatedInvoice]] = Field(default=None, alias="relatedInvoices", description="Facturas relacionadas.")
     payments: Optional[List[InvoicePayment]] = Field(default=None, description="Pago o pagos recibidos para liquidar la factura cuando la factura es un complemento de pago.")
