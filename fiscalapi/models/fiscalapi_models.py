@@ -1,7 +1,7 @@
 from decimal import Decimal
 from pydantic import ConfigDict, EmailStr, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
-from typing import List, Literal, Optional
+from typing import Dict, List, Literal, Optional
 from datetime import datetime
 
 # products models
@@ -268,3 +268,56 @@ class Invoice(BaseDto):
         json_encoders={Decimal: str}
     )
 
+
+        
+class CancelInvoiceRequest(BaseDto):
+    """Modelo de cancelación de factura."""
+    id: Optional[str] = Field(default=None, alias="id", description="ID de la factura a cancelar. Obligatorio cuando se cancela por referencias.")
+    invoice_uuid: Optional[str] = Field(default=None, alias="invoiceUuid", description="UUID de la factura a cancelar. Obligatorio cuando se cancela por valores.")
+    tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor de la factura. Obligatorio cuando se cancela por valores.")
+    cancellation_reason_code: Literal["01", "02", "03", "04"] = Field(..., alias="cancellationReasonCode", description="Código del motivo de cancelación.")
+    replacement_uuid: Optional[str] = Field(default=None, alias="replacementUuid", description="UUID de la factura de reemplazo. Obligatorio si el motivo de cancelación es '01'.")
+    tax_credentials: Optional[List[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor. Obligatorio cuando se cancela por valores.")
+
+    class Config:
+        populate_by_name = True
+        
+class CancelInvoiceResponse(BaseDto):
+    """Modelo de respuesta para la cancelación de factura."""
+    base64_cancellation_acknowledgement: str = Field(default=None, alias="base64CancellationAcknowledgement", description="Acuse de cancelación en formato base64. Contiene el XML del acuse de cancelación del SAT codificado en base64.")
+    invoice_uuids: Optional[Dict[str, str]] = Field(default=None, alias="invoiceUuids", description="Diccionario de UUIDs de facturas con su respectivo código de estatus de cancelación. La llave es el UUID de la factura y el valor es el código de estatus.")
+
+    class Config:
+        populate_by_name = True
+
+
+class CreatePdfRequest(BaseDto):
+    """Modelo para la generación de PDF de una factura."""
+    invoice_id: str = Field(..., alias="invoiceId", description="ID de la factura para la cual se generará el PDF.")
+    band_color: Optional[str] = Field(default=None, alias="bandColor", description="Color de la banda del PDF en formato hexadecimal. Ejemplo: '#FFA500'.")
+    font_color: Optional[str] = Field(default=None, alias="fontColor", description="Color de la fuente del texto sobre la banda en formato hexadecimal. Ejemplo: '#FFFFFF'.")
+    base64_logo: Optional[str] = Field(default=None, alias="base64Logo", description="Logotipo en formato base64 que se mostrará en el PDF.")
+
+    class Config:
+        populate_by_name = True
+
+class FileResponse(BaseDto):
+    """Modelo de respuesta para la generación de PDF o recuperación de XML."""
+    base64_file: Optional[str] = Field(default=None, alias="base64File", description="Contenido del archivo en formato base64.")
+    file_name: Optional[str] = Field(default=None, alias="fileName", description="Nombre del archivo generado.")
+    file_extension: Optional[str] = Field(default=None, alias="fileExtension", description="Extensión del archivo. Ejemplo: '.pdf'.")
+
+    class Config:
+        populate_by_name = True
+        
+        
+class SendInvoiceRequest(BaseDto):
+    """Modelo para el envío de facturas por correo electrónico."""
+    invoice_id: str = Field(..., alias="invoiceId", description="ID de la factura para la cual se enviará el PDF.")
+    to_email: str = Field(..., alias="toEmail", description="Correo electrónico del destinatario.")
+    band_color: Optional[str] = Field(default=None, alias="bandColor", description="Color de la banda del PDF en formato hexadecimal. Ejemplo: '#FFA500'.")
+    font_color: Optional[str] = Field(default=None, alias="fontColor", description="Color de la fuente del texto sobre la banda en formato hexadecimal. Ejemplo: '#FFFFFF'.")
+    base64_logo: Optional[str] = Field(default=None, alias="base64Logo", description="Logotipo en formato base64 que se mostrará en el PDF.")
+
+    class Config:
+        populate_by_name = True
