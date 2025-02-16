@@ -1,11 +1,7 @@
 name: Build and publish to PyPI
 
 on:
-  push:
-    tags:
-      - "v*"         # Se ejecuta cuando haces push de un tag que comience con 'v'
-  release:
-    types: [published]
+    workflow_dispatch:
 
 jobs:
   build-and-publish:
