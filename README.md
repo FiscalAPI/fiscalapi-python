@@ -8,7 +8,7 @@
 ## 🚀 Características
 
 - Soporte completo para **CFDI 4.0**
-- Compatible con Python 3.7+
+- Compatible con Python 3.8+
 - Dos modos de operación: **Por valores** o **Por referencias**
 - Manejo simplificado de errores
 - Búsqueda en catálogos del SAT
