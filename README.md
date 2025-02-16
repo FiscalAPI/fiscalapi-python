@@ -1,9 +1,9 @@
 # FiscalAPI SDK para Python
 
 [![PyPI version](https://badge.fury.io/py/fiscalapi.svg)](https://badge.fury.io/py/fiscalapi)
-[![License](https://img.shields.io/github/license/FiscalAPI/fiscalapi-python)](https://github.com/FiscalAPI/fiscalapi-python/blob/main/LICENSE)
+[![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](https://github.com/FiscalAPI/fiscalapi-python/blob/main/LICENSE.txt)
 
-**SDK oficial de FiscalAPI para Python**, la API de facturación CFDI y otros servicios fiscales en México. Simplifica la integración con los servicios de facturación electrónica, eliminando las complejidades del SAT y facilitando la generación de facturas, notas de crédito, complementos de pago, nómina, carta porte, y más. ¡Factura sin dolor!
+**SDK oficial de FiscalAPI para Python**, la API de facturación CFDI y otros servicios fiscales en México. Simplifica la integración con los servicios de facturación electrónica, eliminando las complejidades del SAT y facilitando la generación de facturas, notas de crédito, complementos de pago, nómina, carta porte, y más. ¡Facturar sin dolor ahora es posible!
 
 ## 🚀 Características
 
