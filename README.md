@@ -76,6 +76,8 @@ api_response = client.people.create(person)
 
 ### 2. Subir Certificados CSD
 
+[Descarga certificados de prueba](https://docs.fiscalapi.com/tax-files-info)
+
 ```python
 from fiscalapi.models.fiscalapi_models import TaxFile
 
