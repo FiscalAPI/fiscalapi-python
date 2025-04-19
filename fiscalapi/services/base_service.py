@@ -15,6 +15,7 @@ class BaseService:
         self.api_version = settings.api_version
         self.base_url = settings.api_url
         self.api_key = settings.api_key
+        self.debug = settings.debug
 
     def _get_headers(self) -> dict:
         return {
