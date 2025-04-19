@@ -13,6 +13,7 @@
 - Manejo simplificado de errores
 - Búsqueda en catálogos del SAT
 - Documentación completa y ejemplos prácticos
+- [Ejemplos en Python](https://github.com/FiscalAPI/fiscalapi-samples-python)
 
 ## 📦 Instalación
 
@@ -32,7 +33,7 @@ poetry add fiscalapi
 
 1. **Crea un objeto de configuración** con [tus credenciales](https://docs.fiscalapi.com/credentials-info):
 ```python
-from fiscalapi.models.common_models import FiscalApiSettings
+from fiscalapi import FiscalApiSettings
 
 settings = FiscalApiSettings(
     api_url="https://test.fiscalapi.com",  # https://live.fiscalapi.com (producción)
@@ -63,7 +64,7 @@ FiscalAPI admite dos [modos de operación](https://docs.fiscalapi.com/modes-of-o
 ### 1. Crear una Persona (Emisor o Receptor)
 
 ```python
-from fiscalapi.models.fiscalapi_models import Person
+from fiscalapi import Person
 
 person = Person(
     legal_name="Empresa Python SA de CV",
@@ -79,7 +80,7 @@ api_response = client.people.create(person)
 [Descarga certificados de prueba](https://docs.fiscalapi.com/tax-files-info)
 
 ```python
-from fiscalapi.models.fiscalapi_models import TaxFile
+from fiscalapi import TaxFile
 
 # Subir certificado (CER)
 certificado_csd = TaxFile(
@@ -106,7 +107,7 @@ api_response_key = client.tax_files.create(clave_privada_csd)
 ### 3. Crear un Producto o Servicio
 
 ```python
-from fiscalapi.models.fiscalapi_models import Product
+from fiscalapi import Product
 
 product = Product(
     description="Producto python sin impuestos",
@@ -119,7 +120,7 @@ api_response = client.products.create(product)
 ### 4. Actualizar Impuestos de un Producto
 
 ```python
-from fiscalapi.models.fiscalapi_models import Product, ProductTax
+from fiscalapi import Product, ProductTax
 
 product = Product(
     id="f4bf4df3-5a91-4a30-b137-52cb517d13c4",
@@ -155,7 +156,7 @@ api_response = client.products.update(product)
 ```python
 from datetime import datetime
 from decimal import Decimal
-from fiscalapi.models.fiscalapi_models import Invoice, InvoiceIssuer, InvoiceItem, InvoiceRecipient
+from fiscalapi import Invoice, InvoiceIssuer, InvoiceItem, InvoiceRecipient
 
 invoice = Invoice(
     version_code="4.0",
@@ -190,7 +191,7 @@ api_response = client.invoices.create(invoice)
 ### 6. Crear la Misma Factura de Ingreso (Por Valores)
 
 ```python
-from fiscalapi.models.fiscalapi_models import Invoice, InvoiceIssuer, InvoiceItem, InvoiceRecipient, ItemTax, TaxCredential
+from fiscalapi import Invoice, InvoiceIssuer, InvoiceItem, InvoiceRecipient, ItemTax, TaxCredential
 
 invoice = Invoice(
     version_code="4.0",
