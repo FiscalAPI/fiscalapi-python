@@ -1095,5 +1095,25 @@ def main ():
     # print(api_response)
     
     
+    # Consultar estado de factura por valores
+    # invoice_status = InvoiceStatusRequest(
+    #     issuer_tin="POPJ450924HD6",           # RFC del emisor
+    #     recipient_tin="MEJJ940824C61",        # RFC del receptor
+    #     invoice_total=Decimal("430.00"),      # Total de la factura
+    #     invoice_uuid="8e0fdc23-e148-4cf5-b3ce-4459f31c9c45",  # UUID de la factura
+    #     last8_digits_issuer_signature="oxPKRg=="  # Últimos 8 dígitos del sello digital del emisor
+    # )
+    #api_response = client.invoices.get_status(invoice_status)
+    #print(api_response)
+    
+    
+    # Consultar estado de factura por referencias (id)
+    # invoice_status = InvoiceStatusRequest(
+    #     id="16444d58-37e0-4a86-b247-a73bcc18c751"
+    # )
+    # api_response = client.invoices.get_status(invoice_status)
+    # print(api_response)
+    
+    
 if __name__ == "__main__":
     main()

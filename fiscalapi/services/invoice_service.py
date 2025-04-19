@@ -1,5 +1,5 @@
 from fiscalapi.models.common_models import ApiResponse, PagedList
-from fiscalapi.models.fiscalapi_models import CancelInvoiceRequest, CancelInvoiceResponse, CreatePdfRequest, FileResponse, Invoice, SendInvoiceRequest
+from fiscalapi.models.fiscalapi_models import CancelInvoiceRequest, CancelInvoiceResponse, CreatePdfRequest, FileResponse, Invoice, InvoiceStatusRequest, InvoiceStatusResponse, SendInvoiceRequest
 from fiscalapi.services.base_service import BaseService
 
 
@@ -62,5 +62,22 @@ class InvoiceService(BaseService):
         endpoint = "invoices/send"
         
         return self.send_request("POST", endpoint, bool, payload=send_invoice_request)
+    
+    # consultar estado de facturas
+    def get_status(self, request: InvoiceStatusRequest) -> ApiResponse[InvoiceStatusResponse]:
+        """
+        Obtiene el estado de una factura.
+        
+        Args:
+            request (InvoiceStatusRequest): Solicitud para consultar estado
+        
+        Returns:
+            ApiResponse[InvoiceStatusResponse]: Respuesta con el estado de la factura
+        """
+        if request is None:
+            raise ValueError("request cannot be null")
+        
+        endpoint = "invoices/status"
+        return self.send_request("POST", endpoint, InvoiceStatusResponse, payload=request)
     
     

@@ -321,3 +321,30 @@ class SendInvoiceRequest(BaseDto):
 
     class Config:
         populate_by_name = True
+
+
+class InvoiceStatusRequest(BaseDto):
+    """Modelo para consultar estado de facturas."""
+    id: Optional[str] = Field(default=None, description="Id de la factura a consultar")
+    issuer_tin: Optional[str] = Field(default=None, alias="issuerTin", description="RFC Emisor la factura")
+    recipient_tin: Optional[str] = Field(default=None, alias="recipientTin", description="RFC Receptor de la factura")
+    invoice_total: Optional[Decimal] = Field(default=None, alias="invoiceTotal", description="Total de la factura")
+    invoice_uuid: Optional[str] = Field(default=None, alias="invoiceUuid", description="Folio fiscal factura a consultar")
+    last8_digits_issuer_signature: Optional[str] = Field(default=None, alias="last8DigitsIssuerSignature", description="Últimos ocho caracteres del sello digital del emisor")
+    
+    model_config = {
+        "populate_by_name": True,
+        "json_encoders": {Decimal: str}
+    }
+
+class InvoiceStatusResponse(BaseDto):
+    """Modelo de respuesta de consulta de estado de facturas."""
+    status_code: str = Field(..., alias="statusCode", description="Código de estatus retornado por el SAT")
+    status: str = Field(..., description="Estado actual de la factura. Posibles valores: 'Vigente' | 'Cancelado' | 'No Encontrado'")
+    cancelable_status: str = Field(..., alias="cancelableStatus", description="Indica si la factura es cancelable. Posibles valores: 'Cancelable con aceptación' | 'No cancelable' | 'Cancelable sin aceptación'")
+    cancellation_status: str = Field(..., alias="cancellationStatus", description="Detalle del estatus de cancelación")
+    efos_validation: str = Field(..., alias="efosValidation", description="Codigo que indica si el RFC Emisor se encuentra dentro de la lista negra de EFOS")
+
+    model_config = {
+        "populate_by_name": True
+    }

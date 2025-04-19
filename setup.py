@@ -2,7 +2,7 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION = "4.0.120"
+VERSION = "4.0.142"
 # Descripción breve basada en el .csproj
 DESCRIPTION = "Genera facturas CFDI válidas ante el SAT consumiendo el API de https://www.fiscalapi.com"
 

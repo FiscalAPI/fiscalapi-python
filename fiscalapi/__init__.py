@@ -33,6 +33,8 @@ from .models.fiscalapi_models import (
     CreatePdfRequest,
     FileResponse,
     SendInvoiceRequest,
+    InvoiceStatusRequest,
+    InvoiceStatusResponse,
 )
 
 # Re-exportar servicios
@@ -75,7 +77,10 @@ __all__ = [
     "CreatePdfRequest",
     "FileResponse",
     "SendInvoiceRequest",
-
+    "InvoiceStatusRequest",
+    "InvoiceStatusResponse",
+    
+    
     # Servicios
     "CatalogService",
     "InvoiceService",
