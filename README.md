@@ -44,7 +44,7 @@ settings = FiscalApiSettings(
 
 2. **Crea la instancia del cliente**:
 ```python
-from fiscalapi.services.fiscalapi_client import FiscalApiClient
+from fiscalapi import FiscalApiClient
 
 client = FiscalApiClient(settings=settings)
 ```
