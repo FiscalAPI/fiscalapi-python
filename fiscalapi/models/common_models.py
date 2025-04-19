@@ -62,6 +62,7 @@ class FiscalApiSettings(BaseModel):
     tenant: str = Field(..., description="Tenant Key.")
     api_version: str = Field("v4", description="Versión de la api.")
     time_zone: str = Field("America/Mexico_City", description="Zona horaria ")
+    debug: bool = Field(False, description="Indica si se debe imprimir el payload request y response.")
 
     class Config:
         title = "FiscalApi Settings"

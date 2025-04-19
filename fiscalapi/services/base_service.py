@@ -36,7 +36,8 @@ class BaseService:
 
 
         # print payload request
-        print("***Payload Request:", kwargs.get("json"))
+        if self.settings.debug:
+            print("***Payload Request:", kwargs.get("json"))
         
         # print line breaks 
         print("\n\n")
@@ -54,7 +55,8 @@ class BaseService:
         response = requests.request(method=method, url=url, headers=headers, **kwargs)
         
         # print payload response
-        print("***Payload Response:", response.text)
+        if self.settings.debug:
+            print("***Payload Response:", response.text)
          
         # print line breaks 
         print("\n\n")
