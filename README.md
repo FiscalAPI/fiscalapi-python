@@ -257,6 +257,7 @@ api_response = client.invoices.create(invoice)
 ### 7. Búsqueda en Catálogos del SAT
 
 ```python
+# Visite https://docs.fiscalapi.com/catalogs
 # Buscar registros que contengan 'Tarjeta' en el catalogo oficial Formas de pago 'SatPaymentForms' (página 1, tamaño página 10)
 api_response = client.catalogs.search_catalog("SatPaymentForms", "Tarjeta", 1, 10)
 
