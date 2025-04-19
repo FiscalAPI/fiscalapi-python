@@ -1,6 +1,6 @@
 # FiscalAPI SDK para Python
 
-[![PyPI version](https://badge.fury.io/py/fiscalapi.svg)](https://badge.fury.io/py/fiscalapi)
+[![PyPI version](https://badge.fury.io/py/fiscalapi.svg?cachebuster=1)](https://badge.fury.io/py/fiscalapi)
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](https://github.com/FiscalAPI/fiscalapi-python/blob/main/LICENSE.txt)
 
 **SDK oficial de FiscalAPI para Python**, la API de facturación CFDI y otros servicios fiscales en México. Simplifica la integración con los servicios de facturación electrónica, eliminando las complejidades del SAT y facilitando la generación de facturas, notas de crédito, complementos de pago, nómina, carta porte, y más. ¡Facturar sin dolor ahora es posible!
@@ -8,7 +8,7 @@
 ## 🚀 Características
 
 - Soporte completo para **CFDI 4.0**
-- Compatible con Python 3.7+
+- Compatible con Python 3.8+
 - Dos modos de operación: **Por valores** o **Por referencias**
 - Manejo simplificado de errores
 - Búsqueda en catálogos del SAT
@@ -75,6 +75,8 @@ api_response = client.people.create(person)
 ```
 
 ### 2. Subir Certificados CSD
+
+[Descarga certificados de prueba](https://docs.fiscalapi.com/tax-files-info)
 
 ```python
 from fiscalapi.models.fiscalapi_models import TaxFile
