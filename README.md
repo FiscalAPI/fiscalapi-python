@@ -297,8 +297,11 @@ Este proyecto está licenciado bajo la Licencia **MPL**. Consulta el archivo [LI
 ## 🔗 Enlaces Útiles
 
 - [Documentación Oficial](https://docs.fiscalapi.com)
+- [Como obtener mis credenciales](https://docs.fiscalapi.com/credentials-info)
 - [Portal de FiscalAPI](https://fiscalapi.com)
 - [Ejemplos en Python](https://github.com/FiscalAPI/fiscalapi-samples-python)
+- [Soporte técnico](https://fiscalapi.com/contact-us)
+- [Certificados prueba](https://docs.fiscalapi.com/tax-files-info)
 
 ---
 
