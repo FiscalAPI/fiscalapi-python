@@ -10,7 +10,7 @@ class TaxFileService(BaseService):
             return self.send_request("GET", endpoint, PagedList[TaxFile])
         
         # get tax file by id
-        def get_by_id(self, tax_file_id: int) -> ApiResponse[TaxFile]:
+        def get_by_id(self, tax_file_id: str) -> ApiResponse[TaxFile]:
             endpoint = f"tax-files/{tax_file_id}"
             return self.send_request("GET", endpoint, TaxFile)
         
@@ -28,14 +28,14 @@ class TaxFileService(BaseService):
         
          # get default tax files for a given person)
          # obtiene el último par de certificados válidos y vigente de una persona. Es decir sus certificados por defecto.
-        def get_default_values(self, person_id: int) -> ApiResponse[list[TaxFile]]:
+        def get_default_values(self, person_id: str) -> ApiResponse[list[TaxFile]]:
             endpoint = f"tax-files/{person_id}/default-values"
             return self.send_request("GET", endpoint, list[TaxFile])
        
         
         # get default references for a given person
         # obtiene el último par de ids de certificados válidos y vigente de una persona. Es decir sus certificados por defecto (solo los ids)
-        def get_default_references(self, person_id: int) -> ApiResponse[list[TaxFile]]:
+        def get_default_references(self, person_id: str) -> ApiResponse[list[TaxFile]]:
             endpoint = f"tax-files/{person_id}/default-references"
             return self.send_request("GET", endpoint, list[TaxFile])
       

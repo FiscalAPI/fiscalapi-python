@@ -348,3 +348,21 @@ class InvoiceStatusResponse(BaseDto):
     model_config = {
         "populate_by_name": True
     }
+    
+
+
+class ApiKey(BaseDto):
+    """Modelo de clave de autenticación en fiscalapi."""
+    
+    id: Optional[str] = Field(default=None, alias="id", description="El identificador único de la API key.")
+    environment: Optional[str] = Field(default=None, alias="environment", description="El entorno al que pertenece la API key.")
+    api_key_value: Optional[str] = Field(default=None, alias="apiKeyValue", description="El API key. Este valor es el que se utiliza para autenticar las solicitudes.")
+    person_id: Optional[str] = Field(default=None, alias="personId", description="El identificador único de la persona a la que pertenece la API key.")
+    tenant_id: Optional[str] = Field(default=None, alias="tenantId", description="El identificador único del tenant al que pertenece la API key.")
+    api_key_status: Optional[int] = Field(default=None, alias="apiKeyStatus", description="El estado de la API key. 0=Revocada, 1=Activa")
+    description: Optional[str] = Field(default=None, alias="description", description="Nombre o description de la API key.")
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )

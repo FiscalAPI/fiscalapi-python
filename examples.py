@@ -17,6 +17,46 @@ def main ():
     client = FiscalApiClient(settings=settings)
         
     
+    # listar api-keys
+    # api_response = client.api_keys.get_list(1, 10)
+    # print(api_response)
+    
+    
+    # Obtener api-key por id
+    # api_response = client.api_keys.get_by_id("78145e7d-40d3-4540-b1f8-262adff398a2")
+    # print(api_response)
+    
+    
+    # crear api-key
+    
+    # api_key: ApiKey = ApiKey(
+    #     person_id="7c1d2a85-ae39-44dd-b9f1-54f02b204165",
+    #     description="Api Key de prueba para python"
+    # )
+    # api_response = client.api_keys.create(api_key)
+    # print(api_response)
+    
+    
+    # actualizar api-key
+    # api_key: ApiKey = ApiKey(
+    #     id="78145e7d-40d3-4540-b1f8-262adff398a2",
+    #     description="Revocando por no pagar",
+    #     apiKeyStatus=0
+    # )
+    # api_response = client.api_keys.update(api_key)
+    # print(api_response)
+    
+    
+    # eliminar api-key
+    # api_response = client.api_keys.delete("78145e7d-40d3-4540-b1f8-262adff398a2")
+    # print(api_response)
+    
+    
+    
+    
+    
+    
+    
     # listar productos
     #api_response = client.products.get_list(1, 10)
     

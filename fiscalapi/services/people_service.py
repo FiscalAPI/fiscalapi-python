@@ -11,7 +11,7 @@ class PeopleService(BaseService):
         return self.send_request("GET", endpoint, PagedList[Person])
     
     # get person by id
-    def get_by_id(self, person_id: int) -> ApiResponse[Person]:
+    def get_by_id(self, person_id: str) -> ApiResponse[Person]:
         endpoint = f"people/{person_id}"
         return self.send_request("GET", endpoint, Person)
     

@@ -35,6 +35,7 @@ from .models.fiscalapi_models import (
     SendInvoiceRequest,
     InvoiceStatusRequest,
     InvoiceStatusResponse,
+    ApiKey,
 )
 
 # Re-exportar servicios
@@ -42,7 +43,8 @@ from .services.catalog_service import CatalogService
 from .services.invoice_service import InvoiceService
 from .services.people_service import PeopleService
 from .services.product_service import ProductService
-from .services.tax_file_servive import TaxFileService   # Asegúrate de que coincida con tu nombre real (tax_file_service o tax_file_servive)
+from .services.tax_file_servive import TaxFileService 
+from .services.api_key_service import ApiKeyService
 
 # Re-exportar la clase FiscalApiClient
 # (asumiendo que la definición está en fiscalapi/services/fiscalapi_client.py)
@@ -79,6 +81,7 @@ __all__ = [
     "SendInvoiceRequest",
     "InvoiceStatusRequest",
     "InvoiceStatusResponse",
+    "ApiKey",
     
     
     # Servicios
@@ -87,6 +90,7 @@ __all__ = [
     "PeopleService",
     "ProductService",
     "TaxFileService",
+    "ApiKeyService"
     
     # Cliente principal
     "FiscalApiClient",

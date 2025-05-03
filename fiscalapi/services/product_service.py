@@ -11,7 +11,7 @@ class ProductService(BaseService):
         return self.send_request("GET", endpoint, PagedList[Product])
     
     # get product by id
-    def get_by_id(self, product_id: int) -> ApiResponse[Product]:
+    def get_by_id(self, product_id: str) -> ApiResponse[Product]:
         endpoint = f"products/{product_id}"
         return self.send_request("GET", endpoint, Product)
     
