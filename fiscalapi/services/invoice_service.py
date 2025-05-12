@@ -51,6 +51,14 @@ class InvoiceService(BaseService):
         
         endpoint = "invoices/pdf"
         return self.send_request("POST", endpoint, FileResponse, payload=create_pdf_request)
+    
+    # get invoice's xml by id /api/v4/invoices/<id>/xml
+    def get_xml(self, invoice_id: int) -> ApiResponse[FileResponse]:
+        if invoice_id is None:
+            raise ValueError("invoice_id cannot be null")
+        
+        endpoint = f"invoices/{invoice_id}/xml"
+        return self.send_request("GET", endpoint, FileResponse)
   
     
     # send invoice by email

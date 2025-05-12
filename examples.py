@@ -230,6 +230,9 @@ def main ():
     
     #api_response = client.invoices.get_by_id("05341ec6-538d-4d92-938e-acc9b33da47e",True)
     
+    # Obtener xml de factura por id
+    #api_response = client.invoices.get_xml("c7c88cf3-12af-421b-8a9b-b360af8018e9")
+    #print(api_response)
     
     
     # Crear factura de ingreso por valores (cURL). 
