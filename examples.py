@@ -1072,7 +1072,7 @@ def main ():
     
     
     
-      # cancelar factura por referencias (cURL).
+      # cancelar factura por valores (cURL).
     #   curl --location --request DELETE 'https://localhost:7173/api/v4/invoices' \
     # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
@@ -1097,7 +1097,7 @@ def main ():
     #     ]
     # }'
     
-    # cancelar factura por referencias (Sdk).
+    # cancelar factura por valores (Sdk).
     # cancel_request = CancelInvoiceRequest(
     #     invoice_uuid="9c6b21ad-ca15-4d69-86cf-c9e3c94cbd00",
     #     tin="FUNK671228PH6",
@@ -1123,7 +1123,7 @@ def main ():
     # print(api_response)
     
     
-    # Cancelar factura por valores (cURL).
+    # Cancelar factura por referencias (cURL).
     #   curl --location --request DELETE 'https://localhost:7173/api/v4/invoices' \
     # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
@@ -1135,7 +1135,7 @@ def main ():
     #   "replacementUuid": "de841944-bd4f-4bb8-adfe-2a2282787c62"
     # }'
     
-    # Cancelar factura por valores (Sdk). 
+    # Cancelar factura por referencias (Sdk). 
     # cancel_request = CancelInvoiceRequest(
     #     id="9de25514-25a2-4c59-85a3-143969c607b3",
     #     cancellation_reason_code="01",
