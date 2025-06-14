@@ -16,6 +16,8 @@ def main ():
     
     client = FiscalApiClient(settings=settings)
         
+  
+    
     
     # listar api-keys
     # api_response = client.api_keys.get_list(1, 10)
@@ -430,6 +432,38 @@ def main ():
     # api_response = client.invoices.create(invoice)
     # print(api_response)
     
+    
+    #Crear factura de ingreso por referencias precios dinamicos
+    # invoice = Invoice(
+    #     version_code="4.0",
+    #     series="F",
+    #     date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), #YYYY-MM-DDThh:mm:ss
+    #     payment_form_code="01",
+    #     payment_conditions="Contado",
+    #     currency_code="MXN",
+    #     type_code="I",
+    #     expedition_zip_code="42501",
+    #     payment_method_code="PUE",
+    #     exchange_rate=1,
+    #     export_code="01",
+    #     issuer=InvoiceIssuer(
+    #         id="78d380fd-1b69-4e3c-8bc0-4f57737f7d5f"
+    #     ),
+    #     recipient=InvoiceRecipient(
+    #         id="bef56254-0892-4558-95c3-f9c8729e4b0e"
+    #     ),
+    #     items=[
+    #         InvoiceItem(
+    #             id="2c6aafcf-8cd2-4fb1-94a8-687adc671380",
+    #             quantity=Decimal("1.5"),
+    #             unit_price=Decimal("100.85"), #Sobre escribe el precio del producto
+    #             discount=Decimal("5.85")
+    #         )
+    #     ]
+    # )
+    
+    # api_response = client.invoices.create(invoice)
+    # print(api_response)
           
     
     # Crear factura global por valores.
@@ -761,6 +795,43 @@ def main ():
     #         InvoiceItem(
     #             id="114a4be5-fb65-40b2-a762-ff0c55c6ebfa",
     #             quantity=Decimal("0.5")
+    #         )
+    #     ]
+    # )
+    
+    # api_response = client.invoices.create(credit_note)
+    # print(api_response)
+    
+    # Crear nota de credito (factura de egreso) con precios dinamicos
+    # credit_note = Invoice(
+    #     version_code="4.0",
+    #     series="CN",
+    #     date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), #YYYY-MM-DDThh:mm:ss
+    #     payment_form_code="03",
+    #     payment_conditions="Contado",
+    #     currency_code="MXN",
+    #     type_code="E",
+    #     expedition_zip_code="01160",
+    #     payment_method_code="PUE",
+    #     exchange_rate=1,
+    #     export_code="01",
+    #     issuer=InvoiceIssuer(
+    #         id="3f3478b4-60fd-459e-8bfc-f8239fc96257"
+    #     ),
+    #     recipient=InvoiceRecipient(
+    #         id="96b46762-d246-4a67-a562-510a25dbafa9"
+    #     ),
+    #     related_invoices=[
+    #         RelatedInvoice(
+    #             uuid="5FB2822E-396D-4725-8521-CDC4BDD20CCF",
+    #             relationship_type_code="01"
+    #         )
+    #     ],
+    #     items=[
+    #         InvoiceItem(
+    #             id="114a4be5-fb65-40b2-a762-ff0c55c6ebfa",
+    #             quantity=Decimal("0.5"),
+    #             unit_price=Decimal("10.00"),
     #         )
     #     ]
     # )
@@ -1271,6 +1342,10 @@ def main ():
     # )
     # api_response = client.invoices.get_status(invoice_status)
     # print(api_response)
+    
+    
+if __name__ == "__main__":
+    main()
     
     
 if __name__ == "__main__":
