@@ -245,6 +245,13 @@ class InvoiceResponse(BaseDto):
 class Invoice(BaseDto):
     """Modelo para la factura."""
     version_code: Optional[str] = Field(default="4.0", alias="versionCode", description="Código de la versión de la factura.")
+    consecutive: Optional[int] = Field(default=None, description="Consecutivo de facturas por cuenta. Se incrementa con cada factura generada en tu cuenta independientemente del RFC emisor.")
+    number: Optional[str] = Field(default=None, description="Consecutivo de facturas por RFC emisor. Se incrementa por cada factura generada por el mismo RFC emisor.")
+    subtotal: Optional[Decimal] = Field(default=None, description="Subtotal de la factura. Generado automáticamente por Fiscalapi.")
+    discount: Optional[Decimal] = Field(default=None, description="Descuento aplicado a la factura. Generado automáticamente por Fiscalapi a partir de los descuentos aplicados a los productos o servicios.")
+    total: Optional[Decimal] = Field(default=None, description="Total de la factura. Generado automáticamente por Fiscalapi.")
+    uuid: Optional[str] = Field(default=None, description="UUID de la factura, es el folio fiscal asignado por el SAT al momento del timbrado.")
+    status: Optional[CatalogDto] = Field(default=None, description="El estatus de la factura")
     series: str = Field(..., description="Número de serie que utiliza el contribuyente para control interno.")
     date: datetime = Field(..., description="Fecha y hora de expedición del comprobante fiscal.")
     payment_form_code: Optional[str] = Field(default=None, alias="paymentFormCode", description="Código de la forma de pago.")

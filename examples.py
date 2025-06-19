@@ -226,7 +226,13 @@ def main ():
     
     # Obtener factura por id
     
-    #api_response = client.invoices.get_by_id("05341ec6-538d-4d92-938e-acc9b33da47e",True)
+    # api_response = client.invoices.get_by_id("73800295-b201-4bea-b264-7d7454d5e28f",True)
+    
+    # print(api_response)
+    # print(api_response.data.status.id)
+    # print(api_response.data.status.description)
+    
+    
     
     # Obtener xml de factura por id
     #api_response = client.invoices.get_xml("c7c88cf3-12af-421b-8a9b-b360af8018e9")
@@ -447,14 +453,14 @@ def main ():
     #     exchange_rate=1,
     #     export_code="01",
     #     issuer=InvoiceIssuer(
-    #         id="78d380fd-1b69-4e3c-8bc0-4f57737f7d5f"
+    #         id="3f3478b4-60fd-459e-8bfc-f8239fc96257"
     #     ),
     #     recipient=InvoiceRecipient(
-    #         id="bef56254-0892-4558-95c3-f9c8729e4b0e"
+    #         id="96b46762-d246-4a67-a562-510a25dbafa9"
     #     ),
     #     items=[
     #         InvoiceItem(
-    #             id="2c6aafcf-8cd2-4fb1-94a8-687adc671380",
+    #             id="114a4be5-fb65-40b2-a762-ff0c55c6ebfa",
     #             quantity=Decimal("1.5"),
     #             unit_price=Decimal("100.85"), #Sobre escribe el precio del producto
     #             discount=Decimal("5.85")
@@ -464,6 +470,15 @@ def main ():
     
     # api_response = client.invoices.create(invoice)
     # print(api_response)
+    # print(api_response.data.consecutive)
+    # print(api_response.data.number)
+    # print(api_response.data.subtotal)
+    # print(api_response.data.discount)
+    # print(api_response.data.total)
+    # print(api_response.data.uuid)
+   
+    
+    
           
     
     # Crear factura global por valores.
@@ -1143,7 +1158,7 @@ def main ():
     
     
     
-      # cancelar factura por valores (cURL).
+      # cancelar factura por referencias (cURL).
     #   curl --location --request DELETE 'https://localhost:7173/api/v4/invoices' \
     # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
@@ -1168,7 +1183,7 @@ def main ():
     #     ]
     # }'
     
-    # cancelar factura por valores (Sdk).
+    # cancelar factura por referencias (Sdk).
     # cancel_request = CancelInvoiceRequest(
     #     invoice_uuid="9c6b21ad-ca15-4d69-86cf-c9e3c94cbd00",
     #     tin="FUNK671228PH6",
@@ -1194,7 +1209,7 @@ def main ():
     # print(api_response)
     
     
-    # Cancelar factura por referencias (cURL).
+    # Cancelar factura por valores (cURL).
     #   curl --location --request DELETE 'https://localhost:7173/api/v4/invoices' \
     # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
@@ -1206,7 +1221,7 @@ def main ():
     #   "replacementUuid": "de841944-bd4f-4bb8-adfe-2a2282787c62"
     # }'
     
-    # Cancelar factura por referencias (Sdk). 
+    # Cancelar factura por valores (Sdk). 
     # cancel_request = CancelInvoiceRequest(
     #     id="9de25514-25a2-4c59-85a3-143969c607b3",
     #     cancellation_reason_code="01",
