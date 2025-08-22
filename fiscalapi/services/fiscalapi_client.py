@@ -5,6 +5,9 @@ from fiscalapi.services.people_service import PeopleService
 from fiscalapi.services.product_service import ProductService
 from fiscalapi.services.tax_file_servive import TaxFileService
 from fiscalapi.services.api_key_service import ApiKeyService
+from fiscalapi.services.download_catalog_service import DownloadCatalogService
+from fiscalapi.services.download_rule_service import DownloadRuleService
+from fiscalapi.services.download_request_service import DownloadRequestService
 
 
 
@@ -17,4 +20,7 @@ class FiscalApiClient:
         self.catalogs = CatalogService(settings)
         self.invoices = InvoiceService(settings)
         self.api_keys = ApiKeyService(settings)
+        self.download_catalogs = DownloadCatalogService(settings)
+        self.download_rules = DownloadRuleService(settings)
+        self.download_requests = DownloadRequestService(settings)
         self.settings = settings

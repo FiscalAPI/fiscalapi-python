@@ -2,11 +2,10 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION = "4.0.151"
-# Descripción breve basada en el .csproj
+VERSION = "4.0.270"
+
 DESCRIPTION = "Genera facturas CFDI válidas ante el SAT consumiendo el API de https://www.fiscalapi.com"
 
-# Carga un README.md (si existe) como descripción larga
 current_dir = os.path.abspath(os.path.dirname(__file__))
 long_description_file = os.path.join(current_dir, "README.md")
 if os.path.exists(long_description_file):
@@ -16,16 +15,16 @@ else:
     LONG_DESCRIPTION = DESCRIPTION  # fallback si no se encuentra README.md
 
 setup(
-    name="fiscalapi",  # Normalmente en minúsculas en PyPI
+    name="fiscalapi",  
     version=VERSION,
     author="Fiscalapi",
-    author_email="contacto@fiscalapi.com",  # Ajusta con el correo que corresponda
+    author_email="contacto@fiscalapi.com",  
     url="https://www.fiscalapi.com",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     
-    # Licencia Pública de Mozilla (por ejemplo, MPL 2.0)
+    # Licencia Pública de Mozilla 
     license="MPL-2.0",
     
     packages=find_packages(
@@ -33,7 +32,7 @@ setup(
     ),
     keywords=["factura", "cfdi", "facturacion", "mexico", "sat", "fiscalapi"],
     
-    python_requires=">=3.7",  # Ajusta según la compatibilidad mínima de Python
+    python_requires=">=3.7",  
     
     install_requires=[
         "pydantic>=2.0.0",
