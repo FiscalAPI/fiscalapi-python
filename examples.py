@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 from fiscalapi.models.common_models import FiscalApiSettings
-from fiscalapi.models.fiscalapi_models import Invoice, InvoiceIssuer, InvoiceItem, InvoiceRecipient, ItemTax, Product, ProductTax, Person, RelatedInvoice, TaxCredential, TaxFile
+from fiscalapi.models.fiscalapi_models import ApiKey, CancelInvoiceRequest, CreatePdfRequest, DownloadRequest, DownloadRule, GlobalInformation, Invoice, InvoiceIssuer, InvoiceItem, InvoicePayment, InvoiceRecipient, InvoiceStatusRequest, ItemTax, PaidInvoice, PaidInvoiceTax, Product, ProductTax, Person, RelatedInvoice, SendInvoiceRequest, TaxCredential, TaxFile
 from fiscalapi.services.fiscalapi_client import FiscalApiClient
 
 def main ():
@@ -19,7 +19,7 @@ def main ():
   
     
     
-    # listar api-keys
+     # listar api-keys
     # api_response = client.api_keys.get_list(1, 10)
     # print(api_response)
     
@@ -1357,6 +1357,118 @@ def main ():
     # )
     # api_response = client.invoices.get_status(invoice_status)
     # print(api_response)
+    
+    
+    # ========================================
+    # EJEMPLOS DE DESCARGA MASIVA
+    # ========================================
+
+    # ========================================
+    # CATÁLOGOS
+    # ========================================
+    
+    #Obtener todos los catálogos de descarga masiva disponibles
+    # api_response = client.download_catalogs.get_list()
+    # print(api_response)
+    
+    #Listar los registros del catálogo 'SatInvoiceStatuses' de descarga masiva.
+    # api_response = client.download_catalogs.list_catalog("SatInvoiceStatuses")
+    # print(api_response)
+    
+    
+    # ========================================
+    # Reglas de descarga 
+    # ========================================
+    
+    # Obtener lista paginada de reglas de descarga masiva
+    # api_response = client.download_rules.get_list(1, 2)
+    # print(api_response)
+    
+    
+    # Obtener regla de descarga masiva por id
+    # api_response = client.download_rules.get_by_id("dc342a5e-f5f2-48d7-a5c5-1d87df46ef26")
+    # print(api_response)
+    
+  
+    # Crear Regla para descargar CFDI recibidos y vigentes.
+    # request = DownloadRule(
+    #     person_id="b0c1cf6c-153a-464e-99df-5741f45d6695",
+    #     description="Regla descarga demo ...",
+    #     sat_query_type_id="CFDI",
+    #     download_type_id="Recibidos",
+    #     sat_invoice_status_id="Vigente",
+    # )
+    # api_response = client.download_rules.create(request)
+    # print(api_response)
+
+    # Crear Regla de prueba para descargar CFDI recibidos y vigentes.
+    # api_response = client.download_rules.create_test_rule()
+    # print(api_response)
+
+    # Actualizar regla de descarga masiva
+    # request = DownloadRule(
+    #     id = "e480dcb6-529a-464b-b3e5-854e2f65e63a",
+    #     description = "Regla descarga actualizada",
+    # )
+    # api_response = client.download_rules.update(request);
+    # print(api_response)
+    
+    # Eliminar regla de descarga masiva
+    # api_response = client.download_rules.delete("e480dcb6-529a-464b-b3e5-854e2f65e63a")
+    # print(api_response)
+        
+    # ========================================
+    # Solicitudes de descarga 
+    # ========================================
+    
+    #  Obtener lista paginada de solicitudes de descarga masiva
+    # api_response = client.download_requests.get_list(1, 2)
+    # print(api_response)
+    
+
+    # Obtener solicitud por ID
+    # api_response = client.download_requests.get_by_id("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+
+    # Obtener lista paginada de xmls descargados asociados a una solicitud de descarga.
+    # api_response = client.download_requests.get_xmls("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+    
+    #  Obtener lista paginada de metadatos descargados asociados a una solicitud de descarga.
+    # api_response = client.download_requests.get_metadata_items("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+
+    #  Descargar paquete (.zip file) de una solicitud de descarga masiva.
+    # api_response = client.download_requests.download_package("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+    
+    # Descargar SAT request (.xml file) de una solicitud de descarga masiva. (debug/testing)
+    # api_response = client.download_requests.download_sat_request("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+    
+    # Descargar SAT response (.xml file) de una solicitud de descarga masiva. (debug/testing)
+    # api_response = client.download_requests.download_sat_response("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+    
+    #  Crear solicitud para descargar facturas de los últimos 5 días.
+    # request = DownloadRequest(
+    #     download_rule_id="5351fb27-c85d-4593-a030-c1799a1cddd5",
+    #     download_request_type_id="Manual",
+    #     start_date=datetime.now() - timedelta(days=5),  
+    #     end_date=datetime.now(),
+    # )
+    # api_response = client.download_requests.create(request)
+    # print(api_response)
+    
+    
+    # Eliminar solicitud de descarga masiva.
+    # api_response = client.download_requests.delete("5f71344a-3b5a-4e36-9228-57170d18c64a")
+    # print(api_response)
+    
+    # Buscar solicitud de descarga masiva por fecha de creación.
+    # api_response = client.download_requests.search(datetime.now())
+    # print(api_response)
+  
     
     
 if __name__ == "__main__":

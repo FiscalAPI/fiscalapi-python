@@ -36,6 +36,20 @@ from .models.fiscalapi_models import (
     InvoiceStatusRequest,
     InvoiceStatusResponse,
     ApiKey,
+    DownloadRule,
+    DownloadRequest,
+    MetadataItem,
+    XmlGlobalInformation,
+    XmlIssuer,
+    XmlRecipient,
+    XmlRelated,
+    XmlTax,
+    XmlItemCustomsInformation,
+    XmlItemPropertyAccount,
+    XmlItemTax,
+    XmlItem,
+    XmlComplement,
+    Xml,
 )
 
 # Re-exportar servicios
@@ -45,6 +59,9 @@ from .services.people_service import PeopleService
 from .services.product_service import ProductService
 from .services.tax_file_servive import TaxFileService 
 from .services.api_key_service import ApiKeyService
+from .services.download_catalog_service import DownloadCatalogService
+from .services.download_rule_service import DownloadRuleService
+from .services.download_request_service import DownloadRequestService
 
 # Re-exportar la clase FiscalApiClient
 # (asumiendo que la definición está en fiscalapi/services/fiscalapi_client.py)
@@ -82,7 +99,20 @@ __all__ = [
     "InvoiceStatusRequest",
     "InvoiceStatusResponse",
     "ApiKey",
-    
+    "DownloadRule",
+    "DownloadRequest",
+    "MetadataItem",
+    "XmlGlobalInformation",
+    "XmlIssuer",
+    "XmlRecipient",
+    "XmlRelated",
+    "XmlTax",
+    "XmlItemCustomsInformation",
+    "XmlItemPropertyAccount",
+    "XmlItemTax",
+    "XmlItem",
+    "XmlComplement",
+    "Xml",
     
     # Servicios
     "CatalogService",
@@ -90,7 +120,10 @@ __all__ = [
     "PeopleService",
     "ProductService",
     "TaxFileService",
-    "ApiKeyService"
+    "ApiKeyService",
+    "DownloadCatalogService",
+    "DownloadRuleService",
+    "DownloadRequestService",
     
     # Cliente principal
     "FiscalApiClient",

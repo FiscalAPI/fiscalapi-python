@@ -373,3 +373,348 @@ class ApiKey(BaseDto):
         populate_by_name=True,
         json_encoders={Decimal: str}
     )
+    
+    
+#Download Models
+
+class DownloadRule(BaseDto):
+    """Representa una plantilla para crear solicitudes de descarga de CFDI o metadatos."""
+    
+    person_id: Optional[str] = Field(default=None, alias="personId", description="ID de la persona asociada.")
+    person: Optional[Person] = Field(default=None, description="Información de la persona.")
+    tin: Optional[str] = Field(default=None, description="RFC de la regla de descarga.")
+    description: Optional[str] = Field(default=None, description="Descripción de la regla.")
+    
+    # 1 Pendiente, 2 Aprobada, 3 Rechazada, 4 Abandonada
+    download_rule_status_id: Optional[str] = Field(default=None, alias="downloadRuleStatusId", description="Estado de la regla de descarga (1 Pendiente, 2 Aprobada, 3 Rechazada, 4 Abandonada).")
+    download_rule_status: Optional[CatalogDto] = Field(default=None, alias="downloadRuleStatus", description="Estado de la regla de descarga.")
+    
+    # CFDI, Metadata
+    sat_query_type_id: Optional[str] = Field(default=None, alias="satQueryTypeId", description="Tipo de consulta SAT (CFDI, Metadata).")
+    sat_query_type: Optional[CatalogDto] = Field(default=None, alias="satQueryType", description="Tipo de consulta SAT.")
+    
+    # Emitidos, Recibidos
+    download_type_id: Optional[str] = Field(default=None, alias="downloadTypeId", description="Tipo de descarga (Emitidos, Recibidos).")
+    download_type: Optional[CatalogDto] = Field(default=None, alias="downloadType", description="Tipo de descarga.")
+    
+    # Vigente, Cancelado
+    sat_invoice_status_id: Optional[str] = Field(default=None, alias="satInvoiceStatusId", description="Estado del comprobante SAT (Vigente, Cancelado).")
+    sat_invoice_status: Optional[CatalogDto] = Field(default=None, alias="satInvoiceStatus", description="Estado del comprobante SAT.")
+
+    model_config = ConfigDict(
+        populate_by_name=True
+    )
+    
+    
+class DownloadRequest(BaseDto):
+    """Representa una solicitud de descarga de CFDI o metadatos del SAT."""
+    
+    consecutive: Optional[int] = Field(default=None, description="Consecutivo de la solicitud.")
+    sat_request_id: Optional[str] = Field(default=None, alias="satRequestId", description="ID de solicitud SAT utilizado para rastrear la solicitud en el sistema SAT.")
+    download_rule_id: Optional[str] = Field(default=None, alias="downloadRuleId", description="ID de la regla asociada con la solicitud.")
+    
+    download_type_id: Optional[str] = Field(default=None, alias="downloadTypeId", description="ID del tipo de descarga.")
+    download_type: Optional[CatalogDto] = Field(default=None, alias="downloadType", description="Tipo de descarga.")
+    
+    download_request_type_id: Optional[str] = Field(default=None, alias="downloadRequestTypeId", description="ID del tipo de solicitud de descarga.")
+    download_request_type: Optional[CatalogDto] = Field(default=None, alias="downloadRequestType", description="Tipo de solicitud de descarga.")
+    
+    recipient_tin: Optional[str] = Field(default=None, alias="recipientTin", description="RFC del receptor. CFDIs específicos o metadatos del RFC receptor dado.")
+    issuer_tin: Optional[str] = Field(default=None, alias="issuerTin", description="RFC del emisor. CFDIs específicos o metadatos del RFC emisor dado.")
+    requester_tin: Optional[str] = Field(default=None, alias="requesterTin", description="RFC quien está solicitando la consulta.")
+    
+    start_date: Optional[datetime] = Field(default=None, alias="startDate", description="Fecha inicial para la solicitud asociada.")
+    end_date: Optional[datetime] = Field(default=None, alias="endDate", description="Fecha final para la solicitud asociada.")
+    
+    sat_query_type_id: Optional[str] = Field(default=None, alias="satQueryTypeId", description="Tipo de solicitud para la petición. CFDI o Metadata.")
+    sat_query_type: Optional[CatalogDto] = Field(default=None, alias="satQueryType", description="Tipo de consulta SAT.")
+    
+    sat_invoice_type_id: Optional[str] = Field(default=None, alias="satInvoiceTypeId", description="Tipo de factura específico a solicitar. Ingreso, Egreso, Traslado, Nómina, Pago, Todos.")
+    sat_invoice_type: Optional[CatalogDto] = Field(default=None, alias="satInvoiceType", description="Tipo de comprobante SAT.")
+    
+    sat_invoice_status_id: Optional[str] = Field(default=None, alias="satInvoiceStatusId", description="Estado de los CFDIs a solicitar.")
+    sat_invoice_status: Optional[CatalogDto] = Field(default=None, alias="satInvoiceStatus", description="Estado del comprobante SAT.")
+    
+    sat_invoice_complement_id: Optional[str] = Field(default=None, alias="satInvoiceComplementId", description="Complementos de CFDIs para la solicitud.")
+    sat_invoice_complement: Optional[CatalogDto] = Field(default=None, alias="satInvoiceComplement", description="Complemento del comprobante SAT.")
+    
+    sat_request_status_id: Optional[str] = Field(default=None, alias="satRequestStatusId", description="Estado actual de la solicitud. DESCONOCIDO, ACEPTADA, EN PROCESO, TERMINADA, ERROR, RECHAZADA, VENCIDA.")
+    sat_request_status: Optional[CatalogDto] = Field(default=None, alias="satRequestStatus", description="Estado de la solicitud SAT.")
+    
+    download_request_status_id: Optional[str] = Field(default=None, alias="downloadRequestStatusId", description="ID del estado de la solicitud de Fiscalapi.")
+    download_request_status: Optional[CatalogDto] = Field(default=None, alias="downloadRequestStatus", description="Estado de la solicitud de descarga Fiscalapi.")
+    
+    last_attempt_date: Optional[datetime] = Field(default=None, alias="lastAttemptDate", description="Fecha del último intento para la solicitud asociada.")
+    next_attempt_date: Optional[datetime] = Field(default=None, alias="nextAttemptDate", description="Fecha del siguiente intento para la solicitud asociada.")
+    
+    invoice_count: Optional[int] = Field(default=None, alias="invoiceCount", description="Número de CFDIs encontrados para la solicitud cuando la solicitud ha terminado.")
+    package_ids: Optional[List[str]] = Field(default_factory=list, alias="packageIds", description="Lista de IDs de paquetes disponibles para descarga cuando la solicitud ha terminado.")
+    is_ready_to_download: Optional[bool] = Field(default=None, alias="isReadyToDownload", description="Indica si la solicitud está lista para descarga, se vuelve verdadero cuando la solicitud ha terminado y los paquetes están disponibles.")
+    retries_count: Optional[int] = Field(default=None, alias="retriesCount", description="Número total de reintentos realizados para esta solicitud a través de todas las re-presentaciones.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={datetime: lambda v: v.isoformat()}
+    )
+
+
+class MetadataItem(BaseDto):
+    """Representa un elemento de metadatos de CFDI."""
+    
+    invoice_uuid: Optional[str] = Field(default=None, alias="invoiceUuid", description="Folio de la factura - UUID.")
+    issuer_tin: Optional[str] = Field(default=None, alias="issuerTin", description="RFC del emisor del comprobante.")
+    issuer_name: Optional[str] = Field(default=None, alias="issuerName", description="Nombre o razón social del emisor.")
+    recipient_tin: Optional[str] = Field(default=None, alias="recipientTin", description="RFC del receptor del comprobante.")
+    recipient_name: Optional[str] = Field(default=None, alias="recipientName", description="Nombre o razón social del receptor.")
+    pac_tin: Optional[str] = Field(default=None, alias="pacTin", description="RFC del Proveedor Autorizado de Certificación (PAC).")
+    invoice_date: Optional[datetime] = Field(default=None, alias="invoiceDate", description="Fecha y hora de emisión del comprobante.")
+    sat_certification_date: Optional[datetime] = Field(default=None, alias="satCertificationDate", description="Fecha y hora de certificación por el SAT.")
+    amount: Optional[Decimal] = Field(default=None, description="Monto total del comprobante.")
+    invoice_type: Optional[str] = Field(default=None, alias="invoiceType", description="Tipo de comprobante (I = Ingreso, E = Egreso, T = Traslado, N = Nómina, P = Pago).")
+    status: Optional[int] = Field(default=None, description="Estatus del comprobante (1 = Vigente, 0 = Cancelado).")
+    cancellation_date: Optional[datetime] = Field(default=None, alias="cancellationDate", description="Fecha de cancelación del comprobante (si aplica).")
+    download_package_id: Optional[str] = Field(default=None, alias="downloadPackageId", description="ID del paquete de descarga.")
+    download_request_id: Optional[str] = Field(default=None, alias="downloadRequestId", description="ID de la solicitud de descarga.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={
+            datetime: lambda v: v.isoformat(),
+            Decimal: str
+        }
+    )
+    
+    
+class XmlGlobalInformation(BaseDto):
+    """Información global del CFDI (para CFDI globales)."""
+    
+    periodicity: Optional[str] = Field(default=None, description="Periodicidad del CFDI global.")
+    month: Optional[str] = Field(default=None, description="Mes del CFDI global.")
+    year: Optional[int] = Field(default=None, description="Año del CFDI global.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class XmlIssuer(BaseDto):
+    """Información del emisor del CFDI."""
+    
+    tin: Optional[str] = Field(default=None, description="RFC del emisor.")
+    legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social del emisor.")
+    tax_regime: Optional[str] = Field(default=None, alias="taxRegime", description="Régimen fiscal del emisor.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class XmlRecipient(BaseDto):
+    """Información del receptor del CFDI."""
+    
+    tin: Optional[str] = Field(default=None, description="RFC del receptor.")
+    legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social del receptor.")
+    zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del receptor.")
+    tax_regime: Optional[str] = Field(default=None, alias="taxRegime", description="Régimen fiscal del receptor.")
+    cfdi_use: Optional[str] = Field(default=None, alias="cfdiUse", description="Uso del CFDI.")
+    foreign_tax_id: Optional[str] = Field(default=None, alias="foreignTaxId", description="ID fiscal extranjero.")
+    fiscal_residence: Optional[str] = Field(default=None, alias="fiscalResidence", description="Residencia fiscal.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class XmlRelated(BaseDto):
+    """Información sobre facturas relacionadas del CFDI (CFDI relacionados)."""
+    
+    xml_id: Optional[str] = Field(default=None, alias="xmlId", description="ID del XML.")
+    relationship_type: Optional[str] = Field(default=None, alias="relationshipType", description="Tipo de relación.")
+    cfdi_uuid: Optional[str] = Field(default=None, alias="cfdiUuid", description="UUID del CFDI relacionado.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class XmlTax(BaseDto):
+    """Información de los impuestos del CFDI."""
+    
+    base: Optional[Decimal] = Field(default=None, description="Base del impuesto.")
+    tax: Optional[str] = Field(default=None, description="Impuesto.")
+    tax_type: Optional[str] = Field(default=None, alias="taxType", description="Tipo de impuesto.")
+    rate: Optional[Decimal] = Field(default=None, description="Tasa del impuesto.")
+    amount: Optional[Decimal] = Field(default=None, description="Monto del impuesto.")
+    tax_flag: Optional[str] = Field(default=None, alias="taxFlag", description="Bandera del impuesto.")
+    xml_id: Optional[str] = Field(default=None, alias="xmlId", description="ID del XML.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
+
+
+class XmlItemCustomsInformation(BaseDto):
+    """Información aduanera de los conceptos del CFDI."""
+    
+    xml_item_id: Optional[str] = Field(default=None, alias="xmlItemId", description="ID del concepto XML.")
+    customs_document_number: Optional[str] = Field(default=None, alias="customsDocumentNumber", description="Número de documento aduanero.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class XmlItemPropertyAccount(BaseDto):
+    """Cuenta predial de los conceptos del CFDI."""
+    
+    xml_item_id: Optional[str] = Field(default=None, alias="xmlItemId", description="ID del concepto XML.")
+    property_account_number: Optional[str] = Field(default=None, alias="propertyAccountNumber", description="Número de cuenta predial.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class XmlItemTax(BaseDto):
+    """Impuestos de los conceptos del CFDI."""
+    
+    base: Optional[Decimal] = Field(default=None, description="Base del impuesto.")
+    tax: Optional[str] = Field(default=None, description="Impuesto.")
+    tax_type: Optional[str] = Field(default=None, alias="taxType", description="Tipo de impuesto.")
+    rate: Optional[Decimal] = Field(default=None, description="Tasa del impuesto.")
+    amount: Optional[Decimal] = Field(default=None, description="Monto del impuesto.")
+    tax_flag: Optional[str] = Field(default=None, alias="taxFlag", description="Bandera del impuesto.")
+    xml_item_id: Optional[str] = Field(default=None, alias="xmlItemId", description="ID del concepto XML.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
+
+
+class XmlItem(BaseDto):
+    """Información de los conceptos del CFDI."""
+    
+    xml_id: Optional[str] = Field(default=None, alias="xmlId", description="ID del XML.")
+    item_code: Optional[str] = Field(default=None, alias="itemCode", description="Código del producto/servicio.")
+    sku: Optional[str] = Field(default=None, description="SKU del producto.")
+    quantity: Optional[Decimal] = Field(default=None, description="Cantidad.")
+    unit_measurement: Optional[str] = Field(default=None, alias="unitMeasurement", description="Unidad de medida.")
+    description: Optional[str] = Field(default=None, description="Descripción del concepto.")
+    unit_price: Optional[Decimal] = Field(default=None, alias="unitPrice", description="Precio unitario.")
+    amount: Optional[Decimal] = Field(default=None, description="Importe.")
+    discount: Optional[Decimal] = Field(default=None, description="Descuento.")
+    tax_object: Optional[str] = Field(default=None, alias="taxObject", description="Objeto de impuesto.")
+    third_party_account: Optional[str] = Field(default=None, alias="thirdPartyAccount", description="Cuenta de terceros.")
+    
+    xml_item_customs_information: Optional[List[XmlItemCustomsInformation]] = Field(
+        default_factory=list, 
+        alias="xmlItemCustomsInformation", 
+        description="Información aduanera del concepto."
+    )
+    xml_item_property_accounts: Optional[List[XmlItemPropertyAccount]] = Field(
+        default_factory=list, 
+        alias="xmlItemPropertyAccounts", 
+        description="Cuentas prediales del concepto."
+    )
+    taxes: Optional[List[XmlItemTax]] = Field(default_factory=list, description="Impuestos del concepto.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
+
+
+class XmlComplement(BaseDto):
+    """Información de los complementos del CFDI."""
+    
+    complement_name: Optional[str] = Field(default=None, alias="complementName", description="Nombre del complemento.")
+    base64_complement_value: Optional[str] = Field(default=None, alias="base64ComplementValue", description="Valor del complemento en base64.")
+    xml_id: Optional[str] = Field(default=None, alias="xmlId", description="ID del XML.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class Xml(BaseDto):
+    """Representa el XML de un CFDI (Comprobante Fiscal Digital por Internet) descargado desde el SAT."""
+    
+    # Regla de descarga
+    download_request_id: Optional[str] = Field(default=None, alias="downloadRequestId", description="ID de la solicitud de descarga.")
+    
+    # Version del CFDI
+    version: Optional[str] = Field(default=None, description="Versión del CFDI.")
+    
+    # Serie
+    series: Optional[str] = Field(default=None, description="Serie del CFDI.")
+    
+    # Folio
+    number: Optional[str] = Field(default=None, description="Folio del CFDI.")
+    
+    # Fecha de emisión del CFDI
+    date: Optional[datetime] = Field(default=None, description="Fecha de emisión del CFDI.")
+    
+    # Codigo de la forma de pago
+    payment_form: Optional[str] = Field(default=None, alias="paymentForm", description="Código de la forma de pago.")
+    
+    # Codigo del método de pago
+    payment_method: Optional[str] = Field(default=None, alias="paymentMethod", description="Código del método de pago.")
+    
+    # Numero de certificado del emisor
+    certificate_number: Optional[str] = Field(default=None, alias="certificateNumber", description="Número de certificado del emisor.")
+    
+    # Condiciones de pago
+    payment_conditions: Optional[str] = Field(default=None, alias="paymentConditions", description="Condiciones de pago.")
+    
+    # Subtotal del CFDI
+    sub_total: Optional[Decimal] = Field(default=None, alias="subTotal", description="Subtotal del CFDI.")
+    
+    # Descuento aplicado al CFDI
+    discount: Optional[Decimal] = Field(default=None, description="Descuento aplicado al CFDI.")
+    
+    # Codigo de la moneda del CFDI
+    currency: Optional[str] = Field(default=None, description="Código de la moneda del CFDI.")
+    
+    # Tipo de cambio del CFDI (si aplica)
+    exchange_rate: Optional[Decimal] = Field(default=None, alias="exchangeRate", description="Tipo de cambio del CFDI (si aplica).")
+    
+    # Total del CFDI
+    total: Optional[Decimal] = Field(default=None, description="Total del CFDI.")
+    
+    # Tipo de comprobante (I = Ingreso, E = Egreso, T = Traslado, N = Nómina, P = Pago)
+    invoice_type: Optional[str] = Field(default=None, alias="invoiceType", description="Tipo de comprobante (I = Ingreso, E = Egreso, T = Traslado, N = Nómina, P = Pago).")
+    
+    # Codigo de exportación (si aplica)
+    export: Optional[str] = Field(default=None, description="Código de exportación (si aplica).")
+    
+    # Lugar de expedición del CFDI
+    expedition_zip_code: Optional[str] = Field(default=None, alias="expeditionZipCode", description="Lugar de expedición del CFDI.")
+    
+    # Confirmacion si aplica
+    confirmation: Optional[str] = Field(default=None, description="Confirmación si aplica.")
+    
+    # Total impuestos retenidos
+    total_withheld_taxes: Optional[Decimal] = Field(default=None, alias="totalWithheldTaxes", description="Total impuestos retenidos.")
+    
+    # Total impuestos trasladados
+    total_transferred_taxes: Optional[Decimal] = Field(default=None, alias="totalTransferredTaxes", description="Total impuestos trasladados.")
+    
+    # Información global del CFDI (para CFDI globales)
+    xml_global_information: Optional[XmlGlobalInformation] = Field(default=None, alias="xmlGlobalInformation", description="Información global del CFDI (para CFDI globales).")
+    
+    # Información de impuestos del CFDI
+    taxes: Optional[List[XmlTax]] = Field(default_factory=list, description="Información de impuestos del CFDI.")
+    
+    # Información sobre facturas relacionada del CFDI (CFDI relacionados)
+    xml_related: Optional[List[XmlRelated]] = Field(default_factory=list, alias="xmlRelated", description="Información sobre facturas relacionadas del CFDI (CFDI relacionados).")
+    
+    # Información del emisor del CFDI
+    xml_issuer: Optional[XmlIssuer] = Field(default=None, alias="xmlIssuer", description="Información del emisor del CFDI.")
+    
+    # Información del receptor del CFDI
+    xml_recipient: Optional[XmlRecipient] = Field(default=None, alias="xmlRecipient", description="Información del receptor del CFDI.")
+    
+    # Información de los conceptos del CFDI
+    xml_items: Optional[List[XmlItem]] = Field(default_factory=list, alias="xmlItems", description="Información de los conceptos del CFDI.")
+    
+    # Información de los complementos del CFDI
+    xml_complements: Optional[List[XmlComplement]] = Field(default_factory=list, alias="xmlComplements", description="Información de los complementos del CFDI.")
+    
+    # Xml crudo en base64
+    base64_content: Optional[str] = Field(default=None, alias="base64Content", description="XML crudo en base64.")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={
+            datetime: lambda v: v.isoformat(),
+            Decimal: str
+        }
+    )
