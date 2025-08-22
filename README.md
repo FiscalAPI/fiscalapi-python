@@ -8,6 +8,8 @@
 ## 🚀 Características
 
 - Soporte completo para **CFDI 4.0**
+- Descarga masiva CFDI y Metadatos
+- Acceso y búsqueda en catálogos del SAT
 - Compatible con Python 3.8+
 - Dos modos de operación: **Por valores** o **Por referencias**
 - Manejo simplificado de errores
