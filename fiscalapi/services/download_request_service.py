@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 from fiscalapi.models.common_models import ApiResponse, PagedList
 from fiscalapi.models.fiscalapi_models import DownloadRequest, MetadataItem, Xml, FileResponse
 from fiscalapi.services.base_service import BaseService
@@ -134,7 +133,7 @@ class DownloadRequestService(BaseService):
         endpoint = f"download-requests/{request_id}/meta-items"
         return self.send_request("GET", endpoint, PagedList[MetadataItem])
     
-    def download_package(self, request_id: str) -> ApiResponse[List[FileResponse]]:
+    def download_package(self, request_id: str) -> ApiResponse[list[FileResponse]]:
         """
         Descarga el paquete de archivos asociado a una solicitud de descarga.
         
@@ -142,7 +141,7 @@ class DownloadRequestService(BaseService):
             request_id (str): ID de la solicitud de descarga
         
         Returns:
-            ApiResponse[List[FileResponse]]: Lista de archivos del paquete
+            ApiResponse[list[FileResponse]]: Lista de archivos del paquete
         
         Raises:
             ValueError: Si request_id es None o vacío
@@ -151,7 +150,7 @@ class DownloadRequestService(BaseService):
             raise ValueError("request_id no puede ser nulo o vacío")
         
         endpoint = f"download-requests/{request_id}/package"
-        return self.send_request("GET", endpoint, List[FileResponse])
+        return self.send_request("GET", endpoint, list[FileResponse])
     
     def download_sat_request(self, request_id: str) -> ApiResponse[FileResponse]:
         """
@@ -191,7 +190,7 @@ class DownloadRequestService(BaseService):
         endpoint = f"download-requests/{request_id}/raw-response"
         return self.send_request("GET", endpoint, FileResponse)
     
-    def search(self, created_at: datetime) -> ApiResponse[List[DownloadRequest]]:
+    def search(self, created_at: datetime) -> ApiResponse[list[DownloadRequest]]:
         """
         Busca solicitudes de descarga por fecha de creación.
         
@@ -199,7 +198,7 @@ class DownloadRequestService(BaseService):
             created_at (datetime): Fecha de creación para buscar
         
         Returns:
-            ApiResponse[List[DownloadRequest]]: Lista de solicitudes encontradas
+            ApiResponse[list[DownloadRequest]]: Lista de solicitudes encontradas
         
         Raises:
             ValueError: Si created_at es None
@@ -210,4 +209,4 @@ class DownloadRequestService(BaseService):
         created_at_str = created_at.strftime("%Y-%m-%d")
         endpoint = f"download-requests/search?createdAt={created_at_str}"
         print(endpoint)
-        return self.send_request("GET", endpoint, List[DownloadRequest])
+        return self.send_request("GET", endpoint, list[DownloadRequest])

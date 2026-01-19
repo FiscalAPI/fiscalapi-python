@@ -1,6 +1,6 @@
-import urllib3 
+import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from typing import Type, TypeVar, get_args, get_origin
+from typing import Any, Type, TypeVar, get_args, get_origin
 import certifi
 from pydantic import BaseModel
 import requests
@@ -25,7 +25,7 @@ class BaseService:
             "X-TIME-ZONE": self.settings.time_zone,
         }
 
-    def _request(self, method: str, endpoint: str, **kwargs) -> requests.Response:
+    def _request(self, method: str, endpoint: str, **kwargs: Any) -> requests.Response:
         url = f"{self.base_url}/api/{self.api_version}/{endpoint}"
         headers = self._get_headers()
 
@@ -202,7 +202,7 @@ class BaseService:
     #     response = self._request(method, endpoint, **kwargs)
     #     return self._process_response(response, response_model)
     
-    def send_request(self, method: str, endpoint: str, response_model: Type[T], details: bool = False, **kwargs) -> ApiResponse[T]:
+    def send_request(self, method: str, endpoint: str, response_model: Type[T], details: bool = False, **kwargs: Any) -> ApiResponse[T]:
         if details:
             endpoint += "?details=true"
         

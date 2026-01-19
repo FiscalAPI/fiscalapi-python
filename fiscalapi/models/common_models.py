@@ -7,9 +7,9 @@ T = TypeVar('T')
 
 class ApiResponse(BaseModel, Generic[T]):
     succeeded: bool = Field(alias="succeeded")
-    message: Optional[str] = Field(alias="message")
-    details: Optional[str] = Field(alias="details")
-    data: Optional[T] = Field(None, alias="data")
+    message: Optional[str] = Field(default=None, alias="message")
+    details: Optional[str] = Field(default=None, alias="details")
+    data: Optional[T] = Field(default=None, alias="data")
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -37,7 +37,7 @@ class ValidationFailure(BaseModel):
     customState: Optional[Any] = None
     severity: Optional[int] = None
     errorCode: Optional[str] = None
-    formattedMessagePlaceholderValues: Optional[dict] = None
+    formattedMessagePlaceholderValues: Optional[dict[str, Any]] = None
 
     model_config = ConfigDict(populate_by_name=True)
 
