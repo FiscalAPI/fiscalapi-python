@@ -105,6 +105,9 @@ class TaxCredential(BaseDto):
     file_type: Literal[0, 1] = Field(..., alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada.")
     password: str = Field(..., alias="password", description="Contraseña del archivo .key independientemente de si es un archivo .cer o .key.")
 
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class InvoiceIssuer(BaseDto):
     """Modelo para el emisor de la factura."""
     id: Optional[str] = Field(default=None, alias="id", description="ID de la persona (emisora) en fiscalapi.")
@@ -112,6 +115,9 @@ class InvoiceIssuer(BaseDto):
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social del emisor sin regimen de capital.")
     tax_regime_code: Optional[str] = Field(default=None, alias="taxRegimeCode", description="Código del régimen fiscal del emisor.")
     tax_credentials: Optional[list[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor (archivos .cer y .key).")
+
+    model_config = ConfigDict(populate_by_name=True)
+
 
 class InvoiceRecipient(BaseDto):
     """Modelo para el receptor de la factura."""
@@ -122,6 +128,9 @@ class InvoiceRecipient(BaseDto):
     cfdi_use_code: Optional[str] = Field(default=None, alias="cfdiUseCode", description="Código del uso CFDI.")
     zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del receptor. Debe coincidir con el código postal de su constancia de residencia fiscal.")
     email: Optional[str] = Field(default=None, description="Correo electrónico del receptor.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
 
 class ItemTax(BaseDto):
     """Modelo para los impuestos aplicables a un producto o servicio."""
@@ -160,10 +169,16 @@ class GlobalInformation(BaseDto):
     month_code: str = Field(..., alias="monthCode", description="Código SAT del mes de la factura global.")
     year: int = Field(..., description="Año de la factura global a 4 dígitos.")
 
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class RelatedInvoice(BaseDto):
     """Modelo para representar la relacion entre la factura actual y otras facturas previas."""
     relationship_type_code: str = Field(..., alias="relationshipTypeCode", description="Código de la relación de la factura relacionada.")
     uuid: str = Field(..., description="UUID de la factura relacionada.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
 
 class PaidInvoiceTax(BaseDto):
     """Modelo para los impuestos aplicables a la factura pagada."""
@@ -261,8 +276,8 @@ class Invoice(BaseDto):
     export_code: Optional[Literal["01", "02", "03", "04"]] = Field(default="01", alias="exportCode", description="Código que identifica si la factura ampara una operación de exportación.")
     payment_method_code: Optional[Literal["PUE", "PPD"]] = Field(default=None, alias="paymentMethodCode", description="Código de método para la factura de pago.")
     exchange_rate: Optional[Decimal] = Field(default=1, alias="exchangeRate", description="Tipo de cambio FIX.")
-    issuer: Optional[InvoiceIssuer] = Field(..., description="El emisor de la factura.")
-    recipient: Optional[InvoiceRecipient] = Field(..., description="El receptor de la factura.")
+    issuer: InvoiceIssuer = Field(..., description="El emisor de la factura.")
+    recipient: InvoiceRecipient = Field(..., description="El receptor de la factura.")
     items: Optional[list[InvoiceItem]] = Field(default_factory=list, description="Conceptos de la factura (productos o servicios).")
     global_information: Optional[GlobalInformation] = Field(default=None, alias="globalInformation", description="Información global de la factura.")
     related_invoices: Optional[list[RelatedInvoice]] = Field(default=None, alias="relatedInvoices", description="Facturas relacionadas.")
@@ -290,7 +305,7 @@ class CancelInvoiceRequest(BaseDto):
 
 class CancelInvoiceResponse(BaseDto):
     """Modelo de respuesta para la cancelación de factura."""
-    base64_cancellation_acknowledgement: str = Field(default=None, alias="base64CancellationAcknowledgement", description="Acuse de cancelación en formato base64. Contiene el XML del acuse de cancelación del SAT codificado en base64.")
+    base64_cancellation_acknowledgement: Optional[str] = Field(default=None, alias="base64CancellationAcknowledgement", description="Acuse de cancelación en formato base64. Contiene el XML del acuse de cancelación del SAT codificado en base64.")
     invoice_uuids: Optional[dict[str, str]] = Field(default=None, alias="invoiceUuids", description="Diccionario de UUIDs de facturas con su respectivo código de estatus de cancelación. La llave es el UUID de la factura y el valor es el código de estatus.")
 
     model_config = ConfigDict(populate_by_name=True)
