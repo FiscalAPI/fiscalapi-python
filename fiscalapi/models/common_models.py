@@ -59,12 +59,12 @@ class FiscalApiSettings(BaseModel):
     """
     Objeto que contiene la configuración necesaria para interactuar con Fiscalapi.
     """
-    api_url: str = Field(..., description="URL base de la api.")
-    api_key: str = Field(..., description="Api Key")
-    tenant: str = Field(..., description="Tenant Key.")
-    api_version: str = Field("v4", description="Versión de la api.")
-    time_zone: str = Field("America/Mexico_City", description="Zona horaria ")
-    debug: bool = Field(False, description="Indica si se debe imprimir el payload request y response.")
+    api_url: str = Field(default=..., description="URL base de la api.")
+    api_key: str = Field(default=..., description="Api Key")
+    tenant: str = Field(default=..., description="Tenant Key.")
+    api_version: str = Field(default="v4", description="Versión de la api.")
+    time_zone: str = Field(default="America/Mexico_City", description="Zona horaria ")
+    debug: bool = Field(default=False, description="Indica si se debe imprimir el payload request y response.")
 
     model_config = ConfigDict(
         title="FiscalApi Settings",

@@ -206,7 +206,7 @@ class PaidInvoice(BaseDto):
     number: str = Field(default=..., alias="number", description="Folio de la factura pagada.")
     currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en la factura pagada.")
     tax_object_code: str = Field(default=..., alias="taxObjectCode", description="Código de obligaciones de impuesto.")
-    equivalence: Optional[Decimal] = Field(default=1, description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")
+    equivalence: Optional[Decimal] = Field(default=Decimal("1"), description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")
     paid_invoice_taxes: list[PaidInvoiceTax] = Field(default=..., alias="paidInvoiceTaxes", description="Impuestos aplicables a la factura pagada.")
     
     model_config = ConfigDict(
@@ -222,7 +222,7 @@ class InvoicePayment(BaseDto):
     payment_form_code: str = Field(default=..., alias="paymentFormCode", description="Código de la forma de pago.")
     
     currency_code: Literal ["MXN", "USD", "EUR"] = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en el pago.")
-    exchange_rate: Optional[Decimal] = Field(default=1, alias="exchangeRate", description="Tipo de cambio FIX conforme a la moneda registrada en la factura. Si la moneda es MXN, el tipo de cambio debe ser 1..")
+    exchange_rate: Optional[Decimal] = Field(default=Decimal("1"), alias="exchangeRate", description="Tipo de cambio FIX conforme a la moneda registrada en la factura. Si la moneda es MXN, el tipo de cambio debe ser 1..")
     amount: Decimal = Field(default=..., description="Monto del pago.")
     source_bank_tin: str = Field(default=..., alias="sourceBankTin", description="RFC del banco origen. (Rfc del banco emisor del pago)")
     source_bank_account: str = Field(default=..., alias="sourceBankAccount", description="Cuenta bancaria origen. (Cuenta bancaria del banco emisor del pago)")
@@ -275,7 +275,7 @@ class Invoice(BaseDto):
     expedition_zip_code: str = Field(default=..., alias="expeditionZipCode", description="Código postal del emisor.")
     export_code: Optional[Literal["01", "02", "03", "04"]] = Field(default="01", alias="exportCode", description="Código que identifica si la factura ampara una operación de exportación.")
     payment_method_code: Optional[Literal["PUE", "PPD"]] = Field(default=None, alias="paymentMethodCode", description="Código de método para la factura de pago.")
-    exchange_rate: Optional[Decimal] = Field(default=1, alias="exchangeRate", description="Tipo de cambio FIX.")
+    exchange_rate: Optional[Decimal] = Field(default=Decimal("1"), alias="exchangeRate", description="Tipo de cambio FIX.")
     issuer: InvoiceIssuer = Field(default=..., description="El emisor de la factura.")
     recipient: InvoiceRecipient = Field(default=..., description="El receptor de la factura.")
     items: Optional[list[InvoiceItem]] = Field(default_factory=list, description="Conceptos de la factura (productos o servicios).")
