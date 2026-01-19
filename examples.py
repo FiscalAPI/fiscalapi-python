@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
-from decimal import Decimal
+from datetime import datetime
 from fiscalapi.models.common_models import FiscalApiSettings
-from fiscalapi.models.fiscalapi_models import ApiKey, CancelInvoiceRequest, CreatePdfRequest, DownloadRequest, DownloadRule, GlobalInformation, Invoice, InvoiceIssuer, InvoiceItem, InvoicePayment, InvoiceRecipient, InvoiceStatusRequest, ItemTax, PaidInvoice, PaidInvoiceTax, Product, ProductTax, Person, RelatedInvoice, SendInvoiceRequest, TaxCredential, TaxFile
 from fiscalapi.services.fiscalapi_client import FiscalApiClient
 
 def main ():
@@ -1466,8 +1464,8 @@ def main ():
     # print(api_response)
     
     # Buscar solicitud de descarga masiva por fecha de creación.
-    # api_response = client.download_requests.search(datetime.now())
-    # print(api_response)
+    api_response = client.download_requests.search(datetime.now())
+    print(api_response)
   
     
     
