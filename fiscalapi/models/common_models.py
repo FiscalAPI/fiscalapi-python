@@ -6,7 +6,7 @@ from pydantic.alias_generators import to_snake
 T = TypeVar('T')
 
 class ApiResponse(BaseModel, Generic[T]):
-    succeeded: bool = Field(alias="succeeded")
+    succeeded: bool = Field(default=..., alias="succeeded")
     message: Optional[str] = Field(default=None, alias="message")
     details: Optional[str] = Field(default=None, alias="details")
     data: Optional[T] = Field(default=None, alias="data")
@@ -20,11 +20,11 @@ class ApiResponse(BaseModel, Generic[T]):
 class PagedList(BaseModel, Generic[T]):
     """Modelo para la estructura de la lista paginada."""
     items: list[T] = Field(default_factory=list, alias="items", description="Lista de elementos paginados")
-    page_number: int = Field(alias="pageNumber", description="Número de página actual")
-    total_pages: int = Field(alias="totalPages", description="Cantidad total de páginas")
-    total_count: int = Field(alias="totalCount", description="Cantidad total de elementos")
-    has_previous_page: bool = Field(alias="hasPreviousPage", description="Indica si hay una página anterior")
-    has_next_page: bool = Field(alias="hasNextPage", description="Indica si hay una página siguiente")
+    page_number: int = Field(default=..., alias="pageNumber", description="Número de página actual")
+    total_pages: int = Field(default=..., alias="totalPages", description="Cantidad total de páginas")
+    total_count: int = Field(default=..., alias="totalCount", description="Cantidad total de elementos")
+    has_previous_page: bool = Field(default=..., alias="hasPreviousPage", description="Indica si hay una página anterior")
+    has_next_page: bool = Field(default=..., alias="hasNextPage", description="Indica si hay una página siguiente")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -52,7 +52,7 @@ class BaseDto(BaseModel):
 
 class CatalogDto(BaseDto):
     """Modelo para catálogos."""
-    description: str = Field(alias="description")
+    description: str = Field(default=..., alias="description")
 
 
 class FiscalApiSettings(BaseModel):
