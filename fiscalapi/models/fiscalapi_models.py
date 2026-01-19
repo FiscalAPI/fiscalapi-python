@@ -1,7 +1,7 @@
 from decimal import Decimal
 from pydantic import ConfigDict, EmailStr, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
-from typing import Dict, List, Literal, Optional
+from typing import Literal, Optional
 from datetime import datetime
 
 # products models
@@ -111,7 +111,7 @@ class InvoiceIssuer(BaseDto):
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor (Tax Identification Number).")
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social del emisor sin regimen de capital.")
     tax_regime_code: Optional[str] = Field(default=None, alias="taxRegimeCode", description="Código del régimen fiscal del emisor.")
-    tax_credentials: Optional[List[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor (archivos .cer y .key).")
+    tax_credentials: Optional[list[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor (archivos .cer y .key).")
 
 class InvoiceRecipient(BaseDto):
     """Modelo para el receptor de la factura."""
@@ -147,7 +147,7 @@ class InvoiceItem(BaseDto):
     unit_price: Optional[Decimal] = Field(default=None, alias="unitPrice", description="Precio unitario del producto o servicio.")
     tax_object_code: Optional[str] = Field(default=None, alias="taxObjectCode", description="Código SAT de obligaciones de impuesto.")
     item_sku: Optional[str] = Field(default=None, alias="itemSku", description="SKU o clave del sistema externo.")
-    item_taxes: Optional[List[ItemTax]] = Field(default=None, alias="itemTaxes", description="Impuestos aplicables al producto o servicio.")
+    item_taxes: Optional[list[ItemTax]] = Field(default=None, alias="itemTaxes", description="Impuestos aplicables al producto o servicio.")
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -192,7 +192,7 @@ class PaidInvoice(BaseDto):
     currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en la factura pagada.")
     tax_object_code: str = Field(..., alias="taxObjectCode", description="Código de obligaciones de impuesto.")
     equivalence: Optional[Decimal] = Field(default=1, description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")
-    paid_invoice_taxes: List[PaidInvoiceTax] = Field(..., alias="paidInvoiceTaxes", description="Impuestos aplicables a la factura pagada.")
+    paid_invoice_taxes: list[PaidInvoiceTax] = Field(..., alias="paidInvoiceTaxes", description="Impuestos aplicables a la factura pagada.")
     
     model_config = ConfigDict(
         populate_by_name=True,
@@ -213,7 +213,7 @@ class InvoicePayment(BaseDto):
     source_bank_account: str = Field(..., alias="sourceBankAccount", description="Cuenta bancaria origen. (Cuenta bancaria del banco emisor del pago)")
     target_bank_tin: str = Field(..., alias="targetBankTin", description="RFC del banco destino. (Rfc del banco receptor del pago)")
     target_bank_account: str = Field(..., alias="targetBankAccount", description="Cuenta bancaria destino (Cuenta bancaria del banco receptor del pago)")
-    paid_invoices: List[PaidInvoice] = Field(..., alias="paidInvoices", description="Facturas pagadas con el pago recibido.")
+    paid_invoices: list[PaidInvoice] = Field(..., alias="paidInvoices", description="Facturas pagadas con el pago recibido.")
     
     model_config = ConfigDict(
         populate_by_name=True,
@@ -263,11 +263,11 @@ class Invoice(BaseDto):
     exchange_rate: Optional[Decimal] = Field(default=1, alias="exchangeRate", description="Tipo de cambio FIX.")
     issuer: Optional[InvoiceIssuer] = Field(..., description="El emisor de la factura.")
     recipient: Optional[InvoiceRecipient] = Field(..., description="El receptor de la factura.")
-    items: Optional[List[InvoiceItem]] = Field(default=[], description="Conceptos de la factura (productos o servicios).")
+    items: Optional[list[InvoiceItem]] = Field(default_factory=list, description="Conceptos de la factura (productos o servicios).")
     global_information: Optional[GlobalInformation] = Field(default=None, alias="globalInformation", description="Información global de la factura.")
-    related_invoices: Optional[List[RelatedInvoice]] = Field(default=None, alias="relatedInvoices", description="Facturas relacionadas.")
-    payments: Optional[List[InvoicePayment]] = Field(default=None, description="Pago o pagos recibidos para liquidar la factura cuando la factura es un complemento de pago.")
-    responses: Optional[List[InvoiceResponse]] = Field(default=None, description="Respuestas del SAT. Contiene la información de timbrado de la factura.")
+    related_invoices: Optional[list[RelatedInvoice]] = Field(default=None, alias="relatedInvoices", description="Facturas relacionadas.")
+    payments: Optional[list[InvoicePayment]] = Field(default=None, description="Pago o pagos recibidos para liquidar la factura cuando la factura es un complemento de pago.")
+    responses: Optional[list[InvoiceResponse]] = Field(default=None, description="Respuestas del SAT. Contiene la información de timbrado de la factura.")
     
 
     model_config = ConfigDict(
@@ -284,18 +284,16 @@ class CancelInvoiceRequest(BaseDto):
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor de la factura. Obligatorio cuando se cancela por valores.")
     cancellation_reason_code: Literal["01", "02", "03", "04"] = Field(..., alias="cancellationReasonCode", description="Código del motivo de cancelación.")
     replacement_uuid: Optional[str] = Field(default=None, alias="replacementUuid", description="UUID de la factura de reemplazo. Obligatorio si el motivo de cancelación es '01'.")
-    tax_credentials: Optional[List[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor. Obligatorio cuando se cancela por valores.")
+    tax_credentials: Optional[list[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor. Obligatorio cuando se cancela por valores.")
 
-    class Config:
-        populate_by_name = True
-        
+    model_config = ConfigDict(populate_by_name=True)
+
 class CancelInvoiceResponse(BaseDto):
     """Modelo de respuesta para la cancelación de factura."""
     base64_cancellation_acknowledgement: str = Field(default=None, alias="base64CancellationAcknowledgement", description="Acuse de cancelación en formato base64. Contiene el XML del acuse de cancelación del SAT codificado en base64.")
-    invoice_uuids: Optional[Dict[str, str]] = Field(default=None, alias="invoiceUuids", description="Diccionario de UUIDs de facturas con su respectivo código de estatus de cancelación. La llave es el UUID de la factura y el valor es el código de estatus.")
+    invoice_uuids: Optional[dict[str, str]] = Field(default=None, alias="invoiceUuids", description="Diccionario de UUIDs de facturas con su respectivo código de estatus de cancelación. La llave es el UUID de la factura y el valor es el código de estatus.")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CreatePdfRequest(BaseDto):
@@ -305,8 +303,7 @@ class CreatePdfRequest(BaseDto):
     font_color: Optional[str] = Field(default=None, alias="fontColor", description="Color de la fuente del texto sobre la banda en formato hexadecimal. Ejemplo: '#FFFFFF'.")
     base64_logo: Optional[str] = Field(default=None, alias="base64Logo", description="Logotipo en formato base64 que se mostrará en el PDF.")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 class FileResponse(BaseDto):
     """Modelo de respuesta para la generación de PDF o recuperación de XML."""
@@ -314,10 +311,9 @@ class FileResponse(BaseDto):
     file_name: Optional[str] = Field(default=None, alias="fileName", description="Nombre del archivo generado.")
     file_extension: Optional[str] = Field(default=None, alias="fileExtension", description="Extensión del archivo. Ejemplo: '.pdf'.")
 
-    class Config:
-        populate_by_name = True
-        
-        
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class SendInvoiceRequest(BaseDto):
     """Modelo para el envío de facturas por correo electrónico."""
     invoice_id: str = Field(..., alias="invoiceId", description="ID de la factura para la cual se enviará el PDF.")
@@ -326,8 +322,7 @@ class SendInvoiceRequest(BaseDto):
     font_color: Optional[str] = Field(default=None, alias="fontColor", description="Color de la fuente del texto sobre la banda en formato hexadecimal. Ejemplo: '#FFFFFF'.")
     base64_logo: Optional[str] = Field(default=None, alias="base64Logo", description="Logotipo en formato base64 que se mostrará en el PDF.")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class InvoiceStatusRequest(BaseDto):
@@ -339,10 +334,10 @@ class InvoiceStatusRequest(BaseDto):
     invoice_uuid: Optional[str] = Field(default=None, alias="invoiceUuid", description="Folio fiscal factura a consultar")
     last8_digits_issuer_signature: Optional[str] = Field(default=None, alias="last8DigitsIssuerSignature", description="Últimos ocho caracteres del sello digital del emisor")
     
-    model_config = {
-        "populate_by_name": True,
-        "json_encoders": {Decimal: str}
-    }
+    model_config = ConfigDict(
+        populate_by_name=True,
+        json_encoders={Decimal: str}
+    )
 
 class InvoiceStatusResponse(BaseDto):
     """Modelo de respuesta de consulta de estado de facturas."""
@@ -352,9 +347,7 @@ class InvoiceStatusResponse(BaseDto):
     cancellation_status: str = Field(..., alias="cancellationStatus", description="Detalle del estatus de cancelación")
     efos_validation: str = Field(..., alias="efosValidation", description="Codigo que indica si el RFC Emisor se encuentra dentro de la lista negra de EFOS")
 
-    model_config = {
-        "populate_by_name": True
-    }
+    model_config = ConfigDict(populate_by_name=True)
     
 
 
@@ -448,7 +441,7 @@ class DownloadRequest(BaseDto):
     next_attempt_date: Optional[datetime] = Field(default=None, alias="nextAttemptDate", description="Fecha del siguiente intento para la solicitud asociada.")
     
     invoice_count: Optional[int] = Field(default=None, alias="invoiceCount", description="Número de CFDIs encontrados para la solicitud cuando la solicitud ha terminado.")
-    package_ids: Optional[List[str]] = Field(default_factory=list, alias="packageIds", description="Lista de IDs de paquetes disponibles para descarga cuando la solicitud ha terminado.")
+    package_ids: Optional[list[str]] = Field(default_factory=list, alias="packageIds", description="Lista de IDs de paquetes disponibles para descarga cuando la solicitud ha terminado.")
     is_ready_to_download: Optional[bool] = Field(default=None, alias="isReadyToDownload", description="Indica si la solicitud está lista para descarga, se vuelve verdadero cuando la solicitud ha terminado y los paquetes están disponibles.")
     retries_count: Optional[int] = Field(default=None, alias="retriesCount", description="Número total de reintentos realizados para esta solicitud a través de todas las re-presentaciones.")
 
@@ -596,17 +589,17 @@ class XmlItem(BaseDto):
     tax_object: Optional[str] = Field(default=None, alias="taxObject", description="Objeto de impuesto.")
     third_party_account: Optional[str] = Field(default=None, alias="thirdPartyAccount", description="Cuenta de terceros.")
     
-    xml_item_customs_information: Optional[List[XmlItemCustomsInformation]] = Field(
+    xml_item_customs_information: Optional[list[XmlItemCustomsInformation]] = Field(
         default_factory=list, 
         alias="xmlItemCustomsInformation", 
         description="Información aduanera del concepto."
     )
-    xml_item_property_accounts: Optional[List[XmlItemPropertyAccount]] = Field(
+    xml_item_property_accounts: Optional[list[XmlItemPropertyAccount]] = Field(
         default_factory=list, 
         alias="xmlItemPropertyAccounts", 
         description="Cuentas prediales del concepto."
     )
-    taxes: Optional[List[XmlItemTax]] = Field(default_factory=list, description="Impuestos del concepto.")
+    taxes: Optional[list[XmlItemTax]] = Field(default_factory=list, description="Impuestos del concepto.")
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -691,10 +684,10 @@ class Xml(BaseDto):
     xml_global_information: Optional[XmlGlobalInformation] = Field(default=None, alias="xmlGlobalInformation", description="Información global del CFDI (para CFDI globales).")
     
     # Información de impuestos del CFDI
-    taxes: Optional[List[XmlTax]] = Field(default_factory=list, description="Información de impuestos del CFDI.")
+    taxes: Optional[list[XmlTax]] = Field(default_factory=list, description="Información de impuestos del CFDI.")
     
     # Información sobre facturas relacionada del CFDI (CFDI relacionados)
-    xml_related: Optional[List[XmlRelated]] = Field(default_factory=list, alias="xmlRelated", description="Información sobre facturas relacionadas del CFDI (CFDI relacionados).")
+    xml_related: Optional[list[XmlRelated]] = Field(default_factory=list, alias="xmlRelated", description="Información sobre facturas relacionadas del CFDI (CFDI relacionados).")
     
     # Información del emisor del CFDI
     xml_issuer: Optional[XmlIssuer] = Field(default=None, alias="xmlIssuer", description="Información del emisor del CFDI.")
@@ -703,10 +696,10 @@ class Xml(BaseDto):
     xml_recipient: Optional[XmlRecipient] = Field(default=None, alias="xmlRecipient", description="Información del receptor del CFDI.")
     
     # Información de los conceptos del CFDI
-    xml_items: Optional[List[XmlItem]] = Field(default_factory=list, alias="xmlItems", description="Información de los conceptos del CFDI.")
+    xml_items: Optional[list[XmlItem]] = Field(default_factory=list, alias="xmlItems", description="Información de los conceptos del CFDI.")
     
     # Información de los complementos del CFDI
-    xml_complements: Optional[List[XmlComplement]] = Field(default_factory=list, alias="xmlComplements", description="Información de los complementos del CFDI.")
+    xml_complements: Optional[list[XmlComplement]] = Field(default_factory=list, alias="xmlComplements", description="Información de los complementos del CFDI.")
     
     # Xml crudo en base64
     base64_content: Optional[str] = Field(default=None, alias="base64Content", description="XML crudo en base64.")

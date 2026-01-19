@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Any, Generic, List, Optional, TypeVar
+from typing import Any, Generic, Optional, TypeVar
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_snake
 
-T = TypeVar('T', bound=BaseModel)
+T = TypeVar('T')
 
 class ApiResponse(BaseModel, Generic[T]):
     succeeded: bool = Field(alias="succeeded")
@@ -19,12 +19,14 @@ class ApiResponse(BaseModel, Generic[T]):
 
 class PagedList(BaseModel, Generic[T]):
     """Modelo para la estructura de la lista paginada."""
-    items: List[T] = Field(default=[], alias="items", description="Lista de elementos paginados")
+    items: list[T] = Field(default_factory=list, alias="items", description="Lista de elementos paginados")
     page_number: int = Field(alias="pageNumber", description="Número de página actual")
     total_pages: int = Field(alias="totalPages", description="Cantidad total de páginas")
     total_count: int = Field(alias="totalCount", description="Cantidad total de elementos")
     has_previous_page: bool = Field(alias="hasPreviousPage", description="Indica si hay una página anterior")
     has_next_page: bool = Field(alias="hasNextPage", description="Indica si hay una página siguiente")
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class ValidationFailure(BaseModel):
@@ -36,6 +38,8 @@ class ValidationFailure(BaseModel):
     severity: Optional[int] = None
     errorCode: Optional[str] = None
     formattedMessagePlaceholderValues: Optional[dict] = None
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class BaseDto(BaseModel):
@@ -50,8 +54,6 @@ class CatalogDto(BaseDto):
     """Modelo para catálogos."""
     description: str = Field(alias="description")
 
-    model_config = ConfigDict(populate_by_name=True)
-
 
 class FiscalApiSettings(BaseModel):
     """
@@ -64,6 +66,7 @@ class FiscalApiSettings(BaseModel):
     time_zone: str = Field("America/Mexico_City", description="Zona horaria ")
     debug: bool = Field(False, description="Indica si se debe imprimir el payload request y response.")
 
-    class Config:
-        title = "FiscalApi Settings"
-        description = "Configuración para Fiscalapi"
+    model_config = ConfigDict(
+        title="FiscalApi Settings",
+        json_schema_extra={"description": "Configuración para Fiscalapi"}
+    )

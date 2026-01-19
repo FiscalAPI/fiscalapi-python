@@ -63,12 +63,12 @@ class InvoiceService(BaseService):
     
     # send invoice by email
  
-    def send(self, send_invoice_request : SendInvoiceRequest):
+    def send(self, send_invoice_request: SendInvoiceRequest) -> ApiResponse[bool]:
         if not send_invoice_request:
             raise ValueError("Invalid request")
-        
+
         endpoint = "invoices/send"
-        
+
         return self.send_request("POST", endpoint, bool, payload=send_invoice_request)
     
     # consultar estado de facturas
