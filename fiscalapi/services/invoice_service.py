@@ -29,6 +29,8 @@ class InvoiceService(BaseService):
         
     # create invoice
     def create(self, invoice: Invoice) -> ApiResponse[Invoice]:
+        if invoice.type_code is None:
+            raise ValueError("Invoice type_code is required")
         endpoint = self._get_endpoint_by_type(invoice.type_code)
         return self.send_request("POST", endpoint, Invoice, payload=invoice)
     
