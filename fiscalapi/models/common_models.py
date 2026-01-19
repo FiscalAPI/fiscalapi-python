@@ -10,6 +10,7 @@ class ApiResponse(BaseModel, Generic[T]):
     message: Optional[str] = Field(default=None, alias="message")
     details: Optional[str] = Field(default=None, alias="details")
     data: Optional[T] = Field(default=None, alias="data")
+    http_status_code: Optional[int] = Field(default=None, alias="httpStatusCode")
 
     model_config = ConfigDict(
         populate_by_name=True,

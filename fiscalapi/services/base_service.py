@@ -130,6 +130,7 @@ class BaseService:
         except ValueError:
             return ApiResponse[T](
                 succeeded=False,
+                http_status_code=status_code,
                 message="Error processing server response",
                 details=raw_content,
                 data=None
@@ -165,6 +166,7 @@ class BaseService:
         except Exception:
             return ApiResponse[T](
                 succeeded=False,
+                http_status_code=status_code,
                 message="Error processing server error response",
                 details=raw_content,
                 data=None
@@ -177,6 +179,7 @@ class BaseService:
                     details_str = "; ".join(f"{f.propertyName}: {f.errorMessage}" for f in failures)
                     return ApiResponse[T](
                         succeeded=False,
+                        http_status_code=status_code,
                         message=generic_error.message,
                         details=details_str,
                         data=None
@@ -186,6 +189,7 @@ class BaseService:
 
         return ApiResponse[T](
             succeeded=False,
+            http_status_code=status_code,
             message=generic_error.message or f"HTTP Error {status_code}",
             details=generic_error.details or raw_content,
             data=None
