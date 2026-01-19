@@ -94,10 +94,41 @@ See `examples.py` and README.md for detailed examples of both modes.
 
 ## Dependencies
 
-- Python >= 3.7
+- Python >= 3.9 (CI/CD uses Python 3.9.13)
 - pydantic >= 2.0.0 (validation & serialization)
 - requests >= 2.0.0 (HTTP client)
 - email_validator >= 2.2.0
+
+## Development Setup
+
+```bash
+# Create virtual environment with Python 3.9.13
+python -m venv venv
+
+# Activate (Windows)
+.\venv\Scripts\activate
+
+# Activate (Linux/Mac)
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Code Standards
+
+### Pydantic v2 Compatibility
+
+- Use `model_config = ConfigDict(...)` instead of `class Config:`
+- Use `list[T]` and `dict[K,V]` (Python 3.9+ built-in generics) instead of `List[T]` and `Dict[K,V]`
+- Use `default_factory=list` for mutable defaults, never `default=[]`
+- All Field() calls should have explicit `default=...` for required fields
+
+### Type Annotations
+
+- All service methods must have return type annotations
+- Use `Optional[T]` only for truly optional fields
+- `ApiResponse[T]` supports any type T (not just BaseModel subclasses)
 
 ## External Resources
 
