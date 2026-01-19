@@ -38,41 +38,33 @@ class DownloadRequestService(BaseService):
     def create(self, download_request: DownloadRequest) -> ApiResponse[DownloadRequest]:
         """
         Crea una nueva solicitud de descarga.
-        
+
         Args:
             download_request (DownloadRequest): Solicitud de descarga a crear
-        
+
         Returns:
             ApiResponse[DownloadRequest]: Solicitud de descarga creada
-        
-        Raises:
-            ValueError: Si download_request es None
         """
-        if download_request is None:
-            raise ValueError("download_request no puede ser nulo")
-        
         endpoint = "download-requests"
         return self.send_request("POST", endpoint, DownloadRequest, payload=download_request)
     
     def update(self, request_id: str, download_request: DownloadRequest) -> ApiResponse[DownloadRequest]:
         """
         Actualiza una solicitud de descarga existente.
-        
+
         Args:
             request_id (str): ID de la solicitud de descarga
             download_request (DownloadRequest): Datos actualizados de la solicitud
-        
+
         Returns:
             ApiResponse[DownloadRequest]: Solicitud de descarga actualizada
-        
+
         Raises:
-            ValueError: Si request_id o download_request son None
+            ValueError: Si request_id es vacío
         """
         if not request_id:
             raise ValueError("request_id no puede ser nulo o vacío")
-        if download_request is None:
-            raise ValueError("download_request no puede ser nulo")
-        
+
         endpoint = f"download-requests/{request_id}"
         return self.send_request("PUT", endpoint, DownloadRequest, payload=download_request)
     
@@ -193,20 +185,13 @@ class DownloadRequestService(BaseService):
     def search(self, created_at: datetime) -> ApiResponse[list[DownloadRequest]]:
         """
         Busca solicitudes de descarga por fecha de creación.
-        
+
         Args:
             created_at (datetime): Fecha de creación para buscar
-        
+
         Returns:
             ApiResponse[list[DownloadRequest]]: Lista de solicitudes encontradas
-        
-        Raises:
-            ValueError: Si created_at es None
         """
-        if created_at is None:
-            raise ValueError("created_at no puede ser nulo")
-        
         created_at_str = created_at.strftime("%Y-%m-%d")
         endpoint = f"download-requests/search?createdAt={created_at_str}"
-        print(endpoint)
         return self.send_request("GET", endpoint, list[DownloadRequest])
