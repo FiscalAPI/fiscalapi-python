@@ -51,9 +51,7 @@ settings = FiscalApiSettings(
     # api_url="https://test.fiscalapi.com",
     # api_key="<API_KEY>",
     # tenant="<TENANT_KEY>",
-    api_url="http://localhost:5001",
-    api_key="sk_development_b470ea83_3c0f_4209_b933_85223b960d91",
-    tenant="102e5f13-e114-41dd-bea7-507fce177281"
+    
 )
 
 client = FiscalApiClient(settings=settings)
