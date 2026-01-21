@@ -1,130 +1,149 @@
-# fiscalapi/__init__.py
+"""
+FiscalAPI Python SDK
 
-# Re-exportar modelos de common_models
+SDK oficial para integración con FiscalAPI, la plataforma de facturación
+electrónica (CFDI 4.0) y servicios fiscales de México.
+
+Ejemplo de uso:
+    >>> from fiscalapi import FiscalApiClient, FiscalApiSettings
+    >>> settings = FiscalApiSettings(api_url="...", api_key="...", tenant="...")
+    >>> client = FiscalApiClient(settings=settings)
+    >>> response = client.invoices.get_list(page_number=1, page_size=10)
+"""
+
+# Modelos base
 from .models.common_models import (
     ApiResponse,
-    PagedList,
-    ValidationFailure,
     BaseDto,
     CatalogDto,
     FiscalApiSettings,
+    PagedList,
+    ValidationFailure,
 )
 
-# Re-exportar modelos de fiscalapi_models
+# Modelos de dominio
 from .models.fiscalapi_models import (
-    ProductTax,
-    Product,
-    Person,
-    TaxFile,
-    TaxCredential,
-    InvoiceIssuer,
-    InvoiceRecipient,
-    ItemTax,
-    InvoiceItem,
-    GlobalInformation,
-    RelatedInvoice,
-    PaidInvoiceTax,
-    PaidInvoice,
-    InvoicePayment,
-    InvoiceResponse,
-    Invoice,
+    ApiKey,
     CancelInvoiceRequest,
     CancelInvoiceResponse,
     CreatePdfRequest,
+    DownloadRequest,
+    DownloadRule,
+    EmployeeData,
+    EmployerData,
     FileResponse,
-    SendInvoiceRequest,
+    GlobalInformation,
+    Invoice,
+    InvoiceIssuer,
+    InvoiceItem,
+    InvoicePayment,
+    InvoiceRecipient,
+    InvoiceResponse,
     InvoiceStatusRequest,
     InvoiceStatusResponse,
-    ApiKey,
-    DownloadRule,
-    DownloadRequest,
+    ItemTax,
     MetadataItem,
+    PaidInvoice,
+    PaidInvoiceTax,
+    Person,
+    Product,
+    ProductTax,
+    RelatedInvoice,
+    SendInvoiceRequest,
+    TaxCredential,
+    TaxFile,
+    Xml,
+    XmlComplement,
     XmlGlobalInformation,
     XmlIssuer,
-    XmlRecipient,
-    XmlRelated,
-    XmlTax,
+    XmlItem,
     XmlItemCustomsInformation,
     XmlItemPropertyAccount,
     XmlItemTax,
-    XmlItem,
-    XmlComplement,
-    Xml,
+    XmlRecipient,
+    XmlRelated,
+    XmlTax,
 )
 
-# Re-exportar servicios
+# Servicios
+from .services.base_service import BaseService
+from .services.api_key_service import ApiKeyService
 from .services.catalog_service import CatalogService
+from .services.download_catalog_service import DownloadCatalogService
+from .services.download_request_service import DownloadRequestService
+from .services.download_rule_service import DownloadRuleService
+from .services.employee_service import EmployeeService
+from .services.employer_service import EmployerService
 from .services.invoice_service import InvoiceService
 from .services.people_service import PeopleService
 from .services.product_service import ProductService
-from .services.tax_file_servive import TaxFileService 
-from .services.api_key_service import ApiKeyService
-from .services.download_catalog_service import DownloadCatalogService
-from .services.download_rule_service import DownloadRuleService
-from .services.download_request_service import DownloadRequestService
+from .services.tax_file_service import TaxFileService
 
-# Re-exportar la clase FiscalApiClient
-# (asumiendo que la definición está en fiscalapi/services/fiscalapi_client.py)
+# Cliente principal
 from .services.fiscalapi_client import FiscalApiClient
 
 __all__ = [
-    # Modelos
+    # Modelos base
     "ApiResponse",
-    "PagedList",
-    "ValidationFailure",
     "BaseDto",
     "CatalogDto",
     "FiscalApiSettings",
-    "ProductTax",
-    "Product",
-    "Person",
-    "TaxFile",
-    "TaxCredential",
-    "InvoiceIssuer",
-    "InvoiceRecipient",
-    "ItemTax",
-    "InvoiceItem",
-    "GlobalInformation",
-    "RelatedInvoice",
-    "PaidInvoiceTax",
-    "PaidInvoice",
-    "InvoicePayment",
-    "InvoiceResponse",
-    "Invoice",
+    "PagedList",
+    "ValidationFailure",
+    # Modelos de dominio
+    "ApiKey",
     "CancelInvoiceRequest",
     "CancelInvoiceResponse",
     "CreatePdfRequest",
+    "DownloadRequest",
+    "DownloadRule",
+    "EmployeeData",
+    "EmployerData",
     "FileResponse",
-    "SendInvoiceRequest",
+    "GlobalInformation",
+    "Invoice",
+    "InvoiceIssuer",
+    "InvoiceItem",
+    "InvoicePayment",
+    "InvoiceRecipient",
+    "InvoiceResponse",
     "InvoiceStatusRequest",
     "InvoiceStatusResponse",
-    "ApiKey",
-    "DownloadRule",
-    "DownloadRequest",
+    "ItemTax",
     "MetadataItem",
+    "PaidInvoice",
+    "PaidInvoiceTax",
+    "Person",
+    "Product",
+    "ProductTax",
+    "RelatedInvoice",
+    "SendInvoiceRequest",
+    "TaxCredential",
+    "TaxFile",
+    "Xml",
+    "XmlComplement",
     "XmlGlobalInformation",
     "XmlIssuer",
-    "XmlRecipient",
-    "XmlRelated",
-    "XmlTax",
+    "XmlItem",
     "XmlItemCustomsInformation",
     "XmlItemPropertyAccount",
     "XmlItemTax",
-    "XmlItem",
-    "XmlComplement",
-    "Xml",
-    
+    "XmlRecipient",
+    "XmlRelated",
+    "XmlTax",
     # Servicios
+    "BaseService",
+    "ApiKeyService",
     "CatalogService",
+    "DownloadCatalogService",
+    "DownloadRequestService",
+    "DownloadRuleService",
+    "EmployeeService",
+    "EmployerService",
     "InvoiceService",
     "PeopleService",
     "ProductService",
     "TaxFileService",
-    "ApiKeyService",
-    "DownloadCatalogService",
-    "DownloadRuleService",
-    "DownloadRequestService",
-    
     # Cliente principal
     "FiscalApiClient",
 ]

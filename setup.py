@@ -30,6 +30,10 @@ setup(
     packages=find_packages(
         exclude=["tests", "*.tests", "*.tests.*", "tests.*"]
     ),
+    package_data={
+        "fiscalapi": ["py.typed"],
+    },
+    include_package_data=True,
     keywords=["factura", "cfdi", "facturacion", "mexico", "sat", "fiscalapi"],
     
     python_requires=">=3.9",

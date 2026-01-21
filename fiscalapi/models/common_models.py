@@ -32,13 +32,9 @@ class PagedList(BaseModel, Generic[T]):
 
 class ValidationFailure(BaseModel):
     """Modelo para errores de validación."""
-    propertyName: str
-    errorMessage: str
-    attemptedValue: Optional[Any] = None
-    customState: Optional[Any] = None
-    severity: Optional[int] = None
-    errorCode: Optional[str] = None
-    formattedMessagePlaceholderValues: Optional[dict[str, Any]] = None
+    property_name: str = Field(alias="propertyName")
+    error_message: str = Field(alias="errorMessage")
+    attempted_value: Optional[Any] = Field(default=None, alias="attemptedValue")
 
     model_config = ConfigDict(populate_by_name=True)
 

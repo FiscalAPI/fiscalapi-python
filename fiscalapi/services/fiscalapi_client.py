@@ -3,7 +3,7 @@ from fiscalapi.services.catalog_service import CatalogService
 from fiscalapi.services.invoice_service import InvoiceService
 from fiscalapi.services.people_service import PeopleService
 from fiscalapi.services.product_service import ProductService
-from fiscalapi.services.tax_file_servive import TaxFileService
+from fiscalapi.services.tax_file_service import TaxFileService
 from fiscalapi.services.api_key_service import ApiKeyService
 from fiscalapi.services.download_catalog_service import DownloadCatalogService
 from fiscalapi.services.download_rule_service import DownloadRuleService

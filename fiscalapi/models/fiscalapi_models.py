@@ -77,8 +77,57 @@ class Person(BaseDto):
         populate_by_name=True,
         json_encoders={Decimal: str}
     )
-    
-    
+
+
+class EmployeeData(BaseDto):
+    """Modelo empleado para CFDI de nomina."""
+
+    employer_person_id: Optional[str] = Field(default=None, alias="employerPersonId")
+    employee_person_id: Optional[str] = Field(default=None, alias="employeePersonId")
+    social_security_number: Optional[str] = Field(default=None, alias="socialSecurityNumber")
+    labor_relation_start_date: Optional[datetime] = Field(default=None, alias="laborRelationStartDate")
+    seniority: Optional[int] = Field(default=None, alias="seniority")
+    sat_contract_type_id: Optional[str] = Field(default=None, alias="satContractTypeId")
+    sat_contract_type: Optional[CatalogDto] = Field(default=None, alias="satContractType")
+    sat_unionized_status_id: Optional[str] = Field(default=None, alias="satUnionizedStatusId")
+    sat_unionized_status: Optional[CatalogDto] = Field(default=None, alias="satUnionizedStatus")
+    sat_tax_regime_type_id: Optional[str] = Field(default=None, alias="satTaxRegimeTypeId")
+    sat_tax_regime_type: Optional[CatalogDto] = Field(default=None, alias="satTaxRegimeType")
+    sat_workday_type_id: Optional[str] = Field(default=None, alias="satWorkdayTypeId")
+    sat_workday_type: Optional[CatalogDto] = Field(default=None, alias="satWorkdayType")
+    sat_job_risk_id: Optional[str] = Field(default=None, alias="satJobRiskId")
+    sat_job_risk: Optional[CatalogDto] = Field(default=None, alias="satJobRisk")
+    sat_payment_periodicity_id: Optional[str] = Field(default=None, alias="satPaymentPeriodicityId")
+    sat_payment_periodicity: Optional[CatalogDto] = Field(default=None, alias="satPaymentPeriodicity")
+    employee_number: Optional[str] = Field(default=None, alias="employeeNumber")
+    sat_bank_id: Optional[str] = Field(default=None, alias="satBankId")
+    sat_bank: Optional[CatalogDto] = Field(default=None, alias="satBank")
+    sat_payroll_state_id: Optional[str] = Field(default=None, alias="satPayrollStateId")
+    sat_payroll_state: Optional[CatalogDto] = Field(default=None, alias="satPayrollState")
+    department: Optional[str] = Field(default=None, alias="department")
+    position: Optional[str] = Field(default=None, alias="position")
+    bank_account: Optional[str] = Field(default=None, alias="bankAccount")
+    base_salary_for_contributions: Optional[Decimal] = Field(default=None, alias="baseSalaryForContributions")
+    integrated_daily_salary: Optional[Decimal] = Field(default=None, alias="integratedDailySalary")
+    subcontractor_rfc: Optional[str] = Field(default=None, alias="subcontractorRfc")
+    time_percentage: Optional[Decimal] = Field(default=None, alias="timePercentage")
+
+    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+
+
+class EmployerData(BaseDto):
+    """Modelo empleador para CFDI de nomina."""
+
+    person_id: Optional[str] = Field(default=None, alias="personId")
+    employer_registration: Optional[str] = Field(default=None, alias="employerRegistration")
+    origin_employer_tin: Optional[str] = Field(default=None, alias="originEmployerTin")
+    sat_fund_source_id: Optional[str] = Field(default=None, alias="satFundSourceId")
+    sat_fund_source: Optional[CatalogDto] = Field(default=None, alias="satFundSource")
+    own_resource_amount: Optional[Decimal] = Field(default=None, alias="ownResourceAmount")
+
+    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+
+
 class TaxFile(BaseDto):
         """Modelo TaxFile que representa un componente de un par CSD: certificado (.cer) o llave privada (.key)."""
 
