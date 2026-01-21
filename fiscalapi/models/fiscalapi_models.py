@@ -165,8 +165,8 @@ class InvoiceRecipientEmployeeData(BaseDto):
     """Datos del empleado para el receptor en CFDI de nómina."""
     curp: Optional[str] = Field(default=None, alias="curp")
     social_security_number: Optional[str] = Field(default=None, alias="socialSecurityNumber")
-    labor_relation_start_date: Optional[datetime] = Field(default=None, alias="laborRelationStartDate")
-    seniority: Optional[int] = Field(default=None, alias="seniority")
+    labor_relation_start_date: Optional[str] = Field(default=None, alias="laborRelationStartDate")
+    seniority: Optional[str] = Field(default=None, alias="seniority")
     sat_contract_type_id: Optional[str] = Field(default=None, alias="satContractTypeId")
     sat_unionized_status_id: Optional[str] = Field(default=None, alias="satUnionizedStatusId")
     sat_workday_type_id: Optional[str] = Field(default=None, alias="satWorkdayTypeId")
