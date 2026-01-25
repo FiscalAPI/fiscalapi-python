@@ -73,6 +73,7 @@ karla_fuente_nolasco_id = "109f4d94-63ea-4a21-ab15-20c8b87d8ee9"
 organicos_navez_osorio_id = "f645e146-f80e-40fa-953f-fd1bd06d4e9f"
 xochilt_casas_chavez_id = "e3b4edaa-e4d9-4794-9c5b-3dd5b7e372aa"
 ingrid_xodar_jimenez_id = "9367249f-f0ee-43f4-b771-da2fff3f185f"
+
 # ============================================================================
 # 1. NOMINA ORDINARIA (Facturación por valores)
 # ============================================================================
