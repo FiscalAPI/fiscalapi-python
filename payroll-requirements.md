@@ -9,6 +9,10 @@ This document describes the requirements for implementing payroll invoice (CFDI 
 1. [Overview](#overview)
 2. [New Models Required](#new-models-required)
 3. [New Services Required](#new-services-required)
+   - [EmployeeService](#1-employeeservice)
+   - [EmployerService](#2-employerservice)
+   - [PeopleService Updates](#3-peopleservice-updates)
+   - [StampService](#4-stampservice)
 4. [Person Model Updates](#person-model-updates)
 5. [Invoice Model Updates](#invoice-model-updates)
 6. [Two Operation Modes](#two-operation-modes)
@@ -248,6 +252,82 @@ client.people.employee  -> EmployeeService
 client.people.employer  -> EmployerService
 ```
 
+### 4. StampService
+
+Service for managing stamp transactions (timbres fiscales). Stamps are the digital fiscal tokens required to certify CFDI invoices.
+
+```
+Endpoint pattern: stamps
+```
+
+| Method | HTTP | Endpoint | Description |
+|--------|------|----------|-------------|
+| get_list(page_number, page_size) | GET | stamps?pageNumber={n}&pageSize={s} | List stamp transactions with pagination |
+| get_by_id(transaction_id) | GET | stamps/{transactionId} | Get a stamp transaction by ID |
+| transfer_stamps(request) | POST | stamps | Transfer stamps from one person to another |
+| withdraw_stamps(request) | POST | stamps | Withdraw stamps (alias for transfer_stamps) |
+
+#### Stamp Models
+
+##### UserLookupDto
+
+Lookup DTO for user/person references in stamp transactions.
+
+| Field | JSON Alias | Type | Description |
+|-------|------------|------|-------------|
+| tin | tin | string | RFC of the user |
+| legal_name | legalName | string | Legal name of the user |
+
+##### StampTransaction
+
+Represents a stamp transfer/withdrawal transaction.
+
+| Field | JSON Alias | Type | Description |
+|-------|------------|------|-------------|
+| consecutive | consecutive | int | Transaction consecutive number |
+| from_person | fromPerson | UserLookupDto | Source person of the transfer |
+| to_person | toPerson | UserLookupDto | Destination person of the transfer |
+| amount | amount | int | Number of stamps transferred |
+| transaction_type | transactionType | int | Type of transaction |
+| transaction_status | transactionStatus | int | Status of the transaction |
+| reference_id | referenceId | string | Transaction reference ID |
+| comments | comments | string | Transaction comments |
+
+##### StampTransactionParams
+
+Request parameters for stamp transfer/withdraw operations.
+
+| Field | JSON Alias | Type | Required | Description |
+|-------|------------|------|----------|-------------|
+| from_person_id | fromPersonId | string | Yes | ID of the source person |
+| to_person_id | toPersonId | string | Yes | ID of the destination person |
+| amount | amount | int | Yes | Number of stamps to transfer |
+| comments | comments | string | No | Transfer comments |
+
+#### Example: Transfer Stamps
+
+```
+// Transfer 100 stamps from master account to sub-account
+params = StampTransactionParams(
+  from_person_id: "master-account-id",
+  to_person_id: "sub-account-id",
+  amount: 100,
+  comments: "Monthly stamp allocation"
+)
+
+response = client.stamps.transfer_stamps(params)
+```
+
+#### Example: List Stamp Transactions
+
+```
+// Get paginated list of stamp transactions
+response = client.stamps.get_list(page_number=1, page_size=10)
+
+for transaction in response.data.items:
+  print(f"Transfer: {transaction.amount} stamps from {transaction.from_person.legal_name}")
+```
+
 ---
 
 ## Person Model Updates
@@ -475,6 +555,14 @@ POST /api/{version}/invoices
 
 With `type_code: "N"` for payroll invoices.
 
+### Stamp Endpoints
+
+```
+GET    /api/{version}/stamps?pageNumber={n}&pageSize={s}
+GET    /api/{version}/stamps/{transactionId}
+POST   /api/{version}/stamps
+```
+
 ---
 
 ## Field Mappings (JSON Aliases)
@@ -692,22 +780,33 @@ response = client.invoices.create(invoice)
 
 ## Implementation Checklist
 
-- [ ] Add `curp` field to Person model
-- [ ] Create EmployeeData model
-- [ ] Create EmployerData model
-- [ ] Create InvoiceIssuerEmployerData model
-- [ ] Create InvoiceRecipientEmployeeData model
-- [ ] Create PayrollComplement and all sub-models
-- [ ] Add employer_data to InvoiceIssuer model
-- [ ] Add employee_data to InvoiceRecipient model
-- [ ] Add payroll to InvoiceComplement model
-- [ ] Create EmployeeService with CRUD operations
-- [ ] Create EmployerService with CRUD operations
-- [ ] Add employee and employer properties to PeopleService
+### Models
+- [x] Add `curp` field to Person model
+- [x] Create EmployeeData model
+- [x] Create EmployerData model
+- [x] Create InvoiceIssuerEmployerData model
+- [x] Create InvoiceRecipientEmployeeData model
+- [x] Create PayrollComplement and all sub-models
+- [x] Add employer_data to InvoiceIssuer model
+- [x] Add employee_data to InvoiceRecipient model
+- [x] Add payroll to InvoiceComplement model
+- [x] Create StampTransaction model
+- [x] Create StampTransactionParams model
+- [x] Create UserLookupDto model
+
+### Services
+- [x] Create EmployeeService with CRUD operations
+- [x] Create EmployerService with CRUD operations
+- [x] Add employee and employer properties to PeopleService
+- [x] Create StampService with get_list, get_by_id, transfer_stamps, withdraw_stamps
+
+### Examples & Testing
 - [ ] Create examples for all 13 payroll types (by values)
 - [ ] Create examples for all 13 payroll types (by references)
 - [ ] Create setup data methods for by-references mode
+- [ ] Create stamp service examples
 - [ ] Test all payroll types successfully
+- [ ] Test stamp transactions successfully
 
 ---
 
