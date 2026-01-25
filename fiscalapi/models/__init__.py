@@ -81,6 +81,10 @@ from .fiscalapi_models import (
     XmlItem,
     XmlComplement,
     Xml,
+    # Stamp models
+    UserLookupDto,
+    StampTransaction,
+    StampTransactionParams,
 )
 
 __all__ = [
@@ -163,4 +167,8 @@ __all__ = [
     "XmlItem",
     "XmlComplement",
     "Xml",
+    # Stamp models
+    "UserLookupDto",
+    "StampTransaction",
+    "StampTransactionParams",
 ]

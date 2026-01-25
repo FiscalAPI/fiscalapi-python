@@ -95,6 +95,10 @@ from .models.fiscalapi_models import (
     XmlItem,
     XmlComplement,
     Xml,
+    # Stamp models
+    UserLookupDto,
+    StampTransaction,
+    StampTransactionParams,
 )
 
 # Servicios
@@ -110,6 +114,7 @@ from .services.invoice_service import InvoiceService
 from .services.people_service import PeopleService
 from .services.product_service import ProductService
 from .services.tax_file_service import TaxFileService
+from .services.stamp_service import StampService
 
 # Cliente principal
 from .services.fiscalapi_client import FiscalApiClient
@@ -194,6 +199,10 @@ __all__ = [
     "XmlItem",
     "XmlComplement",
     "Xml",
+    # Stamp models
+    "UserLookupDto",
+    "StampTransaction",
+    "StampTransactionParams",
     # Servicios
     "BaseService",
     "ApiKeyService",
@@ -207,6 +216,7 @@ __all__ = [
     "PeopleService",
     "ProductService",
     "TaxFileService",
+    "StampService",
     # Cliente principal
     "FiscalApiClient",
 ]

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from pydantic import ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from typing import Literal, Optional
 from datetime import datetime
@@ -1034,3 +1034,37 @@ class Xml(BaseDto):
             Decimal: str
         }
     )
+
+
+# Stamp models
+
+class UserLookupDto(BaseDto):
+    """Lookup DTO for user/person references in stamp transactions."""
+    tin: Optional[str] = Field(default=None, alias="tin", description="RFC del usuario.")
+    legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social del usuario.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class StampTransaction(BaseDto):
+    """Stamp transaction model representing stamp transfers/withdrawals."""
+    consecutive: Optional[int] = Field(default=None, alias="consecutive", description="Consecutivo de la transacción.")
+    from_person: Optional[UserLookupDto] = Field(default=None, alias="fromPerson", description="Persona origen de la transferencia.")
+    to_person: Optional[UserLookupDto] = Field(default=None, alias="toPerson", description="Persona destino de la transferencia.")
+    amount: Optional[int] = Field(default=None, alias="amount", description="Cantidad de timbres transferidos.")
+    transaction_type: Optional[int] = Field(default=None, alias="transactionType", description="Tipo de transacción.")
+    transaction_status: Optional[int] = Field(default=None, alias="transactionStatus", description="Estado de la transacción.")
+    reference_id: Optional[str] = Field(default=None, alias="referenceId", description="ID de referencia de la transacción.")
+    comments: Optional[str] = Field(default=None, alias="comments", description="Comentarios de la transacción.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class StampTransactionParams(BaseModel):
+    """Request parameters for stamp transfer/withdraw operations."""
+    from_person_id: str = Field(default=..., alias="fromPersonId", description="ID de la persona origen.")
+    to_person_id: str = Field(default=..., alias="toPersonId", description="ID de la persona destino.")
+    amount: int = Field(default=..., alias="amount", description="Cantidad de timbres a transferir.")
+    comments: Optional[str] = Field(default=None, alias="comments", description="Comentarios de la transferencia.")
+
+    model_config = ConfigDict(populate_by_name=True)
