@@ -77,9 +77,9 @@ def transferir_timbres():
     print("=" * 60)
 
     params = StampTransactionParams(
-        from_person_id=escuela_kemper_urgate_id,
-        to_person_id=OSCAR_KALA_HAAK,
-        amount=10,
+        from_person_id=OSCAR_KALA_HAAK,
+        to_person_id=karla_fuente_nolasco_id,
+        amount=1,
         comments="Transferencia de prueba desde SDK Python"
     )
 
@@ -93,65 +93,17 @@ def transferir_timbres():
 # ============================================================================
 def retirar_timbres():
     """
-    Retira timbres de una persona (wrapper de transfer_stamps).
+    Retira timbres de una persona.
     """
     print("\n" + "=" * 60)
     print("4. RETIRAR TIMBRES")
     print("=" * 60)
 
     params = StampTransactionParams(
-        from_person_id=karla_fuente_nolasco_id,
-        to_person_id=xochilt_casas_chavez_id,
-        amount=5,
-        comments="Retiro de timbres - devolucion"
-    )
-
-    api_response = client.stamps.withdraw_stamps(params)
-    print(f"Response: {api_response}")
-    return api_response
-
-
-# ============================================================================
-# 5. TRANSFERIR TIMBRES (ADMIN - OSCAR_KALA_HAAK)
-# ============================================================================
-def transferir_timbres_admin():
-    """
-    Transfiere timbres desde el usuario admin (OSCAR_KALA_HAAK) a otra persona.
-    El admin puede transferir desde/hacia cualquier persona.
-    """
-    print("\n" + "=" * 60)
-    print("5. TRANSFERIR TIMBRES (ADMIN)")
-    print("=" * 60)
-
-    params = StampTransactionParams(
-        from_person_id=OSCAR_KALA_HAAK,
-        to_person_id=karla_fuente_nolasco_id,
-        amount=1,
-        comments="Transferencia admin -> Karla desde SDK Python"
-    )
-
-    api_response = client.stamps.transfer_stamps(params)
-    print(f"Response: {api_response}")
-    return api_response
-
-
-# ============================================================================
-# 6. RETIRAR TIMBRES (ADMIN - OSCAR_KALA_HAAK)
-# ============================================================================
-def retirar_timbres_admin():
-    """
-    Retira timbres usando el usuario admin (OSCAR_KALA_HAAK).
-    El admin puede retirar desde cualquier persona.
-    """
-    print("\n" + "=" * 60)
-    print("6. RETIRAR TIMBRES (ADMIN)")
-    print("=" * 60)
-
-    params = StampTransactionParams(
         from_person_id=OSCAR_KALA_HAAK,
         to_person_id=xochilt_casas_chavez_id,
         amount=1,
-        comments="Retiro admin -> Xochilt desde SDK Python"
+        comments="Retiro de timbres desde SDK Python"
     )
 
     api_response = client.stamps.withdraw_stamps(params)
@@ -172,17 +124,11 @@ def main():
     # 2. Obtener transaccion por ID
     obtener_transaccion_por_id()
 
-    # 3. Transferir timbres (usuario normal - puede fallar por permisos)
+    # 3. Transferir timbres
     transferir_timbres()
 
-    # 4. Retirar timbres (usuario normal - puede fallar por permisos)
+    # 4. Retirar timbres
     retirar_timbres()
-
-    # 5. Transferir timbres (admin - OSCAR_KALA_HAAK)
-    transferir_timbres_admin()
-
-    # 6. Retirar timbres (admin - OSCAR_KALA_HAAK)
-    retirar_timbres_admin()
 
 
 if __name__ == "__main__":
