@@ -22,11 +22,6 @@ from fiscalapi.models.fiscalapi_models import (
 )
 from fiscalapi.services.fiscalapi_client import FiscalApiClient
 
-
-# ============================================================================
-# CONFIGURACION
-# ============================================================================
-
 # Configuracion del cliente
 settings = FiscalApiSettings(
     # api_url="https://test.fiscalapi.com",
