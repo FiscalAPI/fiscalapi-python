@@ -10,14 +10,15 @@
 - **Soporte completo para CFDI 4.0** con todas las especificaciones oficiales
 - **Timbrado de facturas de ingreso** con validación automática
 - **Timbrado de notas de crédito** (facturas de egreso)
-- **Timbrado de complementos de pago** en MXN, USD y EUR.
+- **Timbrado de complementos de pago** en MXN, USD y EUR
+- **Timbrado de facturas de nómina** - Soporte para los 13 tipos de CFDI de nómina
 - **Consulta del estatus de facturas** en el SAT en tiempo real
-- **Cancelación de facturas** 
+- **Cancelación de facturas**
 - **Generación de archivos PDF** de las facturas con formato profesional
 - **Personalización de logos y colores** en los PDF generados
 - **Envío de facturas por correo electrónico** automatizado
 - **Descarga de archivos XML** con estructura completa
-- **Almacenamiento y recuperación** de facturas por 5 años.
+- **Almacenamiento y recuperación** de facturas por 5 años
 - Dos [modos de operación](https://docs.fiscalapi.com/modes-of-operation): **Por valores** o **Por referencias**
 - [Ejemplos en Python](https://github.com/FiscalAPI/fiscalapi-samples-python)
   
@@ -33,6 +34,12 @@
 - **Administración de personas** (emisores, receptores, clientes, usuarios, etc.)
 - **Gestión de certificados CSD y FIEL** (subir archivos .cer y .key a FiscalAPI)
 - **Configuración de datos fiscales** (RFC, domicilio fiscal, régimen fiscal)
+- **Datos de empleado** (agrega/actualiza/elimina datos de empleado a una persona. CFDI Nómina)
+- **Datos de empleador** (agrega/actualiza/elimina datos de empleador a una persona. CFDI Nómina)
+
+## 🎖️ Gestión de Timbres 
+- **Gestión de folios fiscales** Compra timbres a fiscalapi y transfiere/retira a las personas de tu organizacion segun tus reglas de negocio.
+
 
 ## 🛍️ Gestión de Productos/Servicios
 - **Gestión de productos y servicios** con catálogo personalizable
@@ -43,7 +50,13 @@
 - **Consulta en catálogos oficiales de Descarga masiva del SAT** actualizados
 - **Búsqueda de información** en catálogos del SAT con filtros avanzados
 - **Acceso y búsqueda** en catálogos completos
-  
+
+## 🎫 Gestión de Timbres
+- **Listar transacciones de timbres** con paginación
+- **Consultar transacciones** por ID
+- **Transferir timbres** entre personas
+- **Retirar timbres** de una persona
+
 ## 📖 Recursos Adicionales
 - **Cientos de ejemplos de código** disponibles en múltiples lenguajes de programación
 - Documentación completa con guías paso a paso
@@ -306,12 +319,22 @@ else:
 
 ## 📋 Operaciones Principales
 
-- **Facturas (CFDI)**  
+- **Facturas (CFDI)**
   Crear facturas de ingreso, notas de crédito, complementos de pago, cancelaciones, generación de PDF/XML.
-- **Personas (Clientes/Emisores)**  
+- **Personas (Clientes/Emisores)**
   Alta y administración de personas, gestión de certificados (CSD).
-- **Productos y Servicios**  
+- **Productos y Servicios**
   Administración de catálogos de productos, búsqueda en catálogos SAT.
+- **Timbres**
+  Listar transacciones, transferir y retirar timbres entre personas.
+
+## 📂 Más Ejemplos
+
+- [Gestión de Timbres](examples/ejemplos-timbres.py)
+- [Complementos de Pago](examples/ejemplos-facturas-de-complemento-pago.py)
+- [Facturas de Nómina](examples/ejemplos-facturas-de-nomina.py)
+- [Impuestos Locales (Por Valores)](examples/ejemplos-factura-impuestos-locales-valores.py)
+- [Impuestos Locales (Por Referencias)](examples/ejemplos-factura-impuestos-locales-referencias.py)
 
 ## 🤝 Contribuir
 
@@ -337,11 +360,10 @@ Este proyecto está licenciado bajo la Licencia **MPL**. Consulta el archivo [LI
 - [Documentación Oficial](https://docs.fiscalapi.com)
 - [Como obtener mis credenciales](https://docs.fiscalapi.com/credentials-info)
 - [Portal de FiscalAPI](https://fiscalapi.com)
-- [Ejemplos en Python](https://github.com/FiscalAPI/fiscalapi-samples-python)
 - [Soporte técnico](https://fiscalapi.com/contact-us)
-- [Certificados prueba](https://docs.fiscalapi.com/tax-files-info)
+- [Certificados de prueba](https://docs.fiscalapi.com/tax-files-info)
 - [Postman Collection](https://documenter.getpostman.com/view/4346593/2sB2j4eqXr)
-- [SDKs](https://docs.fiscalapi.com/sdks)
+- [SDKs en otros lenguajes](https://docs.fiscalapi.com/sdks)
 ---
 
 Desarrollado con ❤️ por [Fiscalapi](https://www.fiscalapi.com)
