@@ -111,10 +111,14 @@ from fiscalapi.services import InvoiceService, StampService
 
 ## Example Files
 
-- `examples.py` - General usage examples (all invoice types)
-- `ejemplos-facturas-de-nomina.py` - Payroll invoice examples (13 types)
-- `ejemplos-facturas-de-complemento-pago.py` - Payment complement examples
-- `ejemplos-timbres.py` - Stamp service examples
+All example files are located in the `examples/` directory:
+
+- `examples/examples.py` - General usage examples (all invoice types)
+- `examples/ejemplos-facturas-de-nomina.py` - Payroll invoice examples (13 types)
+- `examples/ejemplos-facturas-de-complemento-pago.py` - Payment complement examples
+- `examples/ejemplos-timbres.py` - Stamp service examples
+- `examples/ejemplos-factura-impuestos-locales-valores.py` - Local taxes examples (by values)
+- `examples/ejemplos-factura-impuestos-locales-referencias.py` - Local taxes examples (by references)
 
 ## Reference Documentation
 

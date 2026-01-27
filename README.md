@@ -34,7 +34,12 @@
 - **Administración de personas** (emisores, receptores, clientes, usuarios, etc.)
 - **Gestión de certificados CSD y FIEL** (subir archivos .cer y .key a FiscalAPI)
 - **Configuración de datos fiscales** (RFC, domicilio fiscal, régimen fiscal)
-- **Datos de empleado y empleador** (Para facturas de nómina)
+- **Datos de empleado** (agrega/actualiza/elimina datos de empleado a una persona. CFDI Nómina)
+- **Datos de empleador** (agrega/actualiza/elimina datos de empleador a una persona. CFDI Nómina)
+
+## 🎖️ Gestión de Timbres 
+- **Gestión de folios fiscales** Compra timbres a fiscalapi y transfiere/retira a las personas de tu organizacion segun tus reglas de negocio.
+
 
 ## 🛍️ Gestión de Productos/Servicios
 - **Gestión de productos y servicios** con catálogo personalizable
@@ -323,6 +328,13 @@ else:
 - **Timbres**
   Listar transacciones, transferir y retirar timbres entre personas.
 
+## 📂 Más Ejemplos
+
+- [Gestión de Timbres](examples/ejemplos-timbres.py)
+- [Complementos de Pago](examples/ejemplos-facturas-de-complemento-pago.py)
+- [Facturas de Nómina](examples/ejemplos-facturas-de-nomina.py)
+- [Impuestos Locales (Por Valores)](examples/ejemplos-factura-impuestos-locales-valores.py)
+- [Impuestos Locales (Por Referencias)](examples/ejemplos-factura-impuestos-locales-referencias.py)
 
 ## 🤝 Contribuir
 
@@ -348,14 +360,10 @@ Este proyecto está licenciado bajo la Licencia **MPL**. Consulta el archivo [LI
 - [Documentación Oficial](https://docs.fiscalapi.com)
 - [Como obtener mis credenciales](https://docs.fiscalapi.com/credentials-info)
 - [Portal de FiscalAPI](https://fiscalapi.com)
-- [Ejemplos en Python](https://github.com/FiscalAPI/fiscalapi-samples-python)
-- [Ejemplos de Nómina](https://github.com/FiscalAPI/fiscalapi-python/blob/main/ejemplos-facturas-de-nomina.py)
-- [Ejemplos de Timbres](https://github.com/FiscalAPI/fiscalapi-python/blob/main/ejemplos-timbres.py)
-- [Ejemplos de Complementos de Pago](https://github.com/FiscalAPI/fiscalapi-python/blob/main/ejemplos-facturas-de-complemento-pago.py)
 - [Soporte técnico](https://fiscalapi.com/contact-us)
-- [Certificados prueba](https://docs.fiscalapi.com/tax-files-info)
+- [Certificados de prueba](https://docs.fiscalapi.com/tax-files-info)
 - [Postman Collection](https://documenter.getpostman.com/view/4346593/2sB2j4eqXr)
-- [SDKs](https://docs.fiscalapi.com/sdks)
+- [SDKs en otros lenguajes](https://docs.fiscalapi.com/sdks)
 ---
 
 Desarrollado con ❤️ por [Fiscalapi](https://www.fiscalapi.com)
