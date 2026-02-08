@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
-from decimal import Decimal
+from datetime import datetime
 from fiscalapi.models.common_models import FiscalApiSettings
-from fiscalapi.models.fiscalapi_models import ApiKey, CancelInvoiceRequest, CreatePdfRequest, DownloadRequest, DownloadRule, GlobalInformation, Invoice, InvoiceIssuer, InvoiceItem, InvoicePayment, InvoiceRecipient, InvoiceStatusRequest, ItemTax, PaidInvoice, PaidInvoiceTax, Product, ProductTax, Person, RelatedInvoice, SendInvoiceRequest, TaxCredential, TaxFile
 from fiscalapi.services.fiscalapi_client import FiscalApiClient
 
 def main ():
@@ -10,15 +8,12 @@ def main ():
     
     settings = FiscalApiSettings(
             api_url="https://test.fiscalapi.com",
-            api_key="<API_KEY>",
-            tenant="<TENANT_KEY>",
+            #api_key="<API_KEY>",
+            #tenant="<TENANT_KEY>",
     )
     
     client = FiscalApiClient(settings=settings)
-        
-  
-    
-    
+
      # listar api-keys
     # api_response = client.api_keys.get_list(1, 10)
     # print(api_response)
@@ -1357,8 +1352,27 @@ def main ():
     # )
     # api_response = client.invoices.get_status(invoice_status)
     # print(api_response)
-    
-    
+
+
+    # ========================================
+    # FACTURAS DE NOMINA (CFDI de Nomina)
+    # ========================================
+
+    # Crear factura de nomina por valores (Sdk).
+    # El tipo de factura se determina por el campo type_code="N" (Nomina)
+
+    # from fiscalapi import (
+    #     Invoice, InvoiceIssuer, InvoiceRecipient,
+    #     InvoiceIssuerEmployerData, InvoiceRecipientEmployeeData,
+    #     TaxCredential, InvoiceComplement,
+    #     PayrollComplement, PayrollEarningsComplement,
+    #     PayrollEarning, PayrollOtherPayment, PayrollDeduction
+    # )
+    # from decimal import Decimal
+
+   
+
+
     # ========================================
     # EJEMPLOS DE DESCARGA MASIVA
     # ========================================
@@ -1466,14 +1480,11 @@ def main ():
     # print(api_response)
     
     # Buscar solicitud de descarga masiva por fecha de creación.
-    # api_response = client.download_requests.search(datetime.now())
-    # print(api_response)
+    api_response = client.download_requests.search(datetime.now())
+    print(api_response)
   
     
     
 if __name__ == "__main__":
     main()
     
-    
-if __name__ == "__main__":
-    main()

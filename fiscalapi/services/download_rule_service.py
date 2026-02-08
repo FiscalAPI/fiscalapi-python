@@ -1,5 +1,5 @@
 from fiscalapi.models.common_models import ApiResponse, PagedList
-from fiscalapi.models.fiscalapi_models import DownloadRule, DownloadRequest
+from fiscalapi.models.fiscalapi_models import DownloadRule
 from fiscalapi.services.base_service import BaseService
 
 

@@ -1,0 +1,20 @@
+[tool.pyright]
+# Enable Pydantic plugin support
+pythonVersion = "3.9"
+typeCheckingMode = "basic"
+
+# Pydantic models use populate_by_name=True which allows using Python attribute names
+# instead of aliases. This setting prevents false positives.
+reportArgumentType = "none"
+reportCallIssue = "none"
+
+[tool.pylsp-mypy]
+enabled = false
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501", "W293", "W291", "W292"]
