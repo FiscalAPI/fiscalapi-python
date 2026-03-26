@@ -8,6 +8,29 @@ from .common_models import (
     PagedList,
     ValidationFailure,
 )
+from .bill_of_lading_models import (
+    # Bill of Lading models
+    Domicilio,
+    RegimenAduanero,
+    Ubicacion,
+    DocumentoAduanero,
+    CantidadTransporta,
+    DetalleMercancia,
+    Mercancia,
+    Remolque,
+    Autotransporte,
+    RemolqueCCP,
+    ContenedorMaritimo,
+    TransporteMaritimo,
+    TransporteAereo,
+    DerechoDePaso,
+    ContenedorFerroviario,
+    Carro,
+    TransporteFerroviario,
+    ParteTransporte,
+    TipoFigura,
+    LadingComplement,
+)
 from .fiscalapi_models import (
     # Product models
     ProductTax,
@@ -90,6 +113,27 @@ from .fiscalapi_models import (
 __all__ = [
     # common_models
     "ApiResponse",
+    # Bill of Lading models
+    "Domicilio",
+    "RegimenAduanero",
+    "Ubicacion",
+    "DocumentoAduanero",
+    "CantidadTransporta",
+    "DetalleMercancia",
+    "Mercancia",
+    "Remolque",
+    "Autotransporte",
+    "RemolqueCCP",
+    "ContenedorMaritimo",
+    "TransporteMaritimo",
+    "TransporteAereo",
+    "DerechoDePaso",
+    "ContenedorFerroviario",
+    "Carro",
+    "TransporteFerroviario",
+    "ParteTransporte",
+    "TipoFigura",
+    "LadingComplement",
     "BaseDto",
     "CatalogDto",
     "FiscalApiSettings",

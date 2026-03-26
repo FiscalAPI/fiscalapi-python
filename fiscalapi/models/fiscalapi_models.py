@@ -1,6 +1,7 @@
 from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
+from fiscalapi.models.bill_of_lading_models import LadingComplement
 from typing import Literal, Optional
 from datetime import datetime
 
@@ -521,19 +522,13 @@ class PayrollComplement(BaseDto):
     model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
 
 
-class LadingComplement(BaseDto):
-    """Modelo para el complemento de carta porte."""
-    # Placeholder for carta porte fields - to be expanded as needed
-
-    model_config = ConfigDict(populate_by_name=True)
-
 
 class InvoiceComplement(BaseDto):
     """Modelo contenedor de complementos de factura."""
     local_taxes: Optional[LocalTaxesComplement] = Field(default=None, alias="localTaxes", description="Complemento de impuestos locales.")
     payment: Optional[PaymentComplement] = Field(default=None, alias="payment", description="Complemento de pago.")
     payroll: Optional[PayrollComplement] = Field(default=None, alias="payroll", description="Complemento de nómina.")
-    lading: Optional[LadingComplement] = Field(default=None, alias="lading", description="Complemento de carta porte.")
+    lading: Optional[LadingComplement] = Field(default=None, alias="cartaPorte", description="Complemento Carta Porte.")
 
     model_config = ConfigDict(populate_by_name=True)
 
