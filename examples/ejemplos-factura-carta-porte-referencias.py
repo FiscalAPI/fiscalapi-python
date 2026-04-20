@@ -19,7 +19,8 @@ from fiscalapi.models.fiscalapi_models import (
 from fiscalapi.models.bill_of_lading_models import (
     LadingComplement,
     Ubicacion,
-    Domicilio,
+    UbicacionDomicilio,
+    TipoFiguraDomicilio,
     Mercancia,
     CantidadTransporta,
     Autotransporte,
@@ -138,7 +139,7 @@ def create_factura_autotransporte_nacional():
                         rfc_remitente_destinatario="URE180429TM6",
                         nombre_remitente_destinatario="NombreRemitenteDestinatario1",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -158,7 +159,7 @@ def create_factura_autotransporte_nacional():
                         nombre_remitente_destinatario="NombreRemitenteDestinatario2",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
                         distancia_recorrida=Decimal("1"),
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -180,7 +181,7 @@ def create_factura_autotransporte_nacional():
                         rfc_figura="URE180429TM6",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=Domicilio(
+                        domicilio=TipoFiguraDomicilio(
                             calle="Calle1",
                             numero_exterior="NumeroExterior1",
                             numero_interior="NumeroInterior1",
@@ -255,7 +256,7 @@ def create_factura_autotransporte_nacional_con_impuestos():
                         rfc_remitente_destinatario="URE180429TM6",
                         nombre_remitente_destinatario="NombreRemitenteDestinatario1",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -275,7 +276,7 @@ def create_factura_autotransporte_nacional_con_impuestos():
                         nombre_remitente_destinatario="NombreRemitenteDestinatario2",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
                         distancia_recorrida=Decimal("1"),
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -297,7 +298,7 @@ def create_factura_autotransporte_nacional_con_impuestos():
                         rfc_figura="URE180429TM6",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=Domicilio(
+                        domicilio=TipoFiguraDomicilio(
                             calle="Calle1",
                             numero_exterior="NumeroExterior1",
                             numero_interior="NumeroInterior1",
@@ -327,7 +328,7 @@ def create_factura_autotransporte_nacional_con_impuestos():
 # 3. FACTURA INGRESO AUTOTRANSPORTE EXTRANJERO (salida)
 # ============================================================================
 def create_factura_autotransporte_extranjero():
-    domicilio_usa = Domicilio(
+    domicilio_usa = UbicacionDomicilio(
         calle="ST",
         numero_exterior="214",
         colonia_id="N/A",
@@ -427,7 +428,7 @@ def create_factura_autotransporte_extranjero():
 # 4. FACTURA INGRESO AUTOTRANSPORTE INTERNACIONAL ADUANERO (entrada)
 # ============================================================================
 def create_factura_autotransporte_internacional_aduanero():
-    domicilio_usa = Domicilio(
+    domicilio_usa = UbicacionDomicilio(
         calle="ST",
         numero_exterior="214",
         colonia_id="N/A",
@@ -565,7 +566,7 @@ def _figura_ferroviario() -> TipoFigura:
         rfc_figura="EKU9003173C9",
         nombre_figura="NombreFigura",
         partes_transporte=[ParteTransporte(parte_transporte_id="PT02")],
-        domicilio=Domicilio(
+        domicilio=TipoFiguraDomicilio(
             calle="calle",
             numero_exterior="211",
             colonia_id="0814",
@@ -620,7 +621,7 @@ def create_factura_ferroviario_nacional():
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
                             fecha_hora_salida_llegada="2024-11-12T10:00:00",
                             distancia_recorrida=Decimal("100"),
-                            domicilio=Domicilio(
+                            domicilio=UbicacionDomicilio(
                                 calle="calle",
                                 numero_exterior="211",
                                 colonia_id="0814",
@@ -683,7 +684,7 @@ def create_factura_ferroviario_nacional():
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
                             fecha_hora_salida_llegada="2024-11-12T15:00:00",
                             distancia_recorrida=Decimal("100"),
-                            domicilio=Domicilio(
+                            domicilio=UbicacionDomicilio(
                                 calle="calle",
                                 numero_exterior="211",
                                 colonia_id="0814",
@@ -770,7 +771,7 @@ def create_factura_ferroviario_extranjero():
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
                             fecha_hora_salida_llegada="2024-11-12T10:00:00",
                             distancia_recorrida=Decimal("100"),
-                            domicilio=Domicilio(
+                            domicilio=UbicacionDomicilio(
                                 calle="calle",
                                 numero_exterior="211",
                                 colonia_id="0814",
@@ -835,7 +836,7 @@ def create_factura_ferroviario_extranjero():
                             residencia_fiscal_id="USA",
                             fecha_hora_salida_llegada="2024-11-12T15:00:00",
                             distancia_recorrida=Decimal("100"),
-                            domicilio=Domicilio(
+                            domicilio=UbicacionDomicilio(
                                 calle="Main Street",
                                 numero_exterior="100",
                                 municipio_id="City",
@@ -919,7 +920,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
                             fecha_hora_salida_llegada="2024-11-12T10:00:00",
                             distancia_recorrida=Decimal("100"),
-                            domicilio=Domicilio(
+                            domicilio=UbicacionDomicilio(
                                 calle="calle",
                                 numero_exterior="211",
                                 colonia_id="0814",
@@ -983,7 +984,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             fecha_hora_salida_llegada="2024-11-12T15:00:00",
                             distancia_recorrida=Decimal("100"),
                             nombre_estacion="HUEHUETOCA",
-                            domicilio=Domicilio(
+                            domicilio=UbicacionDomicilio(
                                 calle="calle",
                                 numero_exterior="211",
                                 colonia_id="0203",
@@ -1229,7 +1230,7 @@ def create_factura_aereo_extranjero():
                         nombre_estacion="Loreto",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
                         tipo_estacion_id="01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -1252,7 +1253,7 @@ def create_factura_aereo_extranjero():
                         num_estacion_id="EA0143",
                         nombre_estacion="Phoenix-Mesa Gateway",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="ST",
                             numero_exterior="12344",
                             colonia_id="N/A",
@@ -1372,7 +1373,7 @@ def create_factura_aereo_internacional_aduanero():
                         nombre_estacion="Loreto",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
                         tipo_estacion_id="01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -1394,7 +1395,7 @@ def create_factura_aereo_internacional_aduanero():
                         nombre_estacion="Los Cabos",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
                         tipo_estacion_id="03",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -1520,7 +1521,7 @@ def create_factura_maritimo_nacional():
                         navegacion_trafico_id="Altura",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
                         tipo_estacion_id="01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -1543,7 +1544,7 @@ def create_factura_maritimo_nacional():
                         navegacion_trafico_id="Altura",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
                         tipo_estacion_id="03",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -1653,7 +1654,7 @@ def create_factura_maritimo_extranjero():
                         navegacion_trafico_id="Altura",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
                         tipo_estacion_id="01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -1677,7 +1678,7 @@ def create_factura_maritimo_extranjero():
                         nombre_estacion="NombreEstacion",
                         navegacion_trafico_id="Altura",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="ST",
                             numero_exterior="12345",
                             colonia_id="N/A",
@@ -1793,7 +1794,7 @@ def create_factura_maritimo_internacional_aduanero():
                         navegacion_trafico_id="Altura",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
                         tipo_estacion_id="01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -1816,7 +1817,7 @@ def create_factura_maritimo_internacional_aduanero():
                         navegacion_trafico_id="Altura",
                         fecha_hora_salida_llegada="2023-08-01T04:00:01",
                         tipo_estacion_id="02",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -1930,7 +1931,7 @@ def create_factura_maritimo_internacional_aduanero():
                         rfc_figura="EKU9003173C9",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=Domicilio(
+                        domicilio=TipoFiguraDomicilio(
                             calle="Calle1",
                             numero_exterior="NumeroExterior1",
                             numero_interior="NumeroInterior1",
@@ -2000,7 +2001,7 @@ def create_factura_traslado_autotransporte_nacional():
                         rfc_remitente_destinatario="EKU9003173C9",
                         nombre_remitente_destinatario="NombreRemitenteDestinatario1",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -2020,7 +2021,7 @@ def create_factura_traslado_autotransporte_nacional():
                         nombre_remitente_destinatario="NombreRemitenteDestinatario2",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
                         distancia_recorrida=Decimal("1"),
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -2082,7 +2083,7 @@ def create_factura_traslado_autotransporte_nacional():
 # EJEMPLO 15: TRASLADO AUTOTRANSPORTE EXTRANJERO (SALIDA)
 # ============================================================================
 def create_factura_traslado_autotransporte_extranjero():
-    domicilio_usa = Domicilio(
+    domicilio_usa = UbicacionDomicilio(
         calle="ST",
         numero_exterior="214",
         colonia_id="N/A",
@@ -2205,7 +2206,7 @@ def create_factura_traslado_autotransporte_extranjero():
 # EJEMPLO 16: TRASLADO AUTOTRANSPORTE INTERNACIONAL ADUANERO (ENTRADA)
 # ============================================================================
 def create_factura_traslado_autotransporte_internacional_aduanero():
-    domicilio_usa = Domicilio(
+    domicilio_usa = UbicacionDomicilio(
         calle="ST",
         numero_exterior="214",
         colonia_id="N/A",
@@ -2345,7 +2346,7 @@ def _ubicaciones_ferroviario_traslado_nacional():
             nombre_estacion="SANTO NINO",
             fecha_hora_salida_llegada="2023-08-01T00:00:00",
             tipo_estacion_id="01",
-            domicilio=Domicilio(
+            domicilio=UbicacionDomicilio(
                 calle="Calle1",
                 numero_exterior="211",
                 numero_interior="212",
@@ -2429,7 +2430,7 @@ def _figura_traslado_ferroviario() -> TipoFigura:
         rfc_figura="EKU9003173C9",
         nombre_figura="NombreFigura",
         partes_transporte=[ParteTransporte(parte_transporte_id="PT02")],
-        domicilio=Domicilio(
+        domicilio=UbicacionDomicilio(
             calle="calle",
             numero_exterior="211",
             colonia_id="0814",
@@ -2486,7 +2487,7 @@ def create_factura_traslado_ferroviario_nacional():
         fecha_hora_salida_llegada="2023-08-01T05:00:01",
         tipo_estacion_id="03",
         distancia_recorrida=Decimal("100"),
-        domicilio=Domicilio(
+        domicilio=UbicacionDomicilio(
             calle="Calle2",
             numero_exterior="214",
             numero_interior="215",
@@ -2556,7 +2557,7 @@ def create_factura_traslado_ferroviario_extranjero():
         nombre_estacion="NombreEstacion",
         fecha_hora_salida_llegada="2023-08-01T05:00:01",
         distancia_recorrida=Decimal("100"),
-        domicilio=Domicilio(
+        domicilio=UbicacionDomicilio(
             calle="ST",
             numero_exterior="1234",
             colonia_id="1234",
@@ -2629,7 +2630,7 @@ def create_factura_traslado_ferroviario_internacional_aduanero():
         fecha_hora_salida_llegada="2023-08-01T05:00:01",
         tipo_estacion_id="03",
         distancia_recorrida=Decimal("100"),
-        domicilio=Domicilio(
+        domicilio=UbicacionDomicilio(
             calle="Calle2",
             numero_exterior="214",
             numero_interior="215",
@@ -2740,7 +2741,7 @@ def create_factura_traslado_aereo_nacional():
                         nombre_estacion="Loreto",
                         fecha_hora_salida_llegada="2023-08-01T00:00:00",
                         tipo_estacion_id="01",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle1",
                             numero_exterior="211",
                             numero_interior="212",
@@ -2762,7 +2763,7 @@ def create_factura_traslado_aereo_nacional():
                         nombre_estacion="Los Cabos",
                         fecha_hora_salida_llegada="2023-08-01T00:00:01",
                         tipo_estacion_id="03",
-                        domicilio=Domicilio(
+                        domicilio=UbicacionDomicilio(
                             calle="Calle2",
                             numero_exterior="214",
                             numero_interior="215",
@@ -2903,7 +2904,7 @@ def create_factura_traslado_aereo_extranjero():
                     nombre_estacion="Loreto",
                     fecha_hora_salida_llegada="2023-08-01T00:00:00",
                     tipo_estacion_id="01",
-                    domicilio=Domicilio(
+                    domicilio=UbicacionDomicilio(
                         calle="Calle2",
                         numero_exterior="214",
                         numero_interior="215",
@@ -2926,7 +2927,7 @@ def create_factura_traslado_aereo_extranjero():
                     num_estacion_id="EA0143",
                     nombre_estacion="Phoenix-Mesa Gateway",
                     fecha_hora_salida_llegada="2023-08-01T00:00:01",
-                    domicilio=Domicilio(
+                    domicilio=UbicacionDomicilio(
                         calle="ST",
                         numero_exterior="12344",
                         colonia_id="N/A",
@@ -3004,7 +3005,7 @@ def create_factura_traslado_aereo_internacional_aduanero():
                     nombre_estacion="Loreto",
                     fecha_hora_salida_llegada="2023-08-01T00:00:00",
                     tipo_estacion_id="01",
-                    domicilio=Domicilio(
+                    domicilio=UbicacionDomicilio(
                         calle="Calle1",
                         numero_exterior="211",
                         numero_interior="212",
@@ -3026,7 +3027,7 @@ def create_factura_traslado_aereo_internacional_aduanero():
                     nombre_estacion="Los Cabos",
                     fecha_hora_salida_llegada="2023-08-01T00:00:01",
                     tipo_estacion_id="03",
-                    domicilio=Domicilio(
+                    domicilio=UbicacionDomicilio(
                         calle="Calle2",
                         numero_exterior="214",
                         numero_interior="215",
@@ -3105,7 +3106,7 @@ def _ubicaciones_maritimo_nacional():
             navegacion_trafico_id="Altura",
             fecha_hora_salida_llegada="2023-08-01T00:00:00",
             tipo_estacion_id="01",
-            domicilio=Domicilio(
+            domicilio=UbicacionDomicilio(
                 calle="Calle1",
                 numero_exterior="211",
                 numero_interior="212",
@@ -3128,7 +3129,7 @@ def _ubicaciones_maritimo_nacional():
             navegacion_trafico_id="Altura",
             fecha_hora_salida_llegada="2023-08-01T00:00:01",
             tipo_estacion_id="03",
-            domicilio=Domicilio(
+            domicilio=UbicacionDomicilio(
                 calle="Calle2",
                 numero_exterior="214",
                 numero_interior="215",
@@ -3215,7 +3216,7 @@ def create_factura_traslado_maritimo_extranjero():
             navegacion_trafico_id="Altura",
             fecha_hora_salida_llegada="2023-08-01T00:00:00",
             tipo_estacion_id="01",
-            domicilio=Domicilio(
+            domicilio=UbicacionDomicilio(
                 calle="Calle1",
                 numero_exterior="211",
                 numero_interior="212",
@@ -3239,7 +3240,7 @@ def create_factura_traslado_maritimo_extranjero():
             nombre_estacion="NombreEstacion",
             navegacion_trafico_id="Altura",
             fecha_hora_salida_llegada="2023-08-01T00:00:01",
-            domicilio=Domicilio(
+            domicilio=UbicacionDomicilio(
                 calle="ST",
                 numero_exterior="12345",
                 colonia_id="N/A",
