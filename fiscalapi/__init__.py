@@ -23,10 +23,12 @@ from .models.common_models import (
 
 # Modelos de Carta Porte (Bill of Lading)
 from .models.bill_of_lading_models import (
-    Domicilio,
+    UbicacionDomicilio,
+    TipoFiguraDomicilio,
     RegimenAduanero,
     Ubicacion,
     DocumentoAduanero,
+    GuiaIdentificacion,
     CantidadTransporta,
     DetalleMercancia,
     Mercancia,
@@ -37,7 +39,7 @@ from .models.bill_of_lading_models import (
     TransporteMaritimo,
     TransporteAereo,
     DerechoDePaso,
-    ContenedorFerroviario,
+    CarroContenedor,
     Carro,
     TransporteFerroviario,
     ParteTransporte,
@@ -196,7 +198,8 @@ __all__ = [
     "LadingComplement",
     "InvoiceComplement",
     # Bill of Lading models
-    "Domicilio",
+    "UbicacionDomicilio",
+    "TipoFiguraDomicilio",
     "RegimenAduanero",
     "Ubicacion",
     "DocumentoAduanero",
@@ -210,7 +213,7 @@ __all__ = [
     "TransporteMaritimo",
     "TransporteAereo",
     "DerechoDePaso",
-    "ContenedorFerroviario",
+    "CarroContenedor",
     "Carro",
     "TransporteFerroviario",
     "ParteTransporte",

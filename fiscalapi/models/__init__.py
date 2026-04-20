@@ -10,10 +10,12 @@ from .common_models import (
 )
 from .bill_of_lading_models import (
     # Bill of Lading models
-    Domicilio,
+    UbicacionDomicilio,
+    TipoFiguraDomicilio,
     RegimenAduanero,
     Ubicacion,
     DocumentoAduanero,
+    GuiaIdentificacion,
     CantidadTransporta,
     DetalleMercancia,
     Mercancia,
@@ -24,7 +26,7 @@ from .bill_of_lading_models import (
     TransporteMaritimo,
     TransporteAereo,
     DerechoDePaso,
-    ContenedorFerroviario,
+    CarroContenedor,
     Carro,
     TransporteFerroviario,
     ParteTransporte,
@@ -114,7 +116,8 @@ __all__ = [
     # common_models
     "ApiResponse",
     # Bill of Lading models
-    "Domicilio",
+    "UbicacionDomicilio",
+    "TipoFiguraDomicilio",
     "RegimenAduanero",
     "Ubicacion",
     "DocumentoAduanero",
@@ -128,7 +131,7 @@ __all__ = [
     "TransporteMaritimo",
     "TransporteAereo",
     "DerechoDePaso",
-    "ContenedorFerroviario",
+    "CarroContenedor",
     "Carro",
     "TransporteFerroviario",
     "ParteTransporte",

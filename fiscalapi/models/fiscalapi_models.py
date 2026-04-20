@@ -528,7 +528,7 @@ class InvoiceComplement(BaseDto):
     local_taxes: Optional[LocalTaxesComplement] = Field(default=None, alias="localTaxes", description="Complemento de impuestos locales.")
     payment: Optional[PaymentComplement] = Field(default=None, alias="payment", description="Complemento de pago.")
     payroll: Optional[PayrollComplement] = Field(default=None, alias="payroll", description="Complemento de nómina.")
-    lading: Optional[LadingComplement] = Field(default=None, alias="cartaPorte", description="Complemento Carta Porte.")
+    lading: Optional[LadingComplement] = Field(default=None, alias="cartaPorte", description="Complemento carta porte.")
 
     model_config = ConfigDict(populate_by_name=True)
 
