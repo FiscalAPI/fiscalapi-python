@@ -42,9 +42,9 @@ from fiscalapi.models.bill_of_lading_models import (
 
 
 settings = FiscalApiSettings(
-    # api_url="https://test.fiscalapi.com",
-    # api_key="<API_KEY>",
-    # tenant="<TENANT_KEY>"
+    api_url="https://test.fiscalapi.com",
+    api_key="sk_test_b7dae706_e16f_4faf_90fb_a5d1990985a2",
+    tenant="275510ee-f64d-435a-9e92-1553d8f10a7e"
 )
 
 client = FiscalApiClient(settings=settings)
@@ -645,9 +645,9 @@ def create_factura_ferroviario_nacional():
     invoice = Invoice(
         series="Serie",
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        payment_form_id="01",
-        currency_id="MXN",
-        payment_method_id="PPD",
+        payment_form_code="01",
+        currency_code="MXN",
+        payment_method_code="PPD",
         expedition_zip_code="99080",
         cfdi_type_id="T",
         tax_object_id="01",
@@ -683,7 +683,7 @@ def create_factura_ferroviario_nacional():
                     unidad_peso_id="XBX",
                     ubicaciones=[
                         Ubicacion(
-                            tipo_ubicacion_id="Origen",
+                            tipo_ubicacion="Origen",
                             id_ubicacion="OR101010",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -702,7 +702,7 @@ def create_factura_ferroviario_nacional():
                             ),
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202021",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -713,7 +713,7 @@ def create_factura_ferroviario_nacional():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202022",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -724,7 +724,7 @@ def create_factura_ferroviario_nacional():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202023",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -735,7 +735,7 @@ def create_factura_ferroviario_nacional():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202024",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -746,7 +746,7 @@ def create_factura_ferroviario_nacional():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202025",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -845,7 +845,7 @@ def create_factura_ferroviario_extranjero():
                     regimen_aduaneros=[RegimenAduanero(regimen_aduanero_id="EXD")],
                     ubicaciones=[
                         Ubicacion(
-                            tipo_ubicacion_id="Origen",
+                            tipo_ubicacion="Origen",
                             id_ubicacion="OR101010",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -864,7 +864,7 @@ def create_factura_ferroviario_extranjero():
                             ),
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202021",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -875,7 +875,7 @@ def create_factura_ferroviario_extranjero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202022",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -886,7 +886,7 @@ def create_factura_ferroviario_extranjero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202023",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -897,7 +897,7 @@ def create_factura_ferroviario_extranjero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202024",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -908,7 +908,7 @@ def create_factura_ferroviario_extranjero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202025",
                             rfc_remitente_destinatario="XEXX010101000",
                             nombre_remitente_destinatario="DESTINATARIO EXTRANJERO",
@@ -1006,7 +1006,7 @@ def create_factura_ferroviario_internacional_aduanero():
                     regimen_aduaneros=[RegimenAduanero(regimen_aduanero_id="IMD")],
                     ubicaciones=[
                         Ubicacion(
-                            tipo_ubicacion_id="Origen",
+                            tipo_ubicacion="Origen",
                             id_ubicacion="OR101010",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1025,7 +1025,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             ),
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202021",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1036,7 +1036,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202022",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1047,7 +1047,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202023",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1058,7 +1058,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202024",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1069,7 +1069,7 @@ def create_factura_ferroviario_internacional_aduanero():
                             tipo_estacion_id="01",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202025",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1100,8 +1100,8 @@ def create_factura_ferroviario_internacional_aduanero():
                             ],
                             documentacion_aduanera=[
                                 DocumentoAduanero(
-                                    tipo_doc_aduanero_id="01",
-                                    num_pedimento_aduanero="23  43  0472  8000448",
+                                    tipo_documento_id="01",
+                                    num_pedimento="23  43  0472  8000448",
                                     rfc_impo="EKU9003173C9",
                                 )
                             ],
@@ -1170,7 +1170,7 @@ def create_factura_aereo_nacional():
                     unidad_peso_id="XBX",
                     ubicaciones=[
                         Ubicacion(
-                            tipo_ubicacion_id="Origen",
+                            tipo_ubicacion="Origen",
                             id_ubicacion="OR101010",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
@@ -1180,7 +1180,7 @@ def create_factura_aereo_nacional():
                             tipo_estacion_id="02",
                         ),
                         Ubicacion(
-                            tipo_ubicacion_id="Destino",
+                            tipo_ubicacion="Destino",
                             id_ubicacion="DE202025",
                             rfc_remitente_destinatario="EKU9003173C9",
                             nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
