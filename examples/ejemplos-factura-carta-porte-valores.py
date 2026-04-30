@@ -43,8 +43,8 @@ from fiscalapi.models.bill_of_lading_models import (
 
 settings = FiscalApiSettings(
     api_url="https://test.fiscalapi.com",
-    api_key="sk_test_b7dae706_e16f_4faf_90fb_a5d1990985a2",
-    tenant="275510ee-f64d-435a-9e92-1553d8f10a7e"
+    api_key="API_KEY",
+    tenant="TENANT_ID"
 )
 
 client = FiscalApiClient(settings=settings)
