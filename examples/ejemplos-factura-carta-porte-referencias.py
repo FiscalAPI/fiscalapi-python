@@ -67,7 +67,7 @@ def _autotransporte():
 
 
 # Helper: standard mercancia (sin documentacion aduanera)
-def _mercancia_base(cantidad_transporta=None, documentacion_aduanera=None, tipo_materia_id=None, descripcion_materia=None):
+def _mercancia_base(cantidad_transporta=None, documentacion_aduanera=None, tipo_materia_id=None, descripcion_materia=None, fecha_caducidad="2003-04-02T00:00:00"):
     return Mercancia(
         bienes_transp_id="11121900",
         descripcion="Accesorios de equipo de telefonía",
@@ -77,7 +77,7 @@ def _mercancia_base(cantidad_transporta=None, documentacion_aduanera=None, tipo_
         denominacion_generica_prod="DenominacionGenericaProd1",
         denominacion_distintiva_prod="DenominacionDistintivaProd1",
         fabricante="Fabricante1",
-        fecha_caducidad="2003-04-02T00:00:00",
+        fecha_caducidad=fecha_caducidad,
         lote_medicamento="LoteMedic1",
         forma_farmaceutica_id="01",
         condiciones_esp_transp_id="01",
@@ -409,7 +409,16 @@ def create_factura_autotransporte_extranjero():
                         rfc_figura="EKU9003173C9",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=domicilio_usa,
+                        domicilio=TipoFiguraDomicilio(
+                            calle="ST",
+                            numero_exterior="214",
+                            colonia_id="N/A",
+                            referencia="WHITE HOUSE",
+                            municipio_id="N/A",
+                            estado_id="TX",
+                            pais_id="USA",
+                            codigo_postal_id="N/A",
+                        ),
                     )
                 ],
             )
@@ -519,7 +528,16 @@ def create_factura_autotransporte_internacional_aduanero():
                         rfc_figura="EKU9003173C9",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=domicilio_usa,
+                        domicilio=TipoFiguraDomicilio(
+                            calle="ST",
+                            numero_exterior="214",
+                            colonia_id="N/A",
+                            referencia="WHITE HOUSE",
+                            municipio_id="N/A",
+                            estado_id="TX",
+                            pais_id="USA",
+                            codigo_postal_id="N/A",
+                        ),
                     )
                 ],
             )
@@ -584,138 +602,151 @@ def _figura_ferroviario() -> TipoFigura:
 # EJEMPLO 5: TRANSPORTE FERROVIARIO NACIONAL
 # ============================================================================
 def create_factura_ferroviario_nacional():
-
     invoice = Invoice(
+        version_code="4.0",
         series="Serie",
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        payment_form_id="01",
-        currency_id="MXN",
-        payment_method_id="PPD",
-        expedition_zip_code="99080",
-        cfdi_type_id="T",
-        tax_object_id="01",
+        payment_form_code="01",
+        currency_code="MXN",
+        payment_method_code="PUE",
+        expedition_zip_code="42501",
+        type_code="I",
+        export_code="01",
+        exchange_rate=Decimal("1"),
         issuer=InvoiceIssuer(id="0e82a655-5f0c-4e07-abab-8f322e4123ef"),
         recipient=InvoiceRecipient(id="37f7c342-d9a6-4881-9620-0da769b50ce5"),
         items=[
             InvoiceItem(
+                item_code="78101800",
+                item_sku="UT421511",
                 quantity=Decimal("1"),
-                unit_id="E48",
-                unit_price=Decimal("0"),
-                description="Flete",
-                product_id="78101801",
-                tax_object_id="01",
+                unit_of_measurement_code="H87",
+                description="Transporte de carga por carretera",
+                unit_price=Decimal("100.00"),
+                discount=Decimal("0"),
+                tax_object_code="01",
+                item_taxes=[],
             )
         ],
-        complements=[
-            InvoiceComplement(
-                lading=LadingComplement(
-                    transp_internac_id="No",
-                    total_dist_rec=Decimal("500"),
-                    peso_neto_total=Decimal("10"),
-                    unidad_peso_id="XBX",
-                    ubicaciones=[
-                        Ubicacion(
-                            tipo_ubicacion_id="Origen",
-                            id_ubicacion="OR101010",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T10:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            domicilio=UbicacionDomicilio(
-                                calle="calle",
-                                numero_exterior="211",
-                                colonia_id="0814",
-                                localidad_id="01",
-                                referencia="casa blanca",
-                                municipio_id="010",
-                                estado_id="ZAC",
-                                pais_id="MEX",
-                                codigo_postal_id="99080",
-                            ),
+        complement=InvoiceComplement(
+            lading=LadingComplement(
+                transp_internac_id="No",
+                total_dist_rec=Decimal("500"),
+                registro_istmo_id="Sí",
+                ubicacion_polo_origen_id="01",
+                ubicacion_polo_destino_id="01",
+                peso_neto_total=Decimal("10"),
+                unidad_peso_id="XBX",
+                ubicaciones=[
+                    Ubicacion(
+                        tipo_ubicacion="Origen",
+                        id_ubicacion="OR101010",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario1",
+                        num_estacion_id="Q0736",
+                        nombre_estacion="SANTO NINO",
+                        fecha_hora_salida_llegada="2023-08-01T00:00:00",
+                        tipo_estacion_id="01",
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle1",
+                            numero_exterior="211",
+                            numero_interior="212",
+                            colonia_id="1957",
+                            localidad_id="13",
+                            referencia="casa blanca",
+                            municipio_id="011",
+                            estado_id="CMX",
+                            pais_id="MEX",
+                            codigo_postal_id="13250",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202021",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T11:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97001",
-                            nombre_estacion="MONTERREY",
-                            tipo_estacion_id="01",
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202021",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="SC283",
+                        nombre_estacion="HUAXTITLA",
+                        fecha_hora_salida_llegada="2023-08-01T01:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202022",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="TG0",
+                        nombre_estacion="NAVOJOA",
+                        fecha_hora_salida_llegada="2023-08-01T02:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202023",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="E0029",
+                        nombre_estacion="TRES JAGUEYES",
+                        fecha_hora_salida_llegada="2023-08-01T03:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202024",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="TI032",
+                        nombre_estacion="NAVOLATO",
+                        fecha_hora_salida_llegada="2023-08-01T04:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202025",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="JM047",
+                        nombre_estacion="HUEHUETOCA",
+                        fecha_hora_salida_llegada="2023-08-01T05:00:01",
+                        tipo_estacion_id="03",
+                        distancia_recorrida=Decimal("100"),
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle2",
+                            numero_exterior="214",
+                            numero_interior="215",
+                            colonia_id="0347",
+                            localidad_id="23",
+                            referencia="casa negra",
+                            municipio_id="004",
+                            estado_id="COA",
+                            pais_id="MEX",
+                            codigo_postal_id="25350",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202022",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T12:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97002",
-                            nombre_estacion="GUADALAJARA",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202023",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T13:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97003",
-                            nombre_estacion="QUERETARO",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202024",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T14:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97004",
-                            nombre_estacion="TOLUCA",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202025",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T15:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            domicilio=UbicacionDomicilio(
-                                calle="calle",
-                                numero_exterior="211",
-                                colonia_id="0814",
-                                localidad_id="01",
-                                referencia="casa blanca",
-                                municipio_id="010",
-                                estado_id="ZAC",
-                                pais_id="MEX",
-                                codigo_postal_id="99080",
-                            ),
-                        ),
-                    ],
-                    mercancias=[
-                        _mercancia_base(
-                            cantidad_transporta=[
-                                CantidadTransporta(
-                                    cantidad=Decimal("100"),
-                                    id_origen="OR101010",
-                                    id_destino="DE202025",
-                                )
-                            ],
-                            documentacion_aduanera=None,
-                            tipo_materia_id=None,
-                            descripcion_materia=None,
-                        )
-                    ],
-                    transporte_ferroviario=_transporte_ferroviario(),
-                    tipos_figura=[_figura_ferroviario()],
-                )
+                    ),
+                ],
+                mercancias=[
+                    _mercancia_base(
+                        cantidad_transporta=[
+                            CantidadTransporta(
+                                cantidad=Decimal("1"),
+                                id_origen="OR101010",
+                                id_destino="DE202025",
+                            )
+                        ],
+                        documentacion_aduanera=None,
+                        tipo_materia_id=None,
+                        descripcion_materia=None,
+                        fecha_caducidad="2028-01-01T00:00:00",
+                    )
+                ],
+                transporte_ferroviario=_transporte_ferroviario(),
+                tipos_figura=[_figura_ferroviario()],
             )
-        ],
+        ),
     )
 
     client = FiscalApiClient(settings=settings)
@@ -730,141 +761,154 @@ def create_factura_ferroviario_nacional():
 # EJEMPLO 6: TRANSPORTE FERROVIARIO EXTRANJERO (SALIDA)
 # ============================================================================
 def create_factura_ferroviario_extranjero():
-
     invoice = Invoice(
+        version_code="4.0",
         series="Serie",
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        payment_form_id="01",
-        currency_id="MXN",
-        payment_method_id="PPD",
-        expedition_zip_code="99080",
-        cfdi_type_id="T",
-        tax_object_id="01",
+        payment_form_code="01",
+        currency_code="MXN",
+        payment_method_code="PUE",
+        expedition_zip_code="42501",
+        type_code="I",
+        export_code="01",
+        exchange_rate=Decimal("1"),
         issuer=InvoiceIssuer(id="0e82a655-5f0c-4e07-abab-8f322e4123ef"),
         recipient=InvoiceRecipient(id="37f7c342-d9a6-4881-9620-0da769b50ce5"),
         items=[
             InvoiceItem(
+                item_code="78101800",
+                item_sku="UT421511",
                 quantity=Decimal("1"),
-                unit_id="E48",
-                unit_price=Decimal("0"),
-                description="Flete",
-                product_id="78101801",
-                tax_object_id="01",
+                unit_of_measurement_code="H87",
+                description="Transporte de carga por carretera",
+                unit_price=Decimal("100.00"),
+                discount=Decimal("0"),
+                tax_object_code="01",
+                item_taxes=[],
             )
         ],
-        complements=[
-            InvoiceComplement(
-                lading=LadingComplement(
-                    transp_internac_id="Sí",
-                    entrada_salida_merc_id="Salida",
-                    pais_origen_destino_id="USA",
-                    via_entrada_salida_id="04",
-                    total_dist_rec=Decimal("500"),
-                    peso_neto_total=Decimal("10"),
-                    unidad_peso_id="XBX",
-                    regimen_aduaneros=[RegimenAduanero(regimen_aduanero_id="EXD")],
-                    ubicaciones=[
-                        Ubicacion(
-                            tipo_ubicacion_id="Origen",
-                            id_ubicacion="OR101010",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T10:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            domicilio=UbicacionDomicilio(
-                                calle="calle",
-                                numero_exterior="211",
-                                colonia_id="0814",
-                                localidad_id="01",
-                                referencia="casa blanca",
-                                municipio_id="010",
-                                estado_id="ZAC",
-                                pais_id="MEX",
-                                codigo_postal_id="99080",
-                            ),
+        complement=InvoiceComplement(
+            lading=LadingComplement(
+                transp_internac_id="Sí",
+                entrada_salida_merc_id="Salida",
+                pais_origen_destino_id="USA",
+                via_entrada_salida_id="04",
+                total_dist_rec=Decimal("500"),
+                registro_istmo_id="Sí",
+                ubicacion_polo_origen_id="01",
+                ubicacion_polo_destino_id="01",
+                peso_neto_total=Decimal("10"),
+                unidad_peso_id="XBX",
+                regimen_aduaneros=[RegimenAduanero(regimen_aduanero_id="EXD")],
+                ubicaciones=[
+                    Ubicacion(
+                        tipo_ubicacion="Origen",
+                        id_ubicacion="OR101010",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario1",
+                        num_estacion_id="Q0736",
+                        nombre_estacion="SANTO NINO",
+                        fecha_hora_salida_llegada="2023-08-01T00:00:00",
+                        tipo_estacion_id="01",
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle1",
+                            numero_exterior="211",
+                            numero_interior="212",
+                            colonia_id="1957",
+                            localidad_id="13",
+                            referencia="casa blanca",
+                            municipio_id="011",
+                            estado_id="CMX",
+                            pais_id="MEX",
+                            codigo_postal_id="13250",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202021",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T11:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97001",
-                            nombre_estacion="MONTERREY",
-                            tipo_estacion_id="01",
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202021",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="SC283",
+                        nombre_estacion="HUAXTITLA",
+                        fecha_hora_salida_llegada="2023-08-01T01:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202022",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="TG0",
+                        nombre_estacion="NAVOJOA",
+                        fecha_hora_salida_llegada="2023-08-01T02:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202023",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="E0029",
+                        nombre_estacion="TRES JAGUEYES",
+                        fecha_hora_salida_llegada="2023-08-01T03:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202024",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="TI032",
+                        nombre_estacion="NAVOLATO",
+                        fecha_hora_salida_llegada="2023-08-01T04:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202025",
+                        rfc_remitente_destinatario="XEXX010101000",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_reg_id_trib="01010101",
+                        residencia_fiscal_id="USA",
+                        num_estacion_id="EF0001",
+                        nombre_estacion="NombreEstacion",
+                        fecha_hora_salida_llegada="2023-08-01T05:00:01",
+                        distancia_recorrida=Decimal("100"),
+                        domicilio=UbicacionDomicilio(
+                            calle="ST",
+                            numero_exterior="1234",
+                            colonia_id="1234",
+                            referencia="WHITE HOUSE",
+                            municipio_id="1234",
+                            estado_id="TX",
+                            pais_id="USA",
+                            codigo_postal_id="12345",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202022",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T12:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97002",
-                            nombre_estacion="GUADALAJARA",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202023",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T13:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97003",
-                            nombre_estacion="QUERETARO",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202024",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T14:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97004",
-                            nombre_estacion="TOLUCA",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202025",
-                            rfc_remitente_destinatario="XEXX010101000",
-                            nombre_remitente_destinatario="DESTINATARIO EXTRANJERO",
-                            num_reg_id_trib="01010101",
-                            residencia_fiscal_id="USA",
-                            fecha_hora_salida_llegada="2024-11-12T15:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            domicilio=UbicacionDomicilio(
-                                calle="Main Street",
-                                numero_exterior="100",
-                                municipio_id="City",
-                                estado_id="TX",
-                                pais_id="USA",
-                                codigo_postal_id="78500",
-                            ),
-                        ),
-                    ],
-                    mercancias=[
-                        _mercancia_base(
-                            cantidad_transporta=[
-                                CantidadTransporta(
-                                    cantidad=Decimal("100"),
-                                    id_origen="OR101010",
-                                    id_destino="DE202025",
-                                )
-                            ],
-                            documentacion_aduanera=None,
-                            tipo_materia_id="05",
-                            descripcion_materia="otramateria",
-                        )
-                    ],
-                    transporte_ferroviario=_transporte_ferroviario(),
-                    tipos_figura=[_figura_ferroviario()],
-                )
+                    ),
+                ],
+                mercancias=[
+                    _mercancia_base(
+                        cantidad_transporta=[
+                            CantidadTransporta(
+                                cantidad=Decimal("1"),
+                                id_origen="OR101010",
+                                id_destino="DE202025",
+                            )
+                        ],
+                        documentacion_aduanera=None,
+                        tipo_materia_id="05",
+                        descripcion_materia="otramateria",
+                        fecha_caducidad="2028-01-01T00:00:00",
+                    )
+                ],
+                transporte_ferroviario=_transporte_ferroviario(),
+                tipos_figura=[_figura_ferroviario()],
             )
-        ],
+        ),
     )
 
     client = FiscalApiClient(settings=settings)
@@ -879,149 +923,161 @@ def create_factura_ferroviario_extranjero():
 # EJEMPLO 7: TRANSPORTE FERROVIARIO INTERNACIONAL ADUANERO (ENTRADA)
 # ============================================================================
 def create_factura_ferroviario_internacional_aduanero():
-
     invoice = Invoice(
+        version_code="4.0",
         series="Serie",
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        payment_form_id="01",
-        currency_id="MXN",
-        payment_method_id="PPD",
-        expedition_zip_code="99080",
-        cfdi_type_id="T",
-        tax_object_id="01",
+        payment_form_code="01",
+        currency_code="MXN",
+        payment_method_code="PUE",
+        expedition_zip_code="42501",
+        type_code="I",
+        export_code="01",
+        exchange_rate=Decimal("1"),
         issuer=InvoiceIssuer(id="0e82a655-5f0c-4e07-abab-8f322e4123ef"),
         recipient=InvoiceRecipient(id="37f7c342-d9a6-4881-9620-0da769b50ce5"),
         items=[
             InvoiceItem(
+                item_code="78101800",
+                item_sku="UT421511",
                 quantity=Decimal("1"),
-                unit_id="E48",
-                unit_price=Decimal("0"),
-                description="Flete",
-                product_id="78101801",
-                tax_object_id="01",
+                unit_of_measurement_code="H87",
+                description="Transporte de carga por carretera",
+                unit_price=Decimal("100.00"),
+                discount=Decimal("0"),
+                tax_object_code="01",
+                item_taxes=[],
             )
         ],
-        complements=[
-            InvoiceComplement(
-                lading=LadingComplement(
-                    transp_internac_id="Sí",
-                    entrada_salida_merc_id="Entrada",
-                    pais_origen_destino_id="AFG",
-                    via_entrada_salida_id="04",
-                    total_dist_rec=Decimal("500"),
-                    peso_neto_total=Decimal("10"),
-                    unidad_peso_id="XBX",
-                    regimen_aduaneros=[RegimenAduanero(regimen_aduanero_id="IMD")],
-                    ubicaciones=[
-                        Ubicacion(
-                            tipo_ubicacion_id="Origen",
-                            id_ubicacion="OR101010",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T10:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            domicilio=UbicacionDomicilio(
-                                calle="calle",
-                                numero_exterior="211",
-                                colonia_id="0814",
-                                localidad_id="01",
-                                referencia="casa blanca",
-                                municipio_id="010",
-                                estado_id="ZAC",
-                                pais_id="MEX",
-                                codigo_postal_id="99080",
-                            ),
+        complement=InvoiceComplement(
+            lading=LadingComplement(
+                transp_internac_id="Sí",
+                entrada_salida_merc_id="Entrada",
+                pais_origen_destino_id="AFG",
+                via_entrada_salida_id="04",
+                total_dist_rec=Decimal("500"),
+                registro_istmo_id="Sí",
+                ubicacion_polo_origen_id="01",
+                ubicacion_polo_destino_id="01",
+                peso_neto_total=Decimal("10"),
+                unidad_peso_id="XBX",
+                regimen_aduaneros=[RegimenAduanero(regimen_aduanero_id="IMD")],
+                ubicaciones=[
+                    Ubicacion(
+                        tipo_ubicacion="Origen",
+                        id_ubicacion="OR101010",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario1",
+                        num_estacion_id="Q0736",
+                        nombre_estacion="SANTO NINO",
+                        fecha_hora_salida_llegada="2023-08-01T00:00:00",
+                        tipo_estacion_id="01",
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle1",
+                            numero_exterior="211",
+                            numero_interior="212",
+                            colonia_id="1957",
+                            localidad_id="13",
+                            referencia="casa blanca",
+                            municipio_id="011",
+                            estado_id="CMX",
+                            pais_id="MEX",
+                            codigo_postal_id="13250",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202021",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T11:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97001",
-                            nombre_estacion="MONTERREY",
-                            tipo_estacion_id="01",
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202021",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="SC283",
+                        nombre_estacion="HUAXTITLA",
+                        fecha_hora_salida_llegada="2023-08-01T01:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202022",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="TG0",
+                        nombre_estacion="NAVOJOA",
+                        fecha_hora_salida_llegada="2023-08-01T02:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202023",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="E0029",
+                        nombre_estacion="TRES JAGUEYES",
+                        fecha_hora_salida_llegada="2023-08-01T03:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202024",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="TI032",
+                        nombre_estacion="NAVOLATO",
+                        fecha_hora_salida_llegada="2023-08-01T04:00:01",
+                        tipo_estacion_id="02",
+                        distancia_recorrida=Decimal("100"),
+                    ),
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202025",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="JM047",
+                        nombre_estacion="HUEHUETOCA",
+                        fecha_hora_salida_llegada="2023-08-01T05:00:01",
+                        tipo_estacion_id="03",
+                        distancia_recorrida=Decimal("100"),
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle2",
+                            numero_exterior="214",
+                            numero_interior="215",
+                            colonia_id="0347",
+                            localidad_id="23",
+                            referencia="casa negra",
+                            municipio_id="004",
+                            estado_id="COA",
+                            pais_id="MEX",
+                            codigo_postal_id="25350",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202022",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T12:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97002",
-                            nombre_estacion="GUADALAJARA",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202023",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T13:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97003",
-                            nombre_estacion="QUERETARO",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202024",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T14:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            num_estacion_id="97004",
-                            nombre_estacion="TOLUCA",
-                            tipo_estacion_id="01",
-                        ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202025",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T15:00:00",
-                            distancia_recorrida=Decimal("100"),
-                            nombre_estacion="HUEHUETOCA",
-                            domicilio=UbicacionDomicilio(
-                                calle="calle",
-                                numero_exterior="211",
-                                colonia_id="0203",
-                                localidad_id="01",
-                                referencia="casa blanca",
-                                municipio_id="006",
-                                estado_id="COA",
-                                pais_id="MEX",
-                                codigo_postal_id="25900",
-                            ),
-                        ),
-                    ],
-                    mercancias=[
-                        _mercancia_base(
-                            cantidad_transporta=[
-                                CantidadTransporta(
-                                    cantidad=Decimal("100"),
-                                    id_origen="OR101010",
-                                    id_destino="DE202025",
-                                )
-                            ],
-                            documentacion_aduanera=[
-                                DocumentoAduanero(
-                                    tipo_doc_aduanero_id="01",
-                                    num_pedimento_aduanero="23  43  0472  8000448",
-                                    rfc_impo="EKU9003173C9",
-                                )
-                            ],
-                            tipo_materia_id="05",
-                            descripcion_materia="otramateria",
-                        )
-                    ],
-                    transporte_ferroviario=_transporte_ferroviario(),
-                    tipos_figura=[_figura_ferroviario()],
-                )
+                    ),
+                ],
+                mercancias=[
+                    _mercancia_base(
+                        cantidad_transporta=[
+                            CantidadTransporta(
+                                cantidad=Decimal("1"),
+                                id_origen="OR101010",
+                                id_destino="DE202025",
+                            )
+                        ],
+                        documentacion_aduanera=[
+                            DocumentoAduanero(
+                                tipo_documento_id="01",
+                                num_pedimento="23  43  0472  8000448",
+                                rfc_impo="EKU9003173C9",
+                            )
+                        ],
+                        tipo_materia_id="05",
+                        descripcion_materia="otramateria",
+                        fecha_caducidad="2028-01-01T00:00:00",
+                    )
+                ],
+                transporte_ferroviario=_transporte_ferroviario(),
+                tipos_figura=[_figura_ferroviario()],
             )
-        ],
+        ),
     )
 
     client = FiscalApiClient(settings=settings)
@@ -1036,97 +1092,130 @@ def create_factura_ferroviario_internacional_aduanero():
 # EJEMPLO 8: TRANSPORTE AÉREO NACIONAL
 # ============================================================================
 def create_factura_aereo_nacional():
-
     invoice = Invoice(
+        version_code="4.0",
         series="Serie",
         date=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        payment_form_id="01",
-        currency_id="MXN",
-        payment_method_id="PPD",
-        expedition_zip_code="99080",
-        cfdi_type_id="T",
-        tax_object_id="01",
+        payment_form_code="01",
+        currency_code="MXN",
+        payment_method_code="PUE",
+        expedition_zip_code="42501",
+        type_code="I",
+        export_code="01",
+        exchange_rate=Decimal("1"),
         issuer=InvoiceIssuer(id="0e82a655-5f0c-4e07-abab-8f322e4123ef"),
         recipient=InvoiceRecipient(id="37f7c342-d9a6-4881-9620-0da769b50ce5"),
         items=[
             InvoiceItem(
+                item_code="78101800",
+                item_sku="UT421511",
                 quantity=Decimal("1"),
-                unit_id="E48",
-                unit_price=Decimal("0"),
-                description="Flete",
-                product_id="78101801",
-                tax_object_id="01",
+                unit_of_measurement_code="H87",
+                description="Transporte de carga por carretera",
+                unit_price=Decimal("100.00"),
+                discount=Decimal("0"),
+                tax_object_code="01",
+                item_taxes=[],
             )
         ],
-        complements=[
-            InvoiceComplement(
-                lading=LadingComplement(
-                    transp_internac_id="No",
-                    peso_neto_total=Decimal("10"),
-                    unidad_peso_id="XBX",
-                    ubicaciones=[
-                        Ubicacion(
-                            tipo_ubicacion_id="Origen",
-                            id_ubicacion="OR101010",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T10:00:00",
-                            num_estacion_id="EA0417",
-                            nombre_estacion="Loreto",
-                            tipo_estacion_id="02",
+        complement=InvoiceComplement(
+            lading=LadingComplement(
+                transp_internac_id="No",
+                peso_neto_total=Decimal("10"),
+                unidad_peso_id="XBX",
+                ubicaciones=[
+                    Ubicacion(
+                        tipo_ubicacion="Origen",
+                        id_ubicacion="OR101010",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario1",
+                        num_estacion_id="EA0417",
+                        nombre_estacion="Loreto",
+                        fecha_hora_salida_llegada="2023-08-01T00:00:00",
+                        tipo_estacion_id="01",
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle1",
+                            numero_exterior="211",
+                            numero_interior="212",
+                            colonia_id="1957",
+                            localidad_id="13",
+                            referencia="casa blanca",
+                            municipio_id="011",
+                            estado_id="CMX",
+                            pais_id="MEX",
+                            codigo_postal_id="13250",
                         ),
-                        Ubicacion(
-                            tipo_ubicacion_id="Destino",
-                            id_ubicacion="DE202025",
-                            rfc_remitente_destinatario="EKU9003173C9",
-                            nombre_remitente_destinatario="ESCUELA KEMPER URGATE",
-                            fecha_hora_salida_llegada="2024-11-12T12:00:00",
-                            num_estacion_id="EA0418",
-                            nombre_estacion="Los Cabos",
-                            tipo_estacion_id="02",
-                        ),
-                    ],
-                    mercancias=[
-                        Mercancia(
-                            bienes_transp_id="11121900",
-                            descripcion="Accesorios de equipo de telefonía",
-                            cantidad=Decimal("100"),
-                            clave_unidad_id="H87",
-                            peso_en_kg=Decimal("10"),
-                            valor_mercancia=Decimal("100"),
-                            moneda_id="MXN",
-                            cantidad_transporta=[
-                                CantidadTransporta(
-                                    cantidad=Decimal("100"),
-                                    id_origen="OR101010",
-                                    id_destino="DE202025",
-                                )
-                            ],
-                        )
-                    ],
-                    transporte_aereo=TransporteAereo(
-                        perm_sct_id="TPAF01",
-                        num_permiso_sct="Demo",
-                        matricula_aeronave="61E5-WZ",
-                        nombre_aseg="NombreAseg",
-                        num_poliza_seguro="NumPolizaSeguro",
-                        numero_guia="acUbYlBVTmlzx",
-                        lugar_contrato="LugarContrato",
-                        codigo_transportista_id="CA001",
-                        rfc_embarcador="EKU9003173C9",
-                        nombre_embarcador="Embarcador",
                     ),
-                    tipos_figura=[
-                        TipoFigura(
-                            tipo_figura_id="01",
-                            rfc_figura="EKU9003173C9",
-                            num_licencia="a234567890",
-                            nombre_figura="NombreFigura",
-                        )
-                    ],
-                )
+                    Ubicacion(
+                        tipo_ubicacion="Destino",
+                        id_ubicacion="DE202020",
+                        rfc_remitente_destinatario="EKU9003173C9",
+                        nombre_remitente_destinatario="NombreRemitenteDestinatario2",
+                        num_estacion_id="EA0418",
+                        nombre_estacion="Los Cabos",
+                        fecha_hora_salida_llegada="2023-08-01T00:00:01",
+                        tipo_estacion_id="03",
+                        domicilio=UbicacionDomicilio(
+                            calle="Calle2",
+                            numero_exterior="214",
+                            numero_interior="215",
+                            colonia_id="0347",
+                            localidad_id="23",
+                            referencia="casa negra",
+                            municipio_id="004",
+                            estado_id="COA",
+                            pais_id="MEX",
+                            codigo_postal_id="25350",
+                        ),
+                    ),
+                ],
+                mercancias=[
+                    Mercancia(
+                        bienes_transp_id="11121900",
+                        descripcion="Accesorios de equipo de telefonía",
+                        cantidad=Decimal("1.0"),
+                        clave_unidad_id="XBX",
+                        material_peligroso_id="No",
+                        denominacion_generica_prod="DenominacionGenericaProd1",
+                        denominacion_distintiva_prod="DenominacionDistintivaProd1",
+                        fabricante="Fabricante1",
+                        fecha_caducidad="2028-01-01T00:00:00",
+                        lote_medicamento="LoteMedic1",
+                        registro_sanitario_folio_autorizacion="RegistroSanita1",
+                        peso_en_kg=Decimal("1"),
+                        valor_mercancia=Decimal("100"),
+                        moneda_id="MXN",
+                        cantidad_transporta=[
+                            CantidadTransporta(
+                                cantidad=Decimal("1"),
+                                id_origen="OR101010",
+                                id_destino="DE202020",
+                            )
+                        ],
+                    )
+                ],
+                transporte_aereo=TransporteAereo(
+                    perm_sct_id="TPAF01",
+                    num_permiso_sct="Demo",
+                    matricula_aeronave="61E5-WZ",
+                    nombre_aseg="NombreAseg",
+                    num_poliza_seguro="NumPolizaSeguro",
+                    numero_guia="acUbYlBVTmlzx",
+                    lugar_contrato="LugarContrato",
+                    codigo_transportista_id="CA001",
+                    rfc_embarcador="EKU9003173C9",
+                    nombre_embarcador="Embarcador",
+                ),
+                tipos_figura=[
+                    TipoFigura(
+                        tipo_figura_id="01",
+                        rfc_figura="EKU9003173C9",
+                        num_licencia="a234567890",
+                        nombre_figura="NombreFigura",
+                    )
+                ],
             )
-        ],
+        ),
     )
 
     client = FiscalApiClient(settings=settings)
@@ -1781,7 +1870,6 @@ def create_factura_maritimo_internacional_aduanero():
                 peso_neto_total=Decimal("1"),
                 regimen_aduaneros=[
                     RegimenAduanero(regimen_aduanero_id="IMD"),
-                    RegimenAduanero(regimen_aduanero_id="IMD"),
                 ],
                 ubicaciones=[
                     Ubicacion(
@@ -2187,7 +2275,16 @@ def create_factura_traslado_autotransporte_extranjero():
                         rfc_figura="EKU9003173C9",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=domicilio_usa,
+                        domicilio=TipoFiguraDomicilio(
+                            calle="ST",
+                            numero_exterior="214",
+                            colonia_id="N/A",
+                            referencia="WHITE HOUSE",
+                            municipio_id="N/A",
+                            estado_id="TX",
+                            pais_id="USA",
+                            codigo_postal_id="N/A",
+                        ),
                     )
                 ],
             )
@@ -2317,7 +2414,16 @@ def create_factura_traslado_autotransporte_internacional_aduanero():
                         rfc_figura="EKU9003173C9",
                         num_licencia="NumLicencia1",
                         nombre_figura="NombreFigura1",
-                        domicilio=domicilio_usa,
+                        domicilio=TipoFiguraDomicilio(
+                            calle="ST",
+                            numero_exterior="214",
+                            colonia_id="N/A",
+                            referencia="WHITE HOUSE",
+                            municipio_id="N/A",
+                            estado_id="TX",
+                            pais_id="USA",
+                            codigo_postal_id="N/A",
+                        ),
                     )
                 ],
             )
@@ -2430,7 +2536,7 @@ def _figura_traslado_ferroviario() -> TipoFigura:
         rfc_figura="EKU9003173C9",
         nombre_figura="NombreFigura",
         partes_transporte=[ParteTransporte(parte_transporte_id="PT02")],
-        domicilio=UbicacionDomicilio(
+        domicilio=TipoFiguraDomicilio(
             calle="calle",
             numero_exterior="211",
             colonia_id="0814",
@@ -3290,7 +3396,6 @@ def create_factura_traslado_maritimo_internacional_aduanero():
             unidad_peso_id="XBX",
             peso_neto_total=Decimal("1"),
             regimen_aduaneros=[
-                RegimenAduanero(regimen_aduanero_id="IMD"),
                 RegimenAduanero(regimen_aduanero_id="IMD"),
             ],
             ubicaciones=_ubicaciones_maritimo_nacional(),
