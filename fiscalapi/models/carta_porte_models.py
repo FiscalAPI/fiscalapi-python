@@ -330,7 +330,7 @@ class TipoFigura(BaseModel):
 
 # ===== Carta Porte =====
 
-class LadingComplement(BaseModel):
+class CartaPorteComplement(BaseModel):
     """Complemento Carta Porte para transporte de mercancías."""
     transp_internac_id: str = Field(default=..., alias="transpInternacId")
     entrada_salida_merc_id: Optional[str] = Field(default=None, alias="entradaSalidaMercId")

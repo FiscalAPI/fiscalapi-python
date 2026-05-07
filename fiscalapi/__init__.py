@@ -21,8 +21,8 @@ from .models.common_models import (
     ValidationFailure,
 )
 
-# Modelos de Carta Porte (Bill of Lading)
-from .models.bill_of_lading_models import (
+# Modelos de Carta Porte
+from .models.carta_porte_models import (
     UbicacionDomicilio,
     TipoFiguraDomicilio,
     RegimenAduanero,
@@ -44,7 +44,7 @@ from .models.bill_of_lading_models import (
     TransporteFerroviario,
     ParteTransporte,
     TipoFigura,
-    LadingComplement,
+    CartaPorteComplement,
 )
 
 # Modelos de dominio
@@ -91,7 +91,7 @@ from .models.fiscalapi_models import (
     PayrollDeduction,
     PayrollDisability,
     PayrollComplement,
-    LadingComplement,
+    CartaPorteComplement,
     InvoiceComplement,
     # Invoice models
     InvoiceResponse,
@@ -195,9 +195,9 @@ __all__ = [
     "PayrollDeduction",
     "PayrollDisability",
     "PayrollComplement",
-    "LadingComplement",
+    "CartaPorteComplement",
     "InvoiceComplement",
-    # Bill of Lading models
+    # Carta Porte models
     "UbicacionDomicilio",
     "TipoFiguraDomicilio",
     "RegimenAduanero",
@@ -218,7 +218,7 @@ __all__ = [
     "TransporteFerroviario",
     "ParteTransporte",
     "TipoFigura",
-    "LadingComplement",
+    "CartaPorteComplement",
     # Invoice models
     "InvoiceResponse",
     "Invoice",

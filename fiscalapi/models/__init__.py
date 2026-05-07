@@ -8,8 +8,8 @@ from .common_models import (
     PagedList,
     ValidationFailure,
 )
-from .bill_of_lading_models import (
-    # Bill of Lading models
+from .carta_porte_models import (
+    # Carta Porte models
     UbicacionDomicilio,
     TipoFiguraDomicilio,
     RegimenAduanero,
@@ -31,7 +31,7 @@ from .bill_of_lading_models import (
     TransporteFerroviario,
     ParteTransporte,
     TipoFigura,
-    LadingComplement,
+    CartaPorteComplement,
 )
 from .fiscalapi_models import (
     # Product models
@@ -76,7 +76,7 @@ from .fiscalapi_models import (
     PayrollDeduction,
     PayrollDisability,
     PayrollComplement,
-    LadingComplement,
+    CartaPorteComplement,
     InvoiceComplement,
     # Invoice models
     InvoiceResponse,
@@ -115,7 +115,7 @@ from .fiscalapi_models import (
 __all__ = [
     # common_models
     "ApiResponse",
-    # Bill of Lading models
+    # Carta Porte models
     "UbicacionDomicilio",
     "TipoFiguraDomicilio",
     "RegimenAduanero",
@@ -136,7 +136,7 @@ __all__ = [
     "TransporteFerroviario",
     "ParteTransporte",
     "TipoFigura",
-    "LadingComplement",
+    "CartaPorteComplement",
     "BaseDto",
     "CatalogDto",
     "FiscalApiSettings",
@@ -184,7 +184,7 @@ __all__ = [
     "PayrollDeduction",
     "PayrollDisability",
     "PayrollComplement",
-    "LadingComplement",
+    "CartaPorteComplement",
     "InvoiceComplement",
     # Invoice models
     "InvoiceResponse",

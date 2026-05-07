@@ -16,8 +16,8 @@ from fiscalapi.models.fiscalapi_models import (
     InvoiceItem,
     ItemTax,
 )
-from fiscalapi.models.bill_of_lading_models import (
-    LadingComplement,
+from fiscalapi.models.carta_porte_models import (
+    CartaPorteComplement,
     Ubicacion,
     UbicacionDomicilio,
     TipoFiguraDomicilio,
@@ -124,7 +124,7 @@ def create_factura_autotransporte_nacional():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 total_dist_rec=Decimal("1"),
                 registro_istmo_id="Sí",
@@ -241,7 +241,7 @@ def create_factura_autotransporte_nacional_con_impuestos():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 total_dist_rec=Decimal("1"),
                 registro_istmo_id="Sí",
@@ -366,7 +366,7 @@ def create_factura_autotransporte_extranjero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Salida",
                 pais_origen_destino_id="USA",
@@ -475,7 +475,7 @@ def create_factura_autotransporte_internacional_aduanero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Entrada",
                 pais_origen_destino_id="USA",
@@ -629,7 +629,7 @@ def create_factura_ferroviario_nacional():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 total_dist_rec=Decimal("500"),
                 registro_istmo_id="Sí",
@@ -788,7 +788,7 @@ def create_factura_ferroviario_extranjero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Salida",
                 pais_origen_destino_id="USA",
@@ -950,7 +950,7 @@ def create_factura_ferroviario_internacional_aduanero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Entrada",
                 pais_origen_destino_id="AFG",
@@ -1119,7 +1119,7 @@ def create_factura_aereo_nacional():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 peso_neto_total=Decimal("10"),
                 unidad_peso_id="XBX",
@@ -1301,7 +1301,7 @@ def create_factura_aereo_extranjero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Salida",
                 pais_origen_destino_id="USA",
@@ -1444,7 +1444,7 @@ def create_factura_aereo_internacional_aduanero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Entrada",
                 pais_origen_destino_id="AFG",
@@ -1595,7 +1595,7 @@ def create_factura_maritimo_nacional():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 unidad_peso_id="XBX",
                 peso_neto_total=Decimal("1"),
@@ -1724,7 +1724,7 @@ def create_factura_maritimo_extranjero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Salida",
                 pais_origen_destino_id="USA",
@@ -1858,7 +1858,7 @@ def create_factura_maritimo_internacional_aduanero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Entrada",
                 pais_origen_destino_id="AFG",
@@ -2074,7 +2074,7 @@ def create_factura_traslado_autotransporte_nacional():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 total_dist_rec=Decimal("1"),
                 registro_istmo_id="Sí",
@@ -2207,7 +2207,7 @@ def create_factura_traslado_autotransporte_extranjero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Salida",
                 pais_origen_destino_id="USA",
@@ -2339,7 +2339,7 @@ def create_factura_traslado_autotransporte_internacional_aduanero():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="Sí",
                 entrada_salida_merc_id="Entrada",
                 pais_origen_destino_id="USA",
@@ -2550,7 +2550,7 @@ def _figura_traslado_ferroviario() -> TipoFigura:
     )
 
 
-def _invoice_traslado_ferroviario_base(lading: LadingComplement) -> Invoice:
+def _invoice_traslado_ferroviario_base(carta_porte: CartaPorteComplement) -> Invoice:
     return Invoice(
         version_code="4.0",
         currency_code="XXX",
@@ -2575,7 +2575,7 @@ def _invoice_traslado_ferroviario_base(lading: LadingComplement) -> Invoice:
                 item_taxes=[],
             )
         ],
-        complement=InvoiceComplement(lading=lading),
+        complement=InvoiceComplement(carta_porte=carta_porte),
     )
 
 
@@ -2607,7 +2607,7 @@ def create_factura_traslado_ferroviario_nacional():
         ),
     )
 
-    lading = LadingComplement(
+    carta_porte = CartaPorteComplement(
         transp_internac_id="No",
         total_dist_rec=Decimal("500"),
         registro_istmo_id="Sí",
@@ -2639,7 +2639,7 @@ def create_factura_traslado_ferroviario_nacional():
         tipos_figura=[_figura_traslado_ferroviario()],
     )
 
-    invoice = _invoice_traslado_ferroviario_base(lading)
+    invoice = _invoice_traslado_ferroviario_base(carta_porte)
     response = client.invoices.create(invoice)
     if response.succeeded:
         print(response.data)
@@ -2675,7 +2675,7 @@ def create_factura_traslado_ferroviario_extranjero():
         ),
     )
 
-    lading = LadingComplement(
+    carta_porte = CartaPorteComplement(
         transp_internac_id="Sí",
         entrada_salida_merc_id="Salida",
         pais_origen_destino_id="USA",
@@ -2713,7 +2713,7 @@ def create_factura_traslado_ferroviario_extranjero():
         tipos_figura=[_figura_traslado_ferroviario()],
     )
 
-    invoice = _invoice_traslado_ferroviario_base(lading)
+    invoice = _invoice_traslado_ferroviario_base(carta_porte)
     response = client.invoices.create(invoice)
     if response.succeeded:
         print(response.data)
@@ -2750,7 +2750,7 @@ def create_factura_traslado_ferroviario_internacional_aduanero():
         ),
     )
 
-    lading = LadingComplement(
+    carta_porte = CartaPorteComplement(
         transp_internac_id="Sí",
         entrada_salida_merc_id="Entrada",
         pais_origen_destino_id="AFG",
@@ -2795,7 +2795,7 @@ def create_factura_traslado_ferroviario_internacional_aduanero():
         tipos_figura=[_figura_traslado_ferroviario()],
     )
 
-    invoice = _invoice_traslado_ferroviario_base(lading)
+    invoice = _invoice_traslado_ferroviario_base(carta_porte)
     response = client.invoices.create(invoice)
     if response.succeeded:
         print(response.data)
@@ -2833,7 +2833,7 @@ def create_factura_traslado_aereo_nacional():
             )
         ],
         complement=InvoiceComplement(
-            lading=LadingComplement(
+            carta_porte=CartaPorteComplement(
                 transp_internac_id="No",
                 unidad_peso_id="XBX",
                 peso_neto_total=Decimal("10"),
@@ -2958,7 +2958,7 @@ def _transporte_aereo_base() -> TransporteAereo:
     )
 
 
-def _invoice_traslado_base(lading: LadingComplement) -> Invoice:
+def _invoice_traslado_base(carta_porte: CartaPorteComplement) -> Invoice:
     return Invoice(
         version_code="4.0",
         currency_code="XXX",
@@ -2983,7 +2983,7 @@ def _invoice_traslado_base(lading: LadingComplement) -> Invoice:
                 item_taxes=[],
             )
         ],
-        complement=InvoiceComplement(lading=lading),
+        complement=InvoiceComplement(carta_porte=carta_porte),
     )
 
 
@@ -2992,7 +2992,7 @@ def _invoice_traslado_base(lading: LadingComplement) -> Invoice:
 # ============================================================================
 def create_factura_traslado_aereo_extranjero():
     invoice = _invoice_traslado_base(
-        LadingComplement(
+        CartaPorteComplement(
             transp_internac_id="Sí",
             entrada_salida_merc_id="Salida",
             pais_origen_destino_id="USA",
@@ -3093,7 +3093,7 @@ def create_factura_traslado_aereo_extranjero():
 # ============================================================================
 def create_factura_traslado_aereo_internacional_aduanero():
     invoice = _invoice_traslado_base(
-        LadingComplement(
+        CartaPorteComplement(
             transp_internac_id="Sí",
             entrada_salida_merc_id="Entrada",
             pais_origen_destino_id="AFG",
@@ -3288,7 +3288,7 @@ def _mercancia_maritimo_traslado(documentacion_aduanera=None, tipo_materia_id=No
 # ============================================================================
 def create_factura_traslado_maritimo_nacional():
     invoice = _invoice_traslado_base(
-        LadingComplement(
+        CartaPorteComplement(
             transp_internac_id="No",
             unidad_peso_id="XBX",
             peso_neto_total=Decimal("1"),
@@ -3360,7 +3360,7 @@ def create_factura_traslado_maritimo_extranjero():
     ]
 
     invoice = _invoice_traslado_base(
-        LadingComplement(
+        CartaPorteComplement(
             transp_internac_id="Sí",
             entrada_salida_merc_id="Salida",
             pais_origen_destino_id="USA",
@@ -3388,7 +3388,7 @@ def create_factura_traslado_maritimo_extranjero():
 # ============================================================================
 def create_factura_traslado_maritimo_internacional_aduanero():
     invoice = _invoice_traslado_base(
-        LadingComplement(
+        CartaPorteComplement(
             transp_internac_id="Sí",
             entrada_salida_merc_id="Entrada",
             pais_origen_destino_id="AFG",
