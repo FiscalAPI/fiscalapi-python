@@ -8,6 +8,31 @@ from .common_models import (
     PagedList,
     ValidationFailure,
 )
+from .carta_porte_models import (
+    # Carta Porte models
+    UbicacionDomicilio,
+    TipoFiguraDomicilio,
+    RegimenAduanero,
+    Ubicacion,
+    DocumentoAduanero,
+    GuiaIdentificacion,
+    CantidadTransporta,
+    DetalleMercancia,
+    Mercancia,
+    Remolque,
+    Autotransporte,
+    RemolqueCCP,
+    ContenedorMaritimo,
+    TransporteMaritimo,
+    TransporteAereo,
+    DerechoDePaso,
+    CarroContenedor,
+    Carro,
+    TransporteFerroviario,
+    ParteTransporte,
+    TipoFigura,
+    CartaPorteComplement,
+)
 from .fiscalapi_models import (
     # Product models
     ProductTax,
@@ -51,7 +76,7 @@ from .fiscalapi_models import (
     PayrollDeduction,
     PayrollDisability,
     PayrollComplement,
-    LadingComplement,
+    CartaPorteComplement,
     InvoiceComplement,
     # Invoice models
     InvoiceResponse,
@@ -90,6 +115,28 @@ from .fiscalapi_models import (
 __all__ = [
     # common_models
     "ApiResponse",
+    # Carta Porte models
+    "UbicacionDomicilio",
+    "TipoFiguraDomicilio",
+    "RegimenAduanero",
+    "Ubicacion",
+    "DocumentoAduanero",
+    "CantidadTransporta",
+    "DetalleMercancia",
+    "Mercancia",
+    "Remolque",
+    "Autotransporte",
+    "RemolqueCCP",
+    "ContenedorMaritimo",
+    "TransporteMaritimo",
+    "TransporteAereo",
+    "DerechoDePaso",
+    "CarroContenedor",
+    "Carro",
+    "TransporteFerroviario",
+    "ParteTransporte",
+    "TipoFigura",
+    "CartaPorteComplement",
     "BaseDto",
     "CatalogDto",
     "FiscalApiSettings",
@@ -137,7 +184,7 @@ __all__ = [
     "PayrollDeduction",
     "PayrollDisability",
     "PayrollComplement",
-    "LadingComplement",
+    "CartaPorteComplement",
     "InvoiceComplement",
     # Invoice models
     "InvoiceResponse",

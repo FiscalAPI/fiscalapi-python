@@ -21,6 +21,32 @@ from .models.common_models import (
     ValidationFailure,
 )
 
+# Modelos de Carta Porte
+from .models.carta_porte_models import (
+    UbicacionDomicilio,
+    TipoFiguraDomicilio,
+    RegimenAduanero,
+    Ubicacion,
+    DocumentoAduanero,
+    GuiaIdentificacion,
+    CantidadTransporta,
+    DetalleMercancia,
+    Mercancia,
+    Remolque,
+    Autotransporte,
+    RemolqueCCP,
+    ContenedorMaritimo,
+    TransporteMaritimo,
+    TransporteAereo,
+    DerechoDePaso,
+    CarroContenedor,
+    Carro,
+    TransporteFerroviario,
+    ParteTransporte,
+    TipoFigura,
+    CartaPorteComplement,
+)
+
 # Modelos de dominio
 from .models.fiscalapi_models import (
     # Product models
@@ -65,7 +91,7 @@ from .models.fiscalapi_models import (
     PayrollDeduction,
     PayrollDisability,
     PayrollComplement,
-    LadingComplement,
+    CartaPorteComplement,
     InvoiceComplement,
     # Invoice models
     InvoiceResponse,
@@ -169,8 +195,30 @@ __all__ = [
     "PayrollDeduction",
     "PayrollDisability",
     "PayrollComplement",
-    "LadingComplement",
+    "CartaPorteComplement",
     "InvoiceComplement",
+    # Carta Porte models
+    "UbicacionDomicilio",
+    "TipoFiguraDomicilio",
+    "RegimenAduanero",
+    "Ubicacion",
+    "DocumentoAduanero",
+    "CantidadTransporta",
+    "DetalleMercancia",
+    "Mercancia",
+    "Remolque",
+    "Autotransporte",
+    "RemolqueCCP",
+    "ContenedorMaritimo",
+    "TransporteMaritimo",
+    "TransporteAereo",
+    "DerechoDePaso",
+    "CarroContenedor",
+    "Carro",
+    "TransporteFerroviario",
+    "ParteTransporte",
+    "TipoFigura",
+    "CartaPorteComplement",
     # Invoice models
     "InvoiceResponse",
     "Invoice",
