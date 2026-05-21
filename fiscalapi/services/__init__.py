@@ -12,6 +12,7 @@ from .fiscalapi_client import FiscalApiClient
 from .invoice_service import InvoiceService
 from .people_service import PeopleService
 from .product_service import ProductService
+from .manifest_service import ManifestService
 from .stamp_service import StampService
 from .tax_file_service import TaxFileService
 
@@ -26,6 +27,7 @@ __all__ = [
     "EmployerService",
     "FiscalApiClient",
     "InvoiceService",
+    "ManifestService",
     "PeopleService",
     "ProductService",
     "StampService",
