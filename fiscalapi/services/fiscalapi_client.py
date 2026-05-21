@@ -9,11 +9,12 @@ from fiscalapi.services.download_catalog_service import DownloadCatalogService
 from fiscalapi.services.download_rule_service import DownloadRuleService
 from fiscalapi.services.download_request_service import DownloadRequestService
 from fiscalapi.services.stamp_service import StampService
+from fiscalapi.services.manifest_service import ManifestService
 
 
 
 class FiscalApiClient:
-    
+
     def __init__(self, settings: FiscalApiSettings):
         self.products = ProductService(settings)
         self.people = PeopleService(settings)
@@ -25,4 +26,5 @@ class FiscalApiClient:
         self.download_rules = DownloadRuleService(settings)
         self.download_requests = DownloadRequestService(settings)
         self.stamps = StampService(settings)
+        self.manifests = ManifestService(settings)
         self.settings = settings

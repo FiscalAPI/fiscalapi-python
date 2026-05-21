@@ -47,6 +47,26 @@ from .models.carta_porte_models import (
     CartaPorteComplement,
 )
 
+# Modelos de Comercio Exterior
+from .models.comercio_exterior_models import (
+    ComercioExteriorEmisorDomicilio,
+    ComercioExteriorReceptorDomicilio,
+    ComercioExteriorDestinatarioDomicilio,
+    ComercioExteriorEmisor,
+    ComercioExteriorPropietario,
+    ComercioExteriorReceptor,
+    ComercioExteriorDestinatario,
+    ComercioExteriorMercanciaDescripcionEspecifica,
+    ComercioExteriorMercancia,
+    ComercioExteriorComplement,
+)
+
+# Modelos de firma de manifiestos
+from .models.manifest_models import (
+    SignManifestRequest,
+    SignManifestResponse,
+)
+
 # Modelos de dominio
 from .models.fiscalapi_models import (
     # Product models
@@ -141,6 +161,7 @@ from .services.people_service import PeopleService
 from .services.product_service import ProductService
 from .services.tax_file_service import TaxFileService
 from .services.stamp_service import StampService
+from .services.manifest_service import ManifestService
 
 # Cliente principal
 from .services.fiscalapi_client import FiscalApiClient
@@ -219,6 +240,17 @@ __all__ = [
     "ParteTransporte",
     "TipoFigura",
     "CartaPorteComplement",
+    # Comercio Exterior models
+    "ComercioExteriorEmisorDomicilio",
+    "ComercioExteriorReceptorDomicilio",
+    "ComercioExteriorDestinatarioDomicilio",
+    "ComercioExteriorEmisor",
+    "ComercioExteriorPropietario",
+    "ComercioExteriorReceptor",
+    "ComercioExteriorDestinatario",
+    "ComercioExteriorMercanciaDescripcionEspecifica",
+    "ComercioExteriorMercancia",
+    "ComercioExteriorComplement",
     # Invoice models
     "InvoiceResponse",
     "Invoice",
@@ -251,6 +283,9 @@ __all__ = [
     "UserLookupDto",
     "StampTransaction",
     "StampTransactionParams",
+    # Manifest models
+    "SignManifestRequest",
+    "SignManifestResponse",
     # Servicios
     "BaseService",
     "ApiKeyService",
@@ -265,6 +300,7 @@ __all__ = [
     "ProductService",
     "TaxFileService",
     "StampService",
+    "ManifestService",
     # Cliente principal
     "FiscalApiClient",
 ]

@@ -2,6 +2,7 @@ from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
+from fiscalapi.models.comercio_exterior_models import ComercioExteriorComplement
 from typing import Literal, Optional
 from datetime import datetime
 
@@ -74,7 +75,9 @@ class Person(BaseDto):
     committed_balance: Optional[Decimal] = Field(default=None, alias="committedBalance", description="Saldo en tránsito.")
     tenant_id: Optional[str] = Field(default=None, alias="tenantId", description="ID del tenant al que pertenece el emisor.")
     tenant: Optional[CatalogDto] = Field(default=None, alias="tenant", description="Tenant expandido.")
-    
+    country_id: Optional[str] = Field(default=None, alias="countryId", description="Código del país de residencia para extranjeros (catálogo c_Pais).")
+    foreign_tin: Optional[str] = Field(default=None, alias="foreignTin", description="Número de identificación fiscal del extranjero.")
+
     model_config = ConfigDict(
         populate_by_name=True,
         json_encoders={Decimal: str}
@@ -218,6 +221,7 @@ class InvoiceRecipient(BaseDto):
     cfdi_use_code: Optional[str] = Field(default=None, alias="cfdiUseCode", description="Código del uso CFDI.")
     email: Optional[str] = Field(default=None, description="Correo electrónico del receptor.")
     foreign_country_code: Optional[str] = Field(default=None, alias="foreignCountryCode", description="Código del país de residencia para extranjeros.")
+    country_id: Optional[str] = Field(default=None, alias="countryId", description="Código del país de residencia para extranjeros (catálogo c_Pais).")
     foreign_tin: Optional[str] = Field(default=None, alias="foreignTin", description="Número de identificación fiscal del extranjero.")
     employee_data: Optional[InvoiceRecipientEmployeeData] = Field(default=None, alias="employeeData", description="Datos del empleado para CFDI de nómina.")
 
@@ -529,6 +533,7 @@ class InvoiceComplement(BaseDto):
     payment: Optional[PaymentComplement] = Field(default=None, alias="payment", description="Complemento de pago.")
     payroll: Optional[PayrollComplement] = Field(default=None, alias="payroll", description="Complemento de nómina.")
     carta_porte: Optional[CartaPorteComplement] = Field(default=None, alias="cartaPorte", description="Complemento carta porte.")
+    comercio_exterior: Optional[ComercioExteriorComplement] = Field(default=None, alias="comercioExterior", description="Complemento comercio exterior.")
 
     model_config = ConfigDict(populate_by_name=True)
 

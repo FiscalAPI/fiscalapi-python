@@ -33,6 +33,24 @@ from .carta_porte_models import (
     TipoFigura,
     CartaPorteComplement,
 )
+from .comercio_exterior_models import (
+    # Comercio Exterior models
+    ComercioExteriorEmisorDomicilio,
+    ComercioExteriorReceptorDomicilio,
+    ComercioExteriorDestinatarioDomicilio,
+    ComercioExteriorEmisor,
+    ComercioExteriorPropietario,
+    ComercioExteriorReceptor,
+    ComercioExteriorDestinatario,
+    ComercioExteriorMercanciaDescripcionEspecifica,
+    ComercioExteriorMercancia,
+    ComercioExteriorComplement,
+)
+from .manifest_models import (
+    # Manifest models
+    SignManifestRequest,
+    SignManifestResponse,
+)
 from .fiscalapi_models import (
     # Product models
     ProductTax,
@@ -137,6 +155,17 @@ __all__ = [
     "ParteTransporte",
     "TipoFigura",
     "CartaPorteComplement",
+    # Comercio Exterior models
+    "ComercioExteriorEmisorDomicilio",
+    "ComercioExteriorReceptorDomicilio",
+    "ComercioExteriorDestinatarioDomicilio",
+    "ComercioExteriorEmisor",
+    "ComercioExteriorPropietario",
+    "ComercioExteriorReceptor",
+    "ComercioExteriorDestinatario",
+    "ComercioExteriorMercanciaDescripcionEspecifica",
+    "ComercioExteriorMercancia",
+    "ComercioExteriorComplement",
     "BaseDto",
     "CatalogDto",
     "FiscalApiSettings",
@@ -218,4 +247,7 @@ __all__ = [
     "UserLookupDto",
     "StampTransaction",
     "StampTransactionParams",
+    # Manifest models
+    "SignManifestRequest",
+    "SignManifestResponse",
 ]
