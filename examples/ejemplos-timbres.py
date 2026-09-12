@@ -6,23 +6,20 @@ Este archivo contiene ejemplos para:
 - Obtener una transaccion por ID
 - Transferir timbres entre personas
 - Retirar timbres
+- Transferir y retirar creditos de validacion SAT
 """
 
-from fiscalapi import FiscalApiClient, FiscalApiSettings, StampTransactionParams
+from fiscalapi import CreditType, FiscalApiClient, FiscalApiSettings, StampTransactionParams
 
 # IDs de personas para los ejemplos
-escuela_kemper_urgate_id = "2e7b988f-3a2a-4f67-86e9-3f931dd48581"
-karla_fuente_nolasco_id = "109f4d94-63ea-4a21-ab15-20c8b87d8ee9"
-organicos_navez_osorio_id = "f645e146-f80e-40fa-953f-fd1bd06d4e9f"
-xochilt_casas_chavez_id = "e3b4edaa-e4d9-4794-9c5b-3dd5b7e372aa"
-ingrid_xodar_jimenez_id = "9367249f-f0ee-43f4-b771-da2fff3f185f"
-OSCAR_KALA_HAAK = "5fd9f48c-a6a2-474f-944b-88a01751d432"
+TEST_LOCAL_ID = "e0dee1ae-3822-4469-af67-36de8e870a98"
+LOCAL_TEST_INC_ID = "0d469952-2174-4bcf-856c-218edf7f5215"
 
 # Configuracion del cliente
 settings = FiscalApiSettings(
-    # api_url="https://test.fiscalapi.com",
-    # api_key="<API_KEY>",
-    # tenant="<TENANT_KEY>"
+    api_url="https://test.fiscalapi.com",
+    api_key="<API_KEY>",
+    tenant="<TENANT_KEY>"
 )
 
 client = FiscalApiClient(settings=settings)
@@ -50,12 +47,19 @@ def listar_transacciones():
 def obtener_transaccion_por_id():
     """
     Obtiene una transaccion de timbres por su ID.
+
+    Toma el ID de la primera transaccion del listado para que el ejemplo sea auto-suficiente.
     """
     print("\n" + "=" * 60)
     print("2. OBTENER TRANSACCION POR ID")
     print("=" * 60)
 
-    transaction_id = "77678d6d-94b1-4635-aa91-15cdd7423aab"
+    listado = client.stamps.get_list(page_number=1, page_size=1)
+    if not listado.succeeded or not listado.data.items:
+        print("No hay transacciones para consultar.")
+        return listado
+
+    transaction_id = listado.data.items[0].id
 
     api_response = client.stamps.get_by_id(transaction_id)
     print(f"Response: {api_response}")
@@ -74,8 +78,8 @@ def transferir_timbres():
     print("=" * 60)
 
     params = StampTransactionParams(
-        from_person_id=OSCAR_KALA_HAAK,
-        to_person_id=karla_fuente_nolasco_id,
+        from_person_id=TEST_LOCAL_ID,
+        to_person_id=LOCAL_TEST_INC_ID,
         amount=1,
         comments="Transferencia de prueba desde SDK Python"
     )
@@ -97,10 +101,63 @@ def retirar_timbres():
     print("=" * 60)
 
     params = StampTransactionParams(
-        from_person_id=OSCAR_KALA_HAAK,
-        to_person_id=xochilt_casas_chavez_id,
+        from_person_id=TEST_LOCAL_ID,
+        to_person_id=LOCAL_TEST_INC_ID,
         amount=1,
         comments="Retiro de timbres desde SDK Python"
+    )
+
+    api_response = client.stamps.withdraw_stamps(params)
+    print(f"Response: {api_response}")
+    return api_response
+
+
+# ============================================================================
+# 5. TRANSFERIR CREDITOS DE VALIDACION
+# ============================================================================
+def transferir_creditos_de_validacion():
+    """
+    Transfiere creditos de validacion SAT de una persona a otra.
+
+    Es el mismo endpoint que los timbres; lo unico que cambia es credit_type. Los saldos nunca
+    se mezclan: VALIDATION mueve available_validation_balance, STAMP mueve available_balance.
+    """
+    print("\n" + "=" * 60)
+    print("5. TRANSFERIR CREDITOS DE VALIDACION")
+    print("=" * 60)
+
+    params = StampTransactionParams(
+        from_person_id=TEST_LOCAL_ID,
+        to_person_id=LOCAL_TEST_INC_ID,
+        amount=1,
+        comments="Transferencia de creditos de validacion desde SDK Python",
+        credit_type=CreditType.VALIDATION
+    )
+
+    api_response = client.stamps.transfer_stamps(params)
+    print(f"Response: {api_response}")
+    return api_response
+
+
+# ============================================================================
+# 6. RETIRAR CREDITOS DE VALIDACION
+# ============================================================================
+def retirar_creditos_de_validacion():
+    """
+    Retira creditos de validacion SAT de una persona.
+
+    Un retiro es una transferencia con origen y destino invertidos.
+    """
+    print("\n" + "=" * 60)
+    print("6. RETIRAR CREDITOS DE VALIDACION")
+    print("=" * 60)
+
+    params = StampTransactionParams(
+        from_person_id=LOCAL_TEST_INC_ID,
+        to_person_id=TEST_LOCAL_ID,
+        amount=1,
+        comments="Retiro de creditos de validacion desde SDK Python",
+        credit_type=CreditType.VALIDATION
     )
 
     api_response = client.stamps.withdraw_stamps(params)
@@ -126,6 +183,12 @@ def main():
 
     # 4. Retirar timbres
     retirar_timbres()
+
+    # 5. Transferir creditos de validacion
+    transferir_creditos_de_validacion()
+
+    # 6. Retirar creditos de validacion
+    retirar_creditos_de_validacion()
 
 
 if __name__ == "__main__":

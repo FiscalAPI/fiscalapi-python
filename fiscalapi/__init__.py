@@ -66,6 +66,15 @@ from .models.manifest_models import (
     SignManifestRequest,
     SignManifestResponse,
 )
+from .models.sat_validation_models import (
+    SatValidationTypeIds,
+    SatValidationStatusIds,
+    SatValidationRequest,
+    SatValidationType,
+    SatValidationTypeStatus,
+    SatValidationStatus,
+    SatValidationResult,
+)
 
 # Modelos de dominio
 from .models.fiscalapi_models import (
@@ -111,7 +120,6 @@ from .models.fiscalapi_models import (
     PayrollDeduction,
     PayrollDisability,
     PayrollComplement,
-    CartaPorteComplement,
     InvoiceComplement,
     # Invoice models
     InvoiceResponse,
@@ -142,6 +150,9 @@ from .models.fiscalapi_models import (
     XmlComplement,
     Xml,
     # Stamp models
+    CreditType,
+    StampTransactionType,
+    StampTransactionStatus,
     UserLookupDto,
     StampTransaction,
     StampTransactionParams,
@@ -160,6 +171,7 @@ from .services.invoice_service import InvoiceService
 from .services.people_service import PeopleService
 from .services.product_service import ProductService
 from .services.tax_file_service import TaxFileService
+from .services.sat_validation_service import SatValidationService
 from .services.stamp_service import StampService
 from .services.manifest_service import ManifestService
 
@@ -216,7 +228,6 @@ __all__ = [
     "PayrollDeduction",
     "PayrollDisability",
     "PayrollComplement",
-    "CartaPorteComplement",
     "InvoiceComplement",
     # Carta Porte models
     "UbicacionDomicilio",
@@ -224,6 +235,7 @@ __all__ = [
     "RegimenAduanero",
     "Ubicacion",
     "DocumentoAduanero",
+    "GuiaIdentificacion",
     "CantidadTransporta",
     "DetalleMercancia",
     "Mercancia",
@@ -280,12 +292,23 @@ __all__ = [
     "XmlComplement",
     "Xml",
     # Stamp models
+    "CreditType",
+    "StampTransactionType",
+    "StampTransactionStatus",
     "UserLookupDto",
     "StampTransaction",
     "StampTransactionParams",
     # Manifest models
     "SignManifestRequest",
     "SignManifestResponse",
+    # SAT validation models
+    "SatValidationTypeIds",
+    "SatValidationStatusIds",
+    "SatValidationRequest",
+    "SatValidationType",
+    "SatValidationTypeStatus",
+    "SatValidationStatus",
+    "SatValidationResult",
     # Servicios
     "BaseService",
     "ApiKeyService",
@@ -299,6 +322,7 @@ __all__ = [
     "PeopleService",
     "ProductService",
     "TaxFileService",
+    "SatValidationService",
     "StampService",
     "ManifestService",
     # Cliente principal

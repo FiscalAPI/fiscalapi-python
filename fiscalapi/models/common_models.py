@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Any, Generic, Optional, TypeVar
 from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_snake
 
 T = TypeVar('T')
 
@@ -12,10 +11,7 @@ class ApiResponse(BaseModel, Generic[T]):
     data: Optional[T] = Field(default=None, alias="data")
     http_status_code: Optional[int] = Field(default=None, alias="httpStatusCode")
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        alias_generator=to_snake
-    )
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class PagedList(BaseModel, Generic[T]):
