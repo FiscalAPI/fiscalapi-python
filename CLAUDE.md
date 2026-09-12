@@ -46,7 +46,8 @@ FiscalApiClient (Facade)
         ├── tax_file_service.py       → CSD/FIEL certificate uploads
         ├── api_key_service.py        → API key management
         ├── catalog_service.py        → SAT catalog searches
-        ├── stamp_service.py          → Stamp (timbres) transactions
+        ├── stamp_service.py          → Stamp/validation credit ledger transactions
+        ├── sat_validation_service.py → SAT validations (structure, seals, status, 69-B blacklists)
         └── download_*_service.py     → Bulk download management
 ```
 
@@ -61,13 +62,15 @@ client = FiscalApiClient(settings=settings)
 client.invoices.create(invoice)
 client.people.get_list(page_num, page_size)
 client.stamps.get_list(page_num, page_size)
+client.sat_validations.validate(request)
 ```
 
 ### Models (Pydantic v2)
 
 Located in `fiscalapi/models/`:
 - **common_models.py** - Base DTOs: `ApiResponse[T]`, `PagedList[T]`, `ValidationFailure`, `FiscalApiSettings`
-- **fiscalapi_models.py** - Domain models: `Invoice`, `Person`, `Product`, `TaxFile`, payroll complements, stamp transactions
+- **fiscalapi_models.py** - Domain models: `Invoice`, `Person`, `Product`, `TaxFile`, payroll complements, stamp transactions and the ledger enums (`CreditType`, `StampTransactionType`, `StampTransactionStatus`)
+- **sat_validation_models.py** - SAT validation models and the `SatValidationTypeIds` / `SatValidationStatusIds` id enums
 
 **Key Pattern - Field Aliasing:** Models use Pydantic `Field(alias="...")` for API JSON field mapping. When serializing, use `by_alias=True` and `exclude_none=True`.
 
@@ -104,7 +107,7 @@ from fiscalapi.services import InvoiceService, StampService
 
 ## Key Files
 
-- `fiscalapi/__init__.py` - Central exports for all 85 public types (models + services)
+- `fiscalapi/__init__.py` - Central exports for every public type (models + services); keep `__all__` free of duplicates
 - `fiscalapi/services/base_service.py` - HTTP client, serialization, response handling
 - `fiscalapi/services/fiscalapi_client.py` - Main client facade
 - `setup.py` - Package metadata, version, and dependencies
@@ -116,13 +119,17 @@ All example files are located in the `examples/` directory:
 - `examples/examples.py` - General usage examples (all invoice types)
 - `examples/ejemplos-facturas-de-nomina.py` - Payroll invoice examples (13 types)
 - `examples/ejemplos-facturas-de-complemento-pago.py` - Payment complement examples
-- `examples/ejemplos-timbres.py` - Stamp service examples
+- `examples/ejemplos-timbres.py` - Stamp and validation credit examples
+- `examples/ejemplos-validaciones-sat.py` - SAT validation examples
+- `examples/ejemplos-firma-manifiestos.py` - Manifest signing examples
 - `examples/ejemplos-factura-impuestos-locales-valores.py` - Local taxes examples (by values)
 - `examples/ejemplos-factura-impuestos-locales-referencias.py` - Local taxes examples (by references)
+- `examples/ejemplos-factura-carta-porte-valores.py` - Carta Porte examples (by values)
+- `examples/ejemplos-factura-carta-porte-referencias.py` - Carta Porte examples (by references)
+- `examples/ejemplos-factura-comercio-exterior-valores.py` - Comercio Exterior examples (by values)
+- `examples/ejemplos-factura-comercio-exterior-referencias.py` - Comercio Exterior examples (by references)
 
-## Reference Documentation
-
-- `payroll-requirements.md` - Detailed payroll implementation spec with all models, services, and SAT codes
+There is no unit test suite: changes are verified by running these examples against a live API.
 
 ## Dependencies
 
@@ -167,7 +174,7 @@ pip install -r requirements.txt
 1. Create service class inheriting from `BaseService` in `fiscalapi/services/`
 2. Export from `fiscalapi/services/__init__.py`
 3. Export from `fiscalapi/__init__.py`
-4. Add property to `FiscalApiClient` class
+4. Add an attribute to `FiscalApiClient.__init__` (the facade uses plain attributes, not properties)
 
 ## External Resources
 

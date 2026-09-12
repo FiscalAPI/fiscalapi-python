@@ -8,6 +8,7 @@ from fiscalapi.services.api_key_service import ApiKeyService
 from fiscalapi.services.download_catalog_service import DownloadCatalogService
 from fiscalapi.services.download_rule_service import DownloadRuleService
 from fiscalapi.services.download_request_service import DownloadRequestService
+from fiscalapi.services.sat_validation_service import SatValidationService
 from fiscalapi.services.stamp_service import StampService
 from fiscalapi.services.manifest_service import ManifestService
 
@@ -26,5 +27,6 @@ class FiscalApiClient:
         self.download_rules = DownloadRuleService(settings)
         self.download_requests = DownloadRequestService(settings)
         self.stamps = StampService(settings)
+        self.sat_validations = SatValidationService(settings)
         self.manifests = ManifestService(settings)
         self.settings = settings

@@ -42,7 +42,10 @@ class StampService(BaseService):
         return self.send_request("GET", endpoint, StampTransaction)
 
     def transfer_stamps(self, request: StampTransactionParams) -> ApiResponse[bool]:
-        """Transfer stamps from one person to another.
+        """Transfer stamps or validation credits from one person to another.
+
+        Use ``request.credit_type`` to pick which balance moves: ``CreditType.STAMP`` (default) moves
+        stamps, ``CreditType.VALIDATION`` moves SAT validation credits. The two balances never mix.
 
         Args:
             request: StampTransactionParams containing transfer details.
@@ -54,7 +57,11 @@ class StampService(BaseService):
         return self.send_request("POST", endpoint, bool, payload=request)
 
     def withdraw_stamps(self, request: StampTransactionParams) -> ApiResponse[bool]:
-        """Withdraw stamps from a person (convenience wrapper for transfer_stamps).
+        """Withdraw stamps or validation credits from a person.
+
+        A withdrawal is a transfer with the origin and destination swapped: the API exposes a single
+        transfer endpoint, so this is an alias of :meth:`transfer_stamps` kept for readability at the
+        call site. Build ``request`` with the person you are withdrawing from as ``from_person_id``.
 
         Args:
             request: StampTransactionParams containing withdrawal details.

@@ -39,10 +39,6 @@
 - **Datos de empleado** (agrega/actualiza/elimina datos de empleado a una persona. CFDI Nómina)
 - **Datos de empleador** (agrega/actualiza/elimina datos de empleador a una persona. CFDI Nómina)
 
-## 🎖️ Gestión de Timbres 
-- **Gestión de folios fiscales** Compra timbres a fiscalapi y transfiere/retira a las personas de tu organizacion segun tus reglas de negocio.
-
-
 ## 🛍️ Gestión de Productos/Servicios
 - **Gestión de productos y servicios** con catálogo personalizable
 - **Administración de impuestos aplicables** (IVA, ISR, IEPS)
@@ -53,11 +49,21 @@
 - **Búsqueda de información** en catálogos del SAT con filtros avanzados
 - **Acceso y búsqueda** en catálogos completos
 
-## 🎫 Gestión de Timbres
-- **Listar transacciones de timbres** con paginación
+## 🎫 Gestión de Timbres y Créditos de Validación
+- **Gestión de folios fiscales**: compra timbres a FiscalAPI y transfiere/retira a las personas de tu organización según tus reglas de negocio
+- **Listar transacciones** del ledger con paginación
 - **Consultar transacciones** por ID
 - **Transferir timbres** entre personas
 - **Retirar timbres** de una persona
+- **Transferir y retirar créditos de validación SAT** con `credit_type=CreditType.VALIDATION`
+
+## 🛡️ Validaciones SAT
+- **Estructura del XML** contra el Anexo 20 y los complementos declarados
+- **Vigencia del certificado** del emisor a la fecha de emisión
+- **Sello del CFDI** y **sello del SAT** en el Timbre Fiscal Digital
+- **Estatus del comprobante** en el SAT (vigente, cancelado, no encontrado)
+- **Listas negras del artículo 69-B y 69-B Bis** del CFF, por CFDI o por RFC
+- **Catálogo de tipos de validación** y de los estatus que cada uno puede tomar
 
 ## 📖 Recursos Adicionales
 - **Cientos de ejemplos de código** disponibles en múltiples lenguajes de programación
@@ -319,6 +325,80 @@ else:
     print(api_response.message)
 ```
 
+### 8. Validaciones SAT
+
+Cada tipo de validación solicitado consume un crédito de validación. El cobro es todo o nada: si el saldo no alcanza para todos, no se ejecuta ninguno y la API responde 403.
+
+```python
+import base64
+from pathlib import Path
+from fiscalapi import SatValidationRequest, SatValidationTypeIds
+
+# Validar un CFDI timbrado: con xml puedes solicitar cualquier tipo de validación
+request = SatValidationRequest(
+    xml=base64.b64encode(Path("factura.xml").read_bytes()).decode("ascii"),
+    validation_types=[
+        SatValidationTypeIds.XML_STRUCTURE,
+        SatValidationTypeIds.CFDI_SELLO,
+        SatValidationTypeIds.CFDI_STATUS,
+        SatValidationTypeIds.BLACKLIST_69B,
+    ]
+)
+
+api_response = client.sat_validations.validate(request)
+
+if api_response.succeeded:
+    for result in api_response.data:
+        veredicto = "PASSED" if result.passed else "FAILED"
+        print(f"[{veredicto}] {result.type.id.value} -> {result.status.id.value}")
+        if result.status.details:
+            print(f"          {result.status.details}")
+else:
+    print(api_response.details)
+```
+
+Para consultar únicamente listas negras basta el RFC, sin enviar el CFDI:
+
+```python
+request = SatValidationRequest(
+    tin="FUNK671228PH6",
+    validation_types=[
+        SatValidationTypeIds.BLACKLIST_69B,
+        SatValidationTypeIds.BLACKLIST_69B_BIS,
+    ]
+)
+
+api_response = client.sat_validations.validate(request)
+```
+
+Envía `xml` o `tin`, nunca ambos y nunca ninguno: con `tin` solo se pueden solicitar listas negras.
+
+El catálogo de tipos y los estatus que cada tipo puede tomar se consultan sin consumir créditos:
+
+```python
+api_response = client.sat_validations.get_types()
+api_response = client.sat_validations.get_type_by_id(SatValidationTypeIds.CFDI_STATUS)
+api_response = client.sat_validations.get_statuses(SatValidationTypeIds.CFDI_STATUS)
+```
+
+### 9. Transferir Créditos de Validación
+
+Los saldos nunca se mezclan: `CreditType.STAMP` mueve timbres (`available_balance`) y `CreditType.VALIDATION` mueve créditos de validación (`available_validation_balance`).
+
+```python
+from fiscalapi import CreditType, StampTransactionParams
+
+params = StampTransactionParams(
+    from_person_id="3f3478b4-60fd-459e-8bfc-f8239fc96257",
+    to_person_id="96b46762-d246-4a67-a562-510a25dbafa9",
+    amount=10,
+    comments="Asignación de créditos de validación",
+    credit_type=CreditType.VALIDATION
+)
+
+api_response = client.stamps.transfer_stamps(params)
+```
+
 ## 📋 Operaciones Principales
 
 - **Facturas (CFDI)**
@@ -327,12 +407,15 @@ else:
   Alta y administración de personas, gestión de certificados (CSD).
 - **Productos y Servicios**
   Administración de catálogos de productos, búsqueda en catálogos SAT.
-- **Timbres**
-  Listar transacciones, transferir y retirar timbres entre personas.
+- **Timbres y créditos de validación**
+  Listar transacciones, transferir y retirar timbres o créditos de validación entre personas.
+- **Validaciones SAT**
+  Validar estructura, certificado, sellos, estatus en el SAT y listas negras 69-B de un CFDI o un RFC.
 
 ## 📂 Más Ejemplos
 
 - [Gestión de Timbres](examples/ejemplos-timbres.py)
+- [Validaciones SAT](examples/ejemplos-validaciones-sat.py)
 - [Complementos de Pago](examples/ejemplos-facturas-de-complemento-pago.py)
 - [Facturas de Nómina](examples/ejemplos-facturas-de-nomina.py)
 - [Impuestos Locales (Por Valores)](examples/ejemplos-factura-impuestos-locales-valores.py)

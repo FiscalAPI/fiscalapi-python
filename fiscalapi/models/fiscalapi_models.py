@@ -1,4 +1,5 @@
 from decimal import Decimal
+from enum import IntEnum
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
@@ -73,6 +74,7 @@ class Person(BaseDto):
     tax_password: Optional[str] = Field(default=None, alias="taxPassword", description="Contraseña de los certificados CSD del emisor.")
     available_balance: Optional[Decimal] = Field(default=None, alias="availableBalance", description="Saldo disponible en la cuenta.")
     committed_balance: Optional[Decimal] = Field(default=None, alias="committedBalance", description="Saldo en tránsito.")
+    available_validation_balance: Optional[int] = Field(default=None, alias="availableValidationBalance", description="Créditos de validación SAT disponibles en la cuenta.")
     tenant_id: Optional[str] = Field(default=None, alias="tenantId", description="ID del tenant al que pertenece el emisor.")
     tenant: Optional[CatalogDto] = Field(default=None, alias="tenant", description="Tenant expandido.")
     country_id: Optional[str] = Field(default=None, alias="countryId", description="Código del país de residencia para extranjeros (catálogo c_Pais).")
@@ -1038,6 +1040,35 @@ class Xml(BaseDto):
 
 # Stamp models
 
+class CreditType(IntEnum):
+    """Tipo de crédito de una transacción de timbres.
+
+    Los saldos nunca se mezclan: STAMP afecta ``Person.available_balance`` y VALIDATION afecta
+    ``Person.available_validation_balance``.
+    """
+
+    STAMP = 1
+    VALIDATION = 2
+
+
+class StampTransactionType(IntEnum):
+    """Tipo de movimiento en el ledger de timbres."""
+
+    PURCHASE = 1
+    TRANSFER = 2
+    CONSUMPTION = 3
+    AUTO_INVOICE = 4
+    ROLLBACK = 5
+
+
+class StampTransactionStatus(IntEnum):
+    """Estado de un movimiento en el ledger de timbres."""
+
+    COMPLETED = 1
+    CANCELLED = 2
+    ROLLED_BACK = 3
+
+
 class UserLookupDto(BaseDto):
     """Lookup DTO for user/person references in stamp transactions."""
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del usuario.")
@@ -1056,6 +1087,7 @@ class StampTransaction(BaseDto):
     transaction_status: Optional[int] = Field(default=None, alias="transactionStatus", description="Estado de la transacción.")
     reference_id: Optional[str] = Field(default=None, alias="referenceId", description="ID de referencia de la transacción.")
     comments: Optional[str] = Field(default=None, alias="comments", description="Comentarios de la transacción.")
+    credit_type: Optional[CreditType] = Field(default=None, alias="creditType", description="Tipo de crédito que mueve la transacción: timbres o créditos de validación.")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -1066,5 +1098,6 @@ class StampTransactionParams(BaseModel):
     to_person_id: str = Field(default=..., alias="toPersonId", description="ID de la persona destino.")
     amount: int = Field(default=..., alias="amount", description="Cantidad de timbres a transferir.")
     comments: Optional[str] = Field(default=None, alias="comments", description="Comentarios de la transferencia.")
+    credit_type: CreditType = Field(default=CreditType.STAMP, alias="creditType", description="Tipo de crédito a transferir: STAMP (timbres, por defecto) o VALIDATION (créditos de validación SAT).")
 
     model_config = ConfigDict(populate_by_name=True)

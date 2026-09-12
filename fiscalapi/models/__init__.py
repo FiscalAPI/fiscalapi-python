@@ -51,6 +51,16 @@ from .manifest_models import (
     SignManifestRequest,
     SignManifestResponse,
 )
+from .sat_validation_models import (
+    # SAT validation models
+    SatValidationTypeIds,
+    SatValidationStatusIds,
+    SatValidationRequest,
+    SatValidationType,
+    SatValidationTypeStatus,
+    SatValidationStatus,
+    SatValidationResult,
+)
 from .fiscalapi_models import (
     # Product models
     ProductTax,
@@ -94,7 +104,6 @@ from .fiscalapi_models import (
     PayrollDeduction,
     PayrollDisability,
     PayrollComplement,
-    CartaPorteComplement,
     InvoiceComplement,
     # Invoice models
     InvoiceResponse,
@@ -125,6 +134,9 @@ from .fiscalapi_models import (
     XmlComplement,
     Xml,
     # Stamp models
+    CreditType,
+    StampTransactionType,
+    StampTransactionStatus,
     UserLookupDto,
     StampTransaction,
     StampTransactionParams,
@@ -133,12 +145,18 @@ from .fiscalapi_models import (
 __all__ = [
     # common_models
     "ApiResponse",
+    "BaseDto",
+    "CatalogDto",
+    "FiscalApiSettings",
+    "PagedList",
+    "ValidationFailure",
     # Carta Porte models
     "UbicacionDomicilio",
     "TipoFiguraDomicilio",
     "RegimenAduanero",
     "Ubicacion",
     "DocumentoAduanero",
+    "GuiaIdentificacion",
     "CantidadTransporta",
     "DetalleMercancia",
     "Mercancia",
@@ -166,11 +184,6 @@ __all__ = [
     "ComercioExteriorMercanciaDescripcionEspecifica",
     "ComercioExteriorMercancia",
     "ComercioExteriorComplement",
-    "BaseDto",
-    "CatalogDto",
-    "FiscalApiSettings",
-    "PagedList",
-    "ValidationFailure",
     # Product models
     "ProductTax",
     "Product",
@@ -213,7 +226,6 @@ __all__ = [
     "PayrollDeduction",
     "PayrollDisability",
     "PayrollComplement",
-    "CartaPorteComplement",
     "InvoiceComplement",
     # Invoice models
     "InvoiceResponse",
@@ -244,10 +256,21 @@ __all__ = [
     "XmlComplement",
     "Xml",
     # Stamp models
+    "CreditType",
+    "StampTransactionType",
+    "StampTransactionStatus",
     "UserLookupDto",
     "StampTransaction",
     "StampTransactionParams",
     # Manifest models
     "SignManifestRequest",
     "SignManifestResponse",
+    # SAT validation models
+    "SatValidationTypeIds",
+    "SatValidationStatusIds",
+    "SatValidationRequest",
+    "SatValidationType",
+    "SatValidationTypeStatus",
+    "SatValidationStatus",
+    "SatValidationResult",
 ]

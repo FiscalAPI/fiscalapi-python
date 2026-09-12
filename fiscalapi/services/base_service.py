@@ -66,25 +66,27 @@ class BaseService:
             )
 
         if 200 <= status_code < 300:
+            # Una respuesta 2xx sin "data" es válida (por ejemplo un 204): no debe romper el SDK.
+            data = response_data.get("data")
             # -- Manejo de data con modelos pydantic o lista de modelos pydantic
             origin = get_origin(response_model)
-            if origin == list:
+            if origin is list:
                 # Significa que es algo como list[TaxFile]
                 (model_type,) = get_args(response_model)
                 # Validar cada elemento de la lista si data es una lista
-                if issubclass(model_type, BaseModel) and isinstance(response_data["data"], list):
+                if isinstance(model_type, type) and issubclass(model_type, BaseModel) and isinstance(data, list):
                     response_data["data"] = [
-                        model_type.model_validate(item) 
-                        for item in response_data["data"]
+                        model_type.model_validate(item)
+                        for item in data
                     ]
             else:
                 # Manejo de caso donde response_model es un modelo Pydantic "simple"
                 if (
-                    isinstance(response_model, type) 
-                    and issubclass(response_model, BaseModel) 
-                    and isinstance(response_data["data"], dict)
+                    isinstance(response_model, type)
+                    and issubclass(response_model, BaseModel)
+                    and isinstance(data, dict)
                 ):
-                    response_data["data"] = response_model.model_validate(response_data["data"])
+                    response_data["data"] = response_model.model_validate(data)
 
             # Finalmente se parsea la respuesta como ApiResponse[T]
             return ApiResponse[T].model_validate(response_data)
