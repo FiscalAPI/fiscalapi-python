@@ -7,14 +7,15 @@
 # Cada caso de uso expone dos funciones:
 #   1. xxx_update_people()   -> Sincroniza emisor (issuer_id) y receptor
 #                               (recipient_id) en el sistema usando
-#                               client.people.update(...).
+#                               update_person(...).
 #   2. xxx_por_referencias() -> Llama primero a xxx_update_people() y luego
 #                               crea la factura enviando issuer/recipient
 #                               unicamente con su `id`.
 #
-# Los IDs estan centralizados al inicio del archivo. Los datos de items,
-# complementos (comercioExterior y cartaPorte), totales y decimales se
-# conservan identicos a los del archivo por valores.
+# Los IDs estan centralizados al inicio del archivo. Los conceptos referencian
+# productos por id, salvo los dos casos de traslado con valor unitario 0, que los
+# declaran en linea. Los complementos (comercioExterior y cartaPorte), totales y
+# decimales se conservan identicos a los del archivo por valores.
 # ============================================================================
 
 from datetime import datetime
@@ -28,8 +29,6 @@ from fiscalapi.models.fiscalapi_models import (
     InvoiceIssuer,
     InvoiceRecipient,
     InvoiceItem,
-    ItemTax,
-    TaxCredential,
     Person,
 )
 from fiscalapi.models.comercio_exterior_models import (
@@ -69,12 +68,24 @@ current_date = datetime.now().replace(microsecond=0)
 # valida contra el DOF y, cuando no coincide, el error CCE121 informa el valor
 # esperado; actualiza esta constante con ese valor.
 tipo_cambio = Decimal("16.9722")
-issuer_id = "2e7b988f-3a2a-4f67-86e9-3f931dd48581"  # ESCUELA KEMPER URGATE
-recipient_id = "109f4d94-63ea-4a21-ab15-20c8b87d8ee9"  # KARLA FUENTES
+issuer_id = "<issuer-id>"  # ESCUELA KEMPER URGATE
+recipient_id = "<recipient-id>"  # Persona Fisica Extranjera
+
+# Productos ya registrados en FiscalAPI. Los conceptos los referencian por id: la
+# clave del SAT, la unidad, la descripcion, el precio y los impuestos los aporta el
+# producto, por lo que el concepto solo lleva el id y la cantidad.
+producto_flete_id = "<producto-flete-id>"                            # FLETE, IVA 16% T + IEPS 30% R
+producto_gomitas_id = "<producto-gomitas-id>"                        # Gomitas, IVA 16% T
+producto_pulparindo_id = "<producto-pulparindo-id>"                  # Pulparindo, IVA 16% T
+producto_cigarros_id = "<producto-cigarros-id>"                      # Cigarros, IVA 16% T + ISR 10% R + IVA 10.6666% R
+producto_cigarros_sin_ieps_id = "<producto-cigarros-sin-ieps-id>"    # Cigarros, IVA 16% T + ISR 10% R
+producto_bebida_id = "<producto-bebida-id>"                          # Bebida, IVA 16% T + ISR 10% R + IVA 10.6666% R
+producto_formula_magistral_id = "<producto-formula-magistral-id>"    # FORMULA MAGISTRAL, objeto de impuesto 01, sin impuestos
+producto_cigarros_traslado_id = "<producto-cigarros-traslado-id>"    # Cigarros, objeto de impuesto 01, sin impuestos
 
 
 
-# Helper: Emisor Kemper estandar para client.people.update(...)
+# Helper: Emisor Kemper estandar para update_person(...)
 def kemper_issuer_person():
     return Person(
         id=issuer_id,
@@ -84,6 +95,16 @@ def kemper_issuer_person():
         zip_code="42501",
         email="kemper@fiscalapi.com",
     )
+
+
+# Helper: Guardar una persona y cortar si el API rechaza el cambio, para que el
+# escenario no se timbre sobre datos que no quedaron guardados.
+def update_person(person: Person) -> None:
+    response = client.people.update(person)
+    if not response.succeeded:
+        raise RuntimeError(
+            f"No se pudo guardar la persona {person.id}: {response.message} {response.details}"
+        )
 
 
 # Helper: Imprimir respuesta de la API de forma legible
@@ -98,8 +119,8 @@ def print_response(response):
 # 1. Factura CE Ingreso Con Carta Porte 31
 # ============================================================================
 def factura_ce_ingreso_con_carta_porte_31_update_people():
-    client.people.update(kemper_issuer_person())
-    client.people.update(Person(
+    update_person(kemper_issuer_person())
+    update_person(Person(
         id=recipient_id,
         tin="XEXX010101000",
         legal_name="Persona Fisica Extranjera",
@@ -130,46 +151,9 @@ def factura_ce_ingreso_con_carta_porte_31_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=recipient_id),
         items=[
-            InvoiceItem(
-                item_code="78101800",
-                item_sku="SERV02",
-                quantity=Decimal("1.000000"),
-                unit_of_measurement_code="HUR",
-                description="FLETE",
-                unit_price=Decimal("2300.000000"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                    ItemTax(tax_code="003", tax_type_code="Tasa", tax_rate=Decimal("0.300000"), tax_flag_code="R"),
-                ],
-            ),
-            InvoiceItem(
-                item_code="50161509",
-                item_sku="A0001",
-                quantity=Decimal("1.000000"),
-                unit_of_measurement_code="H87",
-                description="Gomitas",
-                unit_price=Decimal("120.000000"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                ],
-            ),
-            InvoiceItem(
-                item_code="50307037",
-                item_sku="A0002",
-                quantity=Decimal("1.000000"),
-                unit_of_measurement_code="H87",
-                description="Pulparindo",
-                unit_price=Decimal("100.000000"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                ],
-            ),
+            InvoiceItem(id=producto_flete_id, quantity=Decimal("1.000000")),
+            InvoiceItem(id=producto_gomitas_id, quantity=Decimal("1.000000")),
+            InvoiceItem(id=producto_pulparindo_id, quantity=Decimal("1.000000")),
         ],
         complement=InvoiceComplement(
             carta_porte=CartaPorteComplement(
@@ -289,7 +273,7 @@ def factura_ce_ingreso_con_carta_porte_31_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="A0001",
+                        no_identificacion=producto_gomitas_id,
                         fraccion_arancelaria_id="4011101099",
                         cantidad_aduana=Decimal("1.000"),
                         unidad_aduana_id="06",
@@ -297,7 +281,7 @@ def factura_ce_ingreso_con_carta_porte_31_por_referencias():
                         valor_dolares=Decimal("120.00"),
                     ),
                     ComercioExteriorMercancia(
-                        no_identificacion="A0002",
+                        no_identificacion=producto_pulparindo_id,
                         fraccion_arancelaria_id="8407210299",
                         cantidad_aduana=Decimal("1.000"),
                         unidad_aduana_id="06",
@@ -316,8 +300,8 @@ def factura_ce_ingreso_con_carta_porte_31_por_referencias():
 # 2. Factura CE Ingreso Diferentes Monedas
 # ============================================================================
 def factura_ce_ingreso_diferentes_monedas_update_people():
-    client.people.update(kemper_issuer_person())
-    client.people.update(Person(
+    update_person(kemper_issuer_person())
+    update_person(Person(
         id=recipient_id,
         tin="XEXX010101000",
         legal_name="Persona Fisica Extranjera",
@@ -348,21 +332,7 @@ def factura_ce_ingreso_diferentes_monedas_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=recipient_id),
         items=[
-            InvoiceItem(
-                item_code="50211503",
-                item_sku="131494-1055",
-                quantity=Decimal("2"),
-                unit_of_measurement_code="H87",
-                description="Cigarros",
-                unit_price=Decimal("200.00"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                    ItemTax(tax_code="001", tax_type_code="Tasa", tax_rate=Decimal("0.100000"), tax_flag_code="R"),
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.106666"), tax_flag_code="R"),
-                ],
-            ),
+            InvoiceItem(id=producto_cigarros_id, quantity=Decimal("2")),
         ],
         complement=InvoiceComplement(
             comercio_exterior=ComercioExteriorComplement(
@@ -392,7 +362,7 @@ def factura_ce_ingreso_diferentes_monedas_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="131494-1055",
+                        no_identificacion=producto_cigarros_id,
                         fraccion_arancelaria_id="2402200100",
                         cantidad_aduana=Decimal("2.00"),
                         unidad_aduana_id="01",
@@ -411,8 +381,8 @@ def factura_ce_ingreso_diferentes_monedas_por_referencias():
 # 3. Factura CE Kit Parte
 # ============================================================================
 def factura_ce_kit_parte_update_people():
-    client.people.update(kemper_issuer_person())
-    client.people.update(Person(
+    update_person(kemper_issuer_person())
+    update_person(Person(
         id=recipient_id,
         tin="XEXX010101000",
         legal_name="U.S. 0026 SW",
@@ -443,28 +413,8 @@ def factura_ce_kit_parte_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=recipient_id),
         items=[
-            InvoiceItem(
-                item_code="51241200",
-                item_sku="131494-1055",
-                quantity=Decimal("1.0"),
-                unit_of_measurement_code="H87",
-                description="FORMULA MAGISTRAL",
-                unit_price=Decimal("200.00"),
-                discount=Decimal("0"),
-                tax_object_code="01",
-                item_taxes=[],
-            ),
-            InvoiceItem(
-                item_code="51241200",
-                item_sku="131494-1055",
-                quantity=Decimal("1.0"),
-                unit_of_measurement_code="H87",
-                description="FORMULA MAGISTRAL",
-                unit_price=Decimal("200.00"),
-                discount=Decimal("0"),
-                tax_object_code="01",
-                item_taxes=[],
-            ),
+            InvoiceItem(id=producto_formula_magistral_id, quantity=Decimal("1.0")),
+            InvoiceItem(id=producto_formula_magistral_id, quantity=Decimal("1.0")),
         ],
         complement=InvoiceComplement(
             comercio_exterior=ComercioExteriorComplement(
@@ -494,7 +444,7 @@ def factura_ce_kit_parte_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="131494-1055",
+                        no_identificacion=producto_formula_magistral_id,
                         fraccion_arancelaria_id="2402200100",
                         cantidad_aduana=Decimal("2"),
                         unidad_aduana_id="01",
@@ -513,8 +463,8 @@ def factura_ce_kit_parte_por_referencias():
 # 4. Factura CE Receptor Extranjero
 # ============================================================================
 def factura_ce_receptor_extranjero_update_people():
-    client.people.update(kemper_issuer_person())
-    client.people.update(Person(
+    update_person(kemper_issuer_person())
+    update_person(Person(
         id=recipient_id,
         tin="XEXX010101000",
         legal_name="U.S. 0026 SW",
@@ -545,20 +495,7 @@ def factura_ce_receptor_extranjero_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=recipient_id),
         items=[
-            InvoiceItem(
-                item_code="50211503",
-                item_sku="131494-1055",
-                quantity=Decimal("2"),
-                unit_of_measurement_code="H87",
-                description="Cigarros",
-                unit_price=Decimal("200.00"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                    ItemTax(tax_code="001", tax_type_code="Tasa", tax_rate=Decimal("0.100000"), tax_flag_code="R"),
-                ],
-            ),
+            InvoiceItem(id=producto_cigarros_sin_ieps_id, quantity=Decimal("2")),
         ],
         complement=InvoiceComplement(
             comercio_exterior=ComercioExteriorComplement(
@@ -588,7 +525,7 @@ def factura_ce_receptor_extranjero_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="131494-1055",
+                        no_identificacion=producto_cigarros_sin_ieps_id,
                         fraccion_arancelaria_id="2402200100",
                         cantidad_aduana=Decimal("117.64"),
                         unidad_aduana_id="01",
@@ -607,8 +544,8 @@ def factura_ce_receptor_extranjero_por_referencias():
 # 5. Factura CE Receptor Nacional
 # ============================================================================
 def factura_ce_receptor_nacional_update_people():
-    client.people.update(kemper_issuer_person())
-    client.people.update(Person(
+    update_person(kemper_issuer_person())
+    update_person(Person(
         id=recipient_id,
         tin="URE180429TM6",
         legal_name="UNIVERSIDAD ROBOTICA ESPAÑOLA",
@@ -637,21 +574,7 @@ def factura_ce_receptor_nacional_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=recipient_id),
         items=[
-            InvoiceItem(
-                item_code="50211503",
-                item_sku="131494-1055",
-                quantity=Decimal("2"),
-                unit_of_measurement_code="H87",
-                description="Cigarros",
-                unit_price=Decimal("200.00"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                    ItemTax(tax_code="001", tax_type_code="Tasa", tax_rate=Decimal("0.100000"), tax_flag_code="R"),
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.106666"), tax_flag_code="R"),
-                ],
-            ),
+            InvoiceItem(id=producto_cigarros_id, quantity=Decimal("2")),
         ],
         complement=InvoiceComplement(
             comercio_exterior=ComercioExteriorComplement(
@@ -683,7 +606,7 @@ def factura_ce_receptor_nacional_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="131494-1055",
+                        no_identificacion=producto_cigarros_id,
                         fraccion_arancelaria_id="2402200100",
                         cantidad_aduana=Decimal("117.64"),
                         unidad_aduana_id="01",
@@ -705,7 +628,7 @@ def factura_ce_traslado_con_carta_porte_31_update_people():
     # Traslado (tipo "T"): receptor debe ser el mismo RFC que el emisor.
     # Se referencia issuer_id (Kemper) tambien como receptor; se actualiza
     # el Person con sat_cfdi_use_id para satisfacer la validacion del receptor.
-    client.people.update(Person(
+    update_person(Person(
         id=issuer_id,
         tin="EKU9003173C9",
         legal_name="ESCUELA KEMPER URGATE",
@@ -730,6 +653,8 @@ def factura_ce_traslado_con_carta_porte_31_por_referencias():
         export_code="02",
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=issuer_id),
+        # Conceptos en linea: el valor unitario es 0 y un producto registrado exige
+        # un precio mayor que cero, por lo que este caso no admite referencia a producto.
         items=[
             InvoiceItem(
                 item_code="78101800",
@@ -891,7 +816,7 @@ def factura_ce_traslado_traslado_mercancia_propia_update_people():
     # Traslado (tipo "T"): receptor debe ser el mismo RFC que el emisor.
     # Se referencia issuer_id (Kemper) tambien como receptor; se actualiza
     # el Person con sat_cfdi_use_id para satisfacer la validacion del receptor.
-    client.people.update(Person(
+    update_person(Person(
         id=issuer_id,
         tin="EKU9003173C9",
         legal_name="ESCUELA KEMPER URGATE",
@@ -916,6 +841,8 @@ def factura_ce_traslado_traslado_mercancia_propia_por_referencias():
         export_code="02",
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=issuer_id),
+        # Conceptos en linea: el valor unitario es 0 y un producto registrado exige
+        # un precio mayor que cero, por lo que este caso no admite referencia a producto.
         items=[
             InvoiceItem(
                 item_code="50211503",
@@ -997,7 +924,7 @@ def factura_ce_traslado_traslado_update_people():
     # Traslado (tipo "T"): receptor debe ser el mismo RFC que el emisor.
     # Se referencia issuer_id (Kemper) tambien como receptor; se actualiza
     # el Person con sat_cfdi_use_id para satisfacer la validacion del receptor.
-    client.people.update(Person(
+    update_person(Person(
         id=issuer_id,
         tin="EKU9003173C9",
         legal_name="ESCUELA KEMPER URGATE",
@@ -1023,17 +950,7 @@ def factura_ce_traslado_traslado_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=issuer_id),
         items=[
-            InvoiceItem(
-                item_code="50211503",
-                item_sku="131494-1055",
-                quantity=Decimal("2"),
-                unit_of_measurement_code="H87",
-                description="Cigarros",
-                unit_price=Decimal("200.00"),
-                discount=Decimal("0"),
-                tax_object_code="01",
-                item_taxes=[],
-            ),
+            InvoiceItem(id=producto_cigarros_traslado_id, quantity=Decimal("2")),
         ],
         complement=InvoiceComplement(
             comercio_exterior=ComercioExteriorComplement(
@@ -1062,7 +979,7 @@ def factura_ce_traslado_traslado_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="131494-1055",
+                        no_identificacion=producto_cigarros_traslado_id,
                         fraccion_arancelaria_id="2402200100",
                         cantidad_aduana=Decimal("117.64"),
                         unidad_aduana_id="01",
@@ -1081,8 +998,8 @@ def factura_ce_traslado_traslado_por_referencias():
 # 9. Factura CE Unidades De Medida No Equivalentes
 # ============================================================================
 def factura_ce_unidades_de_medida_no_equivalentes_update_people():
-    client.people.update(kemper_issuer_person())
-    client.people.update(Person(
+    update_person(kemper_issuer_person())
+    update_person(Person(
         id=recipient_id,
         tin="XEXX010101000",
         legal_name="U.S. 0026 SW",
@@ -1113,21 +1030,7 @@ def factura_ce_unidades_de_medida_no_equivalentes_por_referencias():
         issuer=InvoiceIssuer(id=issuer_id),
         recipient=InvoiceRecipient(id=recipient_id),
         items=[
-            InvoiceItem(
-                item_code="50201708",
-                item_sku="131494-1055",
-                quantity=Decimal("1.000"),
-                unit_of_measurement_code="H87",
-                description="Bebida",
-                unit_price=Decimal("100.00"),
-                discount=Decimal("0"),
-                tax_object_code="02",
-                item_taxes=[
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
-                    ItemTax(tax_code="001", tax_type_code="Tasa", tax_rate=Decimal("0.100000"), tax_flag_code="R"),
-                    ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.106666"), tax_flag_code="R"),
-                ],
-            ),
+            InvoiceItem(id=producto_bebida_id, quantity=Decimal("1.000")),
         ],
         complement=InvoiceComplement(
             comercio_exterior=ComercioExteriorComplement(
@@ -1157,7 +1060,7 @@ def factura_ce_unidades_de_medida_no_equivalentes_por_referencias():
                 ),
                 mercancias=[
                     ComercioExteriorMercancia(
-                        no_identificacion="131494-1055",
+                        no_identificacion=producto_bebida_id,
                         fraccion_arancelaria_id="2009310201",
                         cantidad_aduana=Decimal("0.500"),
                         unidad_aduana_id="08",
