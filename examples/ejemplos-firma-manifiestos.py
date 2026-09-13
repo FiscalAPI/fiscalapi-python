@@ -15,8 +15,8 @@ from fiscalapi.models import SignManifestRequest
 # Configuración de FiscalAPI
 settings = FiscalApiSettings(
     api_url="https://test.fiscalapi.com",
-    api_key="API_KEY",
-    tenant="TENANT_ID"
+    api_key="<API_KEY>",
+    tenant="<TENANT_KEY>"
 )
 
 # Credenciales FIEL de prueba (ESCUELA KEMPER URGATE)

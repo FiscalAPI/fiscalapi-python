@@ -38,6 +38,7 @@
 - **Configuración de datos fiscales** (RFC, domicilio fiscal, régimen fiscal)
 - **Datos de empleado** (agrega/actualiza/elimina datos de empleado a una persona. CFDI Nómina)
 - **Datos de empleador** (agrega/actualiza/elimina datos de empleador a una persona. CFDI Nómina)
+- **Firma de carta manifiesto** (firma el manifiesto de una persona con su e.firma/FIEL)
 
 ## 🛍️ Gestión de Productos/Servicios
 - **Gestión de productos y servicios** con catálogo personalizable
@@ -399,6 +400,137 @@ params = StampTransactionParams(
 api_response = client.stamps.transfer_stamps(params)
 ```
 
+### 10. Factura de Comercio Exterior
+
+El complemento se envía en `Invoice.complement.comercio_exterior`. Puede combinarse con carta porte en el mismo comprobante.
+
+> **Escala decimal:** el SAT valida la cantidad de decimales de varios campos. Construye siempre los montos con `Decimal("...")` a partir de una cadena con la escala exacta (`Decimal("0.160000")`, no `Decimal(0.16)`): el SDK preserva los ceros finales al serializar. Una escala incorrecta produce rechazos `CFDI40179` (en `taxRate`) o `CCE122` (en `valorDolares`).
+
+> **Tipo de cambio:** `tipo_cambio_usd` debe ser el publicado en el DOF para la fecha de emisión, y la fecha del comprobante no puede exceder 72 horas al momento del timbrado. Si no coinciden, el PAC responde `CCE121` e indica el valor esperado.
+
+```python
+from datetime import datetime
+from decimal import Decimal
+
+from fiscalapi.models import (
+    Invoice, InvoiceIssuer, InvoiceRecipient, InvoiceItem, ItemTax,
+    InvoiceComplement, TaxCredential,
+    ComercioExteriorComplement, ComercioExteriorEmisor, ComercioExteriorEmisorDomicilio,
+    ComercioExteriorReceptor, ComercioExteriorReceptorDomicilio, ComercioExteriorMercancia,
+)
+
+invoice = Invoice(
+    version_code="4.0",
+    payment_form_code="99",
+    payment_method_code="PPD",
+    currency_code="USD",
+    type_code="I",
+    expedition_zip_code="42501",
+    series="CCE",
+    date=datetime.now().replace(microsecond=0),
+    export_code="02",
+    issuer=InvoiceIssuer(
+        tin="EKU9003173C9",
+        legal_name="ESCUELA KEMPER URGATE",
+        tax_regime_code="601",
+        tax_credentials=[
+            TaxCredential(base64_file="<CER_BASE64>", file_type=0, password="<CSD_PASSWORD>"),
+            TaxCredential(base64_file="<KEY_BASE64>", file_type=1, password="<CSD_PASSWORD>"),
+        ],
+    ),
+    # Receptor extranjero: country_id (ResidenciaFiscal) es obligatorio si se envía foreign_tin.
+    recipient=InvoiceRecipient(
+        tin="XEXX010101000",
+        legal_name="U.S. 0026 SW",
+        zip_code="42501",
+        tax_regime_code="616",
+        cfdi_use_code="S01",
+        country_id="USA",
+        foreign_tin="123456789",
+    ),
+    items=[
+        InvoiceItem(
+            item_code="50211503",
+            item_sku="131494-1055",  # debe coincidir con mercancia.no_identificacion
+            quantity=Decimal("2"),
+            unit_of_measurement_code="H87",
+            description="Cigarros",
+            unit_price=Decimal("200.00"),
+            discount=Decimal("0"),
+            tax_object_code="02",
+            item_taxes=[
+                ItemTax(tax_code="002", tax_type_code="Tasa", tax_rate=Decimal("0.160000"), tax_flag_code="T"),
+            ],
+        ),
+    ],
+    complement=InvoiceComplement(
+        comercio_exterior=ComercioExteriorComplement(
+            clave_de_pedimento_id="A1",
+            certificado_origen=0,  # 0 = no funge como certificado de origen, 1 = sí
+            incoterm_id="FOB",
+            tipo_cambio_usd=Decimal("16.9722"),
+            # Domicilio del emisor: campos de catálogo SAT, con sufijo Id.
+            emisor=ComercioExteriorEmisor(
+                domicilio=ComercioExteriorEmisorDomicilio(
+                    calle="CALLE DEL PAPEL",
+                    colonia_id="0214",
+                    localidad_id="01",
+                    municipio_id="014",
+                    estado_id="QUE",
+                    pais_id="MEX",
+                    codigo_postal_id="76199",
+                ),
+            ),
+            # Domicilio del receptor: texto libre, sin sufijo Id (salvo pais_id).
+            receptor=ComercioExteriorReceptor(
+                num_reg_id_trib="123456789",
+                domicilio=ComercioExteriorReceptorDomicilio(
+                    calle="ST. A",
+                    estado="TX",
+                    pais_id="USA",
+                    codigo_postal="00000",
+                ),
+            ),
+            mercancias=[
+                ComercioExteriorMercancia(
+                    no_identificacion="131494-1055",
+                    fraccion_arancelaria_id="2402200100",
+                    cantidad_aduana=Decimal("117.64"),
+                    unidad_aduana_id="01",
+                    valor_unitario_aduana=Decimal("3.40"),
+                    valor_dolares=Decimal("400.00"),
+                ),
+            ],
+        ),
+    ),
+)
+
+api_response = client.invoices.create(invoice)
+```
+
+### 11. Firmar Carta Manifiesto
+
+Firma la carta manifiesto de una persona y devuelve el PDF resultante en base64.
+
+Requiere la **e.firma (FIEL)** del contribuyente, no el CSD de timbrado, y que exista una persona con ese RFC en el tenant.
+
+```python
+from fiscalapi.models import SignManifestRequest
+
+api_response = client.manifests.sign(SignManifestRequest(
+    base64_cer="<FIEL_CER_BASE64>",
+    base64_key="<FIEL_KEY_BASE64>",
+    password="<FIEL_PASSWORD>",
+))
+
+if api_response.succeeded:
+    print(api_response.data.file_name)       # EKU9003173C9.pdf
+    print(api_response.data.file_extension)  # .pdf
+    print(api_response.data.base64_file)     # PDF firmado en base64
+```
+
+Tras una firma exitosa, `client.people.get_by_id(...)` refleja el nuevo estado en `manifest_status_id`.
+
 ## 📋 Operaciones Principales
 
 - **Facturas (CFDI)**
@@ -411,6 +543,8 @@ api_response = client.stamps.transfer_stamps(params)
   Listar transacciones, transferir y retirar timbres o créditos de validación entre personas.
 - **Validaciones SAT**
   Validar estructura, certificado, sellos, estatus en el SAT y listas negras 69-B de un CFDI o un RFC.
+- **Carta manifiesto**
+  Firmar la carta manifiesto de una persona con su e.firma (FIEL) y obtener el PDF resultante.
 
 ## 📂 Más Ejemplos
 
@@ -420,6 +554,11 @@ api_response = client.stamps.transfer_stamps(params)
 - [Facturas de Nómina](examples/ejemplos-facturas-de-nomina.py)
 - [Impuestos Locales (Por Valores)](examples/ejemplos-factura-impuestos-locales-valores.py)
 - [Impuestos Locales (Por Referencias)](examples/ejemplos-factura-impuestos-locales-referencias.py)
+- [Comercio Exterior (Por Valores)](examples/ejemplos-factura-comercio-exterior-valores.py)
+- [Comercio Exterior (Por Referencias)](examples/ejemplos-factura-comercio-exterior-referencias.py)
+- [Carta Porte (Por Valores)](examples/ejemplos-factura-carta-porte-valores.py)
+- [Carta Porte (Por Referencias)](examples/ejemplos-factura-carta-porte-referencias.py)
+- [Firma de Cartas Manifiesto](examples/ejemplos-firma-manifiestos.py)
 
 ## 🤝 Contribuir
 

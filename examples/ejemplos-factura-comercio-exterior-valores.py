@@ -39,8 +39,8 @@ from fiscalapi.models.carta_porte_models import (
 
 settings = FiscalApiSettings(
     api_url="https://test.fiscalapi.com",
-    api_key="API_KEY",
-    tenant="TENANT_ID"
+    api_key="<API_KEY>",
+    tenant="<TENANT_KEY>"
 )
 
 client = FiscalApiClient(settings=settings)
@@ -51,8 +51,13 @@ escuela_kemper_urgate_base64_key = "MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQww
 password = "12345678a"
 
 # Valores centralizados para todos los ejemplos (cambia aqui una sola vez)
-current_date = datetime.fromisoformat("2026-05-19T08:56:40")
-tipo_cambio = Decimal("17.3477")
+# Fecha de emision: el SAT rechaza con CCE121 un CFDI cuya fecha exceda 72 horas
+# respecto al momento del timbrado, por eso se toma la fecha actual.
+current_date = datetime.now().replace(microsecond=0)
+# Tipo de cambio USD publicado en el DOF para la fecha de emision. El PAC lo
+# valida contra el DOF y, cuando no coincide, el error CCE121 informa el valor
+# esperado; actualiza esta constante con ese valor.
+tipo_cambio = Decimal("16.9722")
 issuer_id = "2e7b988f-3a2a-4f67-86e9-3f931dd48581" #ESCUELA KEMPER URGATE
 recipient_id = "109f4d94-63ea-4a21-ab15-20c8b87d8ee9" #KARLA FUENTES
 
@@ -1130,4 +1135,4 @@ if __name__ == "__main__":
     # factura_ce_traslado_con_carta_porte_31_por_valores()
     # factura_ce_traslado_traslado_mercancia_propia_por_valores()
     # factura_ce_traslado_traslado_por_valores()
-     factura_ce_unidades_de_medida_no_equivalentes_por_valores()
+    factura_ce_unidades_de_medida_no_equivalentes_por_valores()

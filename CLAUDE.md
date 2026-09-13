@@ -48,6 +48,7 @@ FiscalApiClient (Facade)
         ├── catalog_service.py        → SAT catalog searches
         ├── stamp_service.py          → Stamp/validation credit ledger transactions
         ├── sat_validation_service.py → SAT validations (structure, seals, status, 69-B blacklists)
+        ├── manifest_service.py       → Manifest signing with the taxpayer's FIEL
         └── download_*_service.py     → Bulk download management
 ```
 
@@ -63,6 +64,7 @@ client.invoices.create(invoice)
 client.people.get_list(page_num, page_size)
 client.stamps.get_list(page_num, page_size)
 client.sat_validations.validate(request)
+client.manifests.sign(request)
 ```
 
 ### Models (Pydantic v2)
@@ -70,6 +72,9 @@ client.sat_validations.validate(request)
 Located in `fiscalapi/models/`:
 - **common_models.py** - Base DTOs: `ApiResponse[T]`, `PagedList[T]`, `ValidationFailure`, `FiscalApiSettings`
 - **fiscalapi_models.py** - Domain models: `Invoice`, `Person`, `Product`, `TaxFile`, payroll complements, stamp transactions and the ledger enums (`CreditType`, `StampTransactionType`, `StampTransactionStatus`)
+- **comercio_exterior_models.py** - Comercio Exterior complement, reached through `InvoiceComplement.comercio_exterior`
+- **carta_porte_models.py** - Carta Porte complement, reached through `InvoiceComplement.carta_porte`
+- **manifest_models.py** - `SignManifestRequest` / `SignManifestResponse`
 - **sat_validation_models.py** - SAT validation models and the `SatValidationTypeIds` / `SatValidationStatusIds` id enums
 
 **Key Pattern - Field Aliasing:** Models use Pydantic `Field(alias="...")` for API JSON field mapping. When serializing, use `by_alias=True` and `exclude_none=True`.
@@ -162,6 +167,18 @@ pip install -r requirements.txt
 - Use `list[T]` and `dict[K,V]` (Python 3.9+ built-in generics) instead of `List[T]` and `Dict[K,V]`
 - Use `default_factory=list` for mutable defaults, never `default=[]`
 - All Field() calls should have explicit `default=...` for required fields
+- Do not use `json_encoders`: it is deprecated in Pydantic v2 and redundant here, because
+  `BaseService.send_request` serializes with `model_dump(mode="json", ...)`, which already
+  renders `Decimal` as a JSON string and `datetime` as ISO-8601
+
+### Decimal Scale
+
+Monetary and rate fields are `decimal.Decimal`, never `float`. The SAT validates the *scale*
+(number of decimal places) of several CFDI attributes and rejects comprobantes that do not match,
+so trailing zeros must survive serialization. Build values from string literals with the exact
+scale (`Decimal("0.160000")`, not `Decimal(0.16)`); `model_dump(mode="json")` preserves them.
+Known rejections caused by the wrong scale: `CFDI40179` on `taxRate` (6 decimals) and `CCE122`
+on `valorDolares` (feeds the computed `TotalUSD`, 2 decimals).
 
 ### Type Annotations
 

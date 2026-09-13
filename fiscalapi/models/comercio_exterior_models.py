@@ -121,7 +121,7 @@ class ComercioExteriorMercancia(BaseModel):
         default=None, alias="descripcionesEspecificas"
     )
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ===== Comercio Exterior =====
@@ -142,4 +142,4 @@ class ComercioExteriorComplement(BaseModel):
     destinatarios: Optional[list[ComercioExteriorDestinatario]] = Field(default=None, alias="destinatarios")
     mercancias: list[ComercioExteriorMercancia] = Field(default_factory=list, alias="mercancias")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)

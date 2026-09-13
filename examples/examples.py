@@ -236,10 +236,10 @@ def main ():
     # Crear factura de ingreso por valores (cURL). 
     
     # curl --location 'https://localhost:7173/api/v4/invoices/income' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data-raw '{
     #   "versionCode": "4.0",
     #   "series": "F",
@@ -371,10 +371,10 @@ def main ():
     # Crear factura de ingreso por referencias (cURL). 
      
     # curl --location 'https://localhost:7173/api/v4/invoices/income' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     # "versionCode": "4.0",
     # "series": "F",
@@ -602,10 +602,10 @@ def main ():
     # Crear nota de credito (factura de egreso) por valores (cURL).
     
     #  curl --location 'https://localhost:7173/api/v4/invoices/credit-note' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data-raw '{
     # "versionCode": "4.0",
     # "series": "CN",
@@ -740,10 +740,10 @@ def main ():
 
    # Crear nota de credito (factura de egreso) por referencias (cURL).
     #   curl --location 'https://localhost:7173/api/v4/invoices/credit-note' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     #   "versionCode": "4.0",
     #   "series": "CN",
@@ -853,10 +853,10 @@ def main ():
     # Crear complemento pago (factura de pago) por valores (cURL).
     
     #   curl --location 'https://localhost:7173/api/v4/invoices/payment' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data-raw '{
     # "versionCode": "4.0",
     # "series": "CP",
@@ -1032,10 +1032,10 @@ def main ():
     # Crear complemento pago (factura de pago) por referencias (cURL).
     
     #   curl --location 'https://localhost:7173/api/v4/invoices/payment' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     #   "versionCode": "4.0",
     #   "series": "CP",
@@ -1155,10 +1155,10 @@ def main ():
     
       # cancelar factura por referencias (cURL).
     #   curl --location --request DELETE 'https://localhost:7173/api/v4/invoices' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     #   "invoiceUuid": "9c6b21ad-ca15-4d69-86cf-c9e3c94cbd00",
     #   "tin": "FUNK671228PH6",
@@ -1206,10 +1206,10 @@ def main ():
     
     # Cancelar factura por valores (cURL).
     #   curl --location --request DELETE 'https://localhost:7173/api/v4/invoices' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     #   "id": "9de25514-25a2-4c59-85a3-143969c607b3",
     #   "cancellationReasonCode": "01",
@@ -1233,10 +1233,10 @@ def main ():
     
     # generar pdf de factura por valores (cURL).
     #   curl --location 'https://localhost:7173/api/v4/invoices/pdf' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     #   "invoiceId": "7fca45b9-0cc3-4969-8f0c-91a2a492cc37",
     #   "bandColor": "#FFA500",
@@ -1261,10 +1261,10 @@ def main ():
     # generar pdf de factura por rferencias (cURL)
     
     #   curl --location 'https://localhost:7173/api/v4/invoices/pdf' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data '{
     #   "invoiceId": "7fca45b9-0cc3-4969-8f0c-91a2a492cc37"
     # }'
@@ -1280,10 +1280,10 @@ def main ():
     # enviar factura por correo por valores (cUrl)
 
     #   curl --location 'https://localhost:7173/api/v4/invoices/send' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data-raw '{
     #   "invoiceId": "7fca45b9-0cc3-4969-8f0c-91a2a492cc37",
     #   "bandColor": "#FFA500",
@@ -1312,10 +1312,10 @@ def main ():
     # enviar factura por correo por referencias  (cURL)
     
     # curl --location 'https://localhost:7173/api/v4/invoices/send' \
-    # --header 'X-TENANT-KEY: e839651d-1765-4cd0-ba7f-547a4c20580f' \
+    # --header 'X-TENANT-KEY: <TENANT_KEY>' \
     # --header 'X-TIME-ZONE: America/Mexico_City' \
     # --header 'Content-Type: application/json' \
-    # --header 'X-API-KEY: sk_development_e0e47dfa_5146_40c2_b3a3_3055909a6b88' \
+    # --header 'X-API-KEY: <API_KEY>' \
     # --data-raw '{
     # "invoiceId": "7fca45b9-0cc3-4969-8f0c-91a2a492cc37",
     # "toEmail": "mail@domain.com"

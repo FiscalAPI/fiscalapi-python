@@ -43,8 +43,8 @@ from fiscalapi.models.carta_porte_models import (
 
 settings = FiscalApiSettings(
     api_url="https://test.fiscalapi.com",
-    api_key="API_KEY",
-    tenant="TENANT_ID"
+    api_key="<API_KEY>",
+    tenant="<TENANT_KEY>"
 )
 
 client = FiscalApiClient(settings=settings)

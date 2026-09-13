@@ -68,7 +68,7 @@ class Ubicacion(BaseModel):
     distancia_recorrida: Optional[Decimal] = Field(default=None, alias="distanciaRecorrida")
     domicilio: Optional[UbicacionDomicilio] = Field(default=None, alias="domicilio")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str, datetime: lambda v: v.isoformat()})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ===== Mercancia =====
@@ -89,7 +89,7 @@ class GuiaIdentificacion(BaseModel):
     descrip_guia_identificacion: str = Field(default=..., alias="descripGuiaIdentificacion")
     peso_guia_identificacion: Decimal = Field(default=..., alias="pesoGuiaIdentificacion")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CantidadTransporta(BaseModel):
@@ -99,7 +99,7 @@ class CantidadTransporta(BaseModel):
     id_destino: str = Field(default=..., alias="idDestino")
     cves_transporte_id: Optional[str] = Field(default=None, alias="cvesTransporteId")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class DetalleMercancia(BaseModel):
@@ -110,7 +110,7 @@ class DetalleMercancia(BaseModel):
     peso_tara: Decimal = Field(default=..., alias="pesoTara")
     num_piezas: Optional[int] = Field(default=None, alias="numPiezas")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Mercancia(BaseModel):
@@ -158,7 +158,7 @@ class Mercancia(BaseModel):
     cantidad_transporta: Optional[list[CantidadTransporta]] = Field(default=None, alias="cantidadTransporta")
     detalle_mercancia: Optional[DetalleMercancia] = Field(default=None, alias="detalleMercancia")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str, datetime: lambda v: v.isoformat()})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ===== Autotransporte =====
@@ -188,7 +188,7 @@ class Autotransporte(BaseModel):
     prima_seguro: Optional[Decimal] = Field(default=None, alias="primaSeguro")
     remolques: Optional[list[Remolque]] = Field(default=None, alias="remolques")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ===== Transporte Maritimo =====
@@ -211,7 +211,7 @@ class ContenedorMaritimo(BaseModel):
     fecha_certificacion_ccp: Optional[datetime] = Field(default=None, alias="fechaCertificacionCCP")
     remolques_ccp: Optional[list[RemolqueCCP]] = Field(default=None, alias="remolquesCCP")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={datetime: lambda v: v.isoformat()})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class TransporteMaritimo(BaseModel):
@@ -240,7 +240,7 @@ class TransporteMaritimo(BaseModel):
     permiso_temp_navegacion: Optional[str] = Field(default=None, alias="permisoTempNavegacion")
     contenedores: Optional[list[ContenedorMaritimo]] = Field(default=None, alias="contenedores")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 # ===== Transporte Aereo =====
@@ -270,7 +270,7 @@ class DerechoDePaso(BaseModel):
     tipo_derecho_de_paso_id: str = Field(default=..., alias="tipoDerechoDePasoId")
     kilometraje_pagado: Decimal = Field(default=..., alias="kilometrajePagado")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class CarroContenedor(BaseModel):
@@ -279,7 +279,7 @@ class CarroContenedor(BaseModel):
     peso_contenedor_vacio: Decimal = Field(default=..., alias="pesoContenedorVacio")
     peso_neto_mercancia: Decimal = Field(default=..., alias="pesoNetoMercancia")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class Carro(BaseModel):
@@ -290,7 +290,7 @@ class Carro(BaseModel):
     toneladas_netas_carro: Decimal = Field(default=..., alias="toneladasNetasCarro")
     contenedores: Optional[list[CarroContenedor]] = Field(default=None, alias="contenedores")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class TransporteFerroviario(BaseModel):
@@ -353,4 +353,4 @@ class CartaPorteComplement(BaseModel):
     transporte_ferroviario: Optional[TransporteFerroviario] = Field(default=None, alias="transporteFerroviario")
     tipos_figura: Optional[list[TipoFigura]] = Field(default=None, alias="tiposFigura")
 
-    model_config = ConfigDict(populate_by_name=True, json_encoders={Decimal: str})
+    model_config = ConfigDict(populate_by_name=True)
