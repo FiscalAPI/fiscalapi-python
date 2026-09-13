@@ -43,7 +43,6 @@ setup(
         "requests>=2.0.0",
         "urllib3>=1.0.0",
         "certifi>=2023.0.0",
-        "email_validator>=2.2.0",
     ],
     
     classifiers=[

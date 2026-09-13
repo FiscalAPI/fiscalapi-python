@@ -141,7 +141,8 @@ There is no unit test suite: changes are verified by running these examples agai
 - Python >= 3.9 (CI/CD uses Python 3.9.13)
 - pydantic >= 2.0.0 (validation & serialization)
 - requests >= 2.0.0 (HTTP client)
-- email_validator >= 2.2.0
+- urllib3 >= 1.0.0
+- certifi >= 2023.0.0 (certificate store for non-local hosts)
 
 ## Development Setup
 

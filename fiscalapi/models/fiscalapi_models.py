@@ -1,6 +1,6 @@
 from decimal import Decimal
 from enum import IntEnum
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
 from fiscalapi.models.comercio_exterior_models import ComercioExteriorComplement
@@ -52,7 +52,7 @@ class Person(BaseDto):
     """Modelo persona en FiscalAPI."""
 
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social de la persona sin régimen de capital.")
-    email: Optional[EmailStr] = Field(default=None, alias="email", description="Correo electrónico de la persona.")
+    email: Optional[str] = Field(default=None, alias="email", description="Correo electrónico de la persona. El API valida el formato.")
     password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard.")
     capital_regime: Optional[str] = Field(default=None, alias="CapitalRegime", description="[Deprecado] El API no expone este campo; se conserva por compatibilidad y se ignora.")
     sat_tax_regime_id: Optional[Literal["601", "603", "605", "606", "607", "608", "610", "611", "612", "614", "615", "616", "620", "621", "622", "623", "624", "625", "626"]] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal del emisor.")
