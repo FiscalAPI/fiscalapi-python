@@ -147,7 +147,7 @@ class TaxFile(BaseDto):
         """Modelo TaxFile que representa un componente de un par CSD: certificado (.cer) o llave privada (.key)."""
 
         person_id: Optional[str] = Field(default=None, alias="personId", description="Id de la persona propietaria del certificado.")
-        tin: Optional[str] = Field(default=None, alias="tin", description="RFC del propietario del certificado. Debe coincidir con el RFC del certificado.")
+        tin: Optional[str] = Field(default=None, alias="tin", description="RFC de la persona. Opcional al subir: si se omite, el API usa el RFC de la persona; si se envía, debe ser el RFC de la persona (sin distinguir mayúsculas) o el API responde 400 con la falla en Tin. El API siempre devuelve el RFC de la persona.")
         base64_file: Optional[str] = Field(default=None, alias="base64File", description="Archivo certificado o llave privada en formato base64.")
         file_type: Optional[Literal[0, 1]] = Field(default=None, alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada.")
         password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada.")
