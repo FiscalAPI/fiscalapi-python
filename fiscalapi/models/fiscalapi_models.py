@@ -359,7 +359,7 @@ class InvoicePayment(BaseDto):
     payment_date: str = Field(default=..., alias="paymentDate", description="Fecha de pago.")
     payment_form_code: str = Field(default=..., alias="paymentFormCode", description="Código de la forma de pago.")
     
-    currency_code: Literal ["MXN", "USD", "EUR"] = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en el pago.")
+    currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en el pago: una clave del catálogo c_Moneda del SAT, en mayúsculas, distinta de XXX.")
     exchange_rate: Optional[Decimal] = Field(default=Decimal("1"), alias="exchangeRate", description="Tipo de cambio FIX conforme a la moneda registrada en la factura. Si la moneda es MXN, el tipo de cambio debe ser 1..")
     amount: Decimal = Field(default=..., description="Monto del pago.")
     source_bank_tin: str = Field(default=..., alias="sourceBankTin", description="RFC del banco origen. (Rfc del banco emisor del pago)")
