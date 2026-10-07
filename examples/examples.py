@@ -131,7 +131,7 @@ def main ():
     #     sat_tax_regime_id="601", # General de Ley Personas Morales
     #     sat_cfdi_use_id="G03", # Gastos en general
     #     zip_code="42501", # Codigo postal de la constancia de situacion fiscal
-    #     tax_password="12345678a", # Contraseña de los sellos (certificados SAT)
+    #     tax_password="12345678a", # Contraseña de la .key guardada en el perfil (el API no la usa para sellar)
     #     #email="newmail@gmail.com", # Correo electronico
     #     #password="NewPassword1234!", # Contraseña para acceder al dashboard
     # )

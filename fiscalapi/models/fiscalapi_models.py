@@ -78,7 +78,7 @@ class Person(BaseDto):
     zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del emisor.")
     curp: Optional[str] = Field(default=None, alias="curp", description="CURP de la persona.")
     base64_photo: Optional[str] = Field(default=None, alias="base64Photo", description="Foto de perfil en formato base64.")
-    tax_password: Optional[str] = Field(default=None, alias="taxPassword", description="Contraseña de los certificados CSD del emisor.")
+    tax_password: Optional[str] = Field(default=None, alias="taxPassword", description="Contraseña de la llave privada (.key) que la persona guarda en su perfil. El API no la usa para sellar (al timbrar usa la de los certificados registrados o la de tax_credentials). Con valor solo para la propia persona y el owner del tenant; los demás reciben None. Al actualizar, None la conserva y \"\" la borra.")
     available_balance: Optional[Decimal] = Field(default=None, alias="availableBalance", description="Saldo disponible en la cuenta.")
     committed_balance: Optional[Decimal] = Field(default=None, alias="committedBalance", description="Saldo en tránsito.")
     available_validation_balance: Optional[int] = Field(default=None, alias="availableValidationBalance", description="Créditos de validación SAT disponibles en la cuenta.")
@@ -202,10 +202,14 @@ class InvoiceRecipientEmployeeData(BaseDto):
 
 
 class TaxCredential(BaseDto):
-    """Modelo para los sellos del emisor (archivos .cer y .key)."""
+    """Modelo para los sellos del emisor (archivos .cer y .key).
+
+    El API solo lee base64_file, file_type y password. id, created_at y updated_at se heredan de BaseDto: si se
+    asignan, el API los acepta y los ignora (sin asignar no se envían).
+    """
     base64_file: str = Field(default=..., alias="base64File", description="Archivo en formato base64.")
     file_type: Literal[0, 1] = Field(default=..., alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada.")
-    password: str = Field(default=..., alias="password", description="Contraseña del archivo .key independientemente de si es un archivo .cer o .key.")
+    password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada. Requerida en el objeto .key (file_type 1); en el .cer el API no la usa.")
 
     model_config = ConfigDict(populate_by_name=True)
 

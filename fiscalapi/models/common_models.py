@@ -30,7 +30,7 @@ class ValidationFailure(BaseModel):
     """Modelo para errores de validación."""
     property_name: str = Field(alias="propertyName")
     error_message: str = Field(alias="errorMessage")
-    attempted_value: Optional[Any] = Field(default=None, alias="attemptedValue")
+    attempted_value: Optional[Any] = Field(default=None, alias="attemptedValue", description="Valor recibido. El de un secreto (contraseñas, códigos, tokens, archivos y contraseñas de CSD/FIEL) llega como \"[masked: n]\", o \"[masked]\" si es un objeto o lista que lo contiene.")
 
     model_config = ConfigDict(populate_by_name=True)
 
