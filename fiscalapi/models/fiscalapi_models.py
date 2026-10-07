@@ -48,18 +48,31 @@ class Product(BaseDto):
 
 # people models
 
+class CreditBalance(BaseModel):
+    """Saldo de una persona para un tipo de crédito (Person.balances).
+
+    Un tipo ausente tiene saldo 0; un tipo que este SDK no conoce conserva su número en credit_type.
+    """
+
+    credit_type: int = Field(default=..., alias="creditType", description="Tipo de crédito: 1 timbres, 2 créditos de validación.")
+    available: int = Field(default=..., alias="available", description="Saldo disponible.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class Person(BaseDto):
     """Modelo persona en FiscalAPI."""
 
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social de la persona sin régimen de capital.")
     email: Optional[str] = Field(default=None, alias="email", description="Correo electrónico de la persona. El API valida el formato.")
-    password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard.")
-    capital_regime: Optional[str] = Field(default=None, alias="CapitalRegime", description="[Deprecado] El API no expone este campo; se conserva por compatibilidad y se ignora.")
+    password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard. Requerida al crear; al actualizar, None o vacía conserva la actual. El API nunca la devuelve.")
+    phone_number: Optional[str] = Field(default=None, alias="phoneNumber", description="Teléfono de la persona.")
+    capital_regime: Optional[str] = Field(default=None, alias="CapitalRegime", description="[Deprecado] El API no tiene régimen de capital: lo ignora y no lo devuelve. Envíe la razón social sin régimen de capital en legal_name.")
     sat_tax_regime_id: Optional[Literal["601", "603", "605", "606", "607", "608", "610", "611", "612", "614", "615", "616", "620", "621", "622", "623", "624", "625", "626"]] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal del emisor.")
     sat_tax_regime: Optional[CatalogDto] = Field(default=None, alias="satTaxRegime", description="Código del régimen fiscal expandido.")
     sat_cfdi_use_id: Optional[Literal["G01", "G02", "G03", "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "S01", "CP01", "CN01"]] = Field(default=None, alias="satCfdiUseId", description="Código de uso del CFDI.")
     sat_cfdi_use: Optional[CatalogDto] = Field(default=None, alias="satCfdiUse", description="Código de uso del CFDI expandido.")
-    user_type_id: Optional[Literal["T","C", "U"]] = Field(default=None, alias="userTypeId", description="Tipo de persona.")
+    user_type_id: Optional[Literal["T","C", "U"]] = Field(default=None, alias="userTypeId", description="Tipo de persona: C (cliente, por omisión al crear) o U (usuario). T (tenant) solo llega en respuestas: el API lo rechaza al crear y al actualizar solo lo acepta si la persona ya es T.")
     user_type: Optional[CatalogDto] = Field(default=None, alias="userType", description="Tipo de persona expandido.")
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor (Tax Identification Number).")
     zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del emisor.")
@@ -69,12 +82,15 @@ class Person(BaseDto):
     available_balance: Optional[Decimal] = Field(default=None, alias="availableBalance", description="Saldo disponible en la cuenta.")
     committed_balance: Optional[Decimal] = Field(default=None, alias="committedBalance", description="Saldo en tránsito.")
     available_validation_balance: Optional[int] = Field(default=None, alias="availableValidationBalance", description="Créditos de validación SAT disponibles en la cuenta.")
+    balances: Optional[list[CreditBalance]] = Field(default=None, alias="balances", description="Saldos por tipo de crédito (solo lectura). Solo aparecen los tipos que la persona ha tenido.")
     manifest_status_id: Optional[str] = Field(default=None, alias="manifestStatusId", description="Estado de la carta manifiesto de la persona.")
     manifest_status: Optional[CatalogDto] = Field(default=None, alias="manifestStatus", description="Estado de la carta manifiesto expandido.")
     tenant_id: Optional[str] = Field(default=None, alias="tenantId", description="ID del tenant al que pertenece el emisor.")
     tenant: Optional[CatalogDto] = Field(default=None, alias="tenant", description="Tenant expandido.")
+    is_owner: Optional[bool] = Field(default=None, alias="isOwner", description="True si la persona es el owner de su tenant (solo lectura).")
     country_id: Optional[str] = Field(default=None, alias="countryId", description="Código del país de residencia para extranjeros (catálogo c_Pais).")
     foreign_tin: Optional[str] = Field(default=None, alias="foreignTin", description="Número de identificación fiscal del extranjero.")
+    country: Optional[CatalogDto] = Field(default=None, alias="country", description="País de residencia fiscal expandido (solo lectura).")
 
     model_config = ConfigDict(populate_by_name=True)
 

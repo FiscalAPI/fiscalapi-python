@@ -82,6 +82,7 @@ from .models.fiscalapi_models import (
     ProductTax,
     Product,
     # Person models
+    CreditBalance,
     Person,
     EmployeeData,
     EmployerData,
@@ -190,6 +191,7 @@ __all__ = [
     "ProductTax",
     "Product",
     # Person models
+    "CreditBalance",
     "Person",
     "EmployeeData",
     "EmployerData",
