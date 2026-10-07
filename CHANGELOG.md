@@ -4,6 +4,11 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 
 ## [Sin publicar]
 
+### Cambios incompatibles (BREAKING)
+
+- Se elimina `Person.capital_regime` (estaba deprecado): el API no tiene régimen de capital, ignoraba el valor y nunca lo devolvía. Quite `capital_regime=...` de los `Person(...)` que construya y toda lectura de `person.capital_regime` (ahora lanza `AttributeError`); envíe la razón social sin régimen de capital en `legal_name`. Pasarlo al constructor no lanza error, pero se descarta sin enviarse.
+- `TaxCredential` deja de heredar de `BaseDto`: solo tiene `base64_file`, `file_type` y `password` (opcional en el .cer). Quite `id=...`, `created_at=...` y `updated_at=...` de los `TaxCredential(...)` que construya (se descartan sin enviarse) y toda lectura de esos atributos (ahora lanza `AttributeError`). Un código que trate un `TaxCredential` como `BaseDto` (por ejemplo `isinstance(cred, BaseDto)`) ya no lo reconoce.
+
 ### Modelo `Person`
 
 - Nuevos campos opcionales:
@@ -11,14 +16,12 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
   - `balances`: saldos por tipo de crédito (`CreditBalance`: `credit_type` y `available`, solo lectura). Solo aparecen los tipos que la persona ha tenido; un tipo ausente tiene saldo 0, y un tipo que el SDK no conoce conserva su número.
   - `is_owner` (`isOwner`): `True` si la persona es el owner de su tenant (solo lectura).
   - `country`: país de residencia fiscal expandido (solo lectura).
-- `capital_regime` sigue deprecado: el API no tiene régimen de capital, ignora el valor y no lo devuelve. Envíe la razón social sin régimen de capital en `legal_name`.
 - `password`: requerida al crear; al actualizar, `None` o vacía conserva la contraseña actual. El API nunca la devuelve.
 - `user_type_id`: `"C"` (cliente, el valor por omisión al crear) o `"U"` (usuario). `"T"` (tenant) solo llega en respuestas: el API lo rechaza al crear y al actualizar solo lo acepta si la persona ya es `"T"`.
 
 ### `TaxCredential`
 
 - `password` deja de ser obligatorio en el modelo: el API solo lo exige en la llave privada (.key, `file_type=1`); en el certificado (.cer) no lo usa.
-- Hereda `id`, `created_at` y `updated_at` de `BaseDto`; el API solo lee `base64_file`, `file_type` y `password`, y acepta e ignora un `id` (sin asignar, no se envían).
 
 ### Notas del API (sin cambio de forma en el SDK)
 

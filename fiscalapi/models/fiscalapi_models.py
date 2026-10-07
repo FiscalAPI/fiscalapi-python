@@ -67,7 +67,6 @@ class Person(BaseDto):
     email: Optional[str] = Field(default=None, alias="email", description="Correo electrónico de la persona. El API valida el formato.")
     password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard. Requerida al crear; al actualizar, None o vacía conserva la actual. El API nunca la devuelve.")
     phone_number: Optional[str] = Field(default=None, alias="phoneNumber", description="Teléfono de la persona.")
-    capital_regime: Optional[str] = Field(default=None, alias="CapitalRegime", description="[Deprecado] El API no tiene régimen de capital: lo ignora y no lo devuelve. Envíe la razón social sin régimen de capital en legal_name.")
     sat_tax_regime_id: Optional[Literal["601", "603", "605", "606", "607", "608", "610", "611", "612", "614", "615", "616", "620", "621", "622", "623", "624", "625", "626"]] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal del emisor.")
     sat_tax_regime: Optional[CatalogDto] = Field(default=None, alias="satTaxRegime", description="Código del régimen fiscal expandido.")
     sat_cfdi_use_id: Optional[Literal["G01", "G02", "G03", "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "S01", "CP01", "CN01"]] = Field(default=None, alias="satCfdiUseId", description="Código de uso del CFDI.")
@@ -201,12 +200,8 @@ class InvoiceRecipientEmployeeData(BaseDto):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class TaxCredential(BaseDto):
-    """Modelo para los sellos del emisor (archivos .cer y .key).
-
-    El API solo lee base64_file, file_type y password. id, created_at y updated_at se heredan de BaseDto: si se
-    asignan, el API los acepta y los ignora (sin asignar no se envían).
-    """
+class TaxCredential(BaseModel):
+    """Modelo para los sellos del emisor (archivos .cer y .key)."""
     base64_file: str = Field(default=..., alias="base64File", description="Archivo en formato base64.")
     file_type: Literal[0, 1] = Field(default=..., alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada.")
     password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada. Requerida en el objeto .key (file_type 1); en el .cer el API no la usa.")
