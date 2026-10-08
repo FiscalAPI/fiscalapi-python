@@ -754,7 +754,8 @@ class DownloadRequest(BaseDto):
     download_request_status: Optional[CatalogDto] = Field(default=None, alias="downloadRequestStatus", description="Estado de la solicitud de descarga Fiscalapi.")
     
     last_attempt_date: Optional[datetime] = Field(default=None, alias="lastAttemptDate", description="Fecha del último intento para la solicitud asociada.")
-    next_attempt_date: Optional[datetime] = Field(default=None, alias="nextAttemptDate", description="Fecha del siguiente intento para la solicitud asociada.")
+    # Obsoleto: el API ya no devuelve nextAttemptDate (siempre era null). Se eliminará en una versión mayor.
+    next_attempt_date: Optional[datetime] = Field(default=None, alias="nextAttemptDate", description="Obsoleto: el API ya no lo devuelve; siempre era null porque Fiscalapi no programa un siguiente intento por solicitud. Se eliminará en una versión mayor; use last_attempt_date.")
     
     invoice_count: Optional[int] = Field(default=None, alias="invoiceCount", description="Número de CFDIs encontrados para la solicitud cuando la solicitud ha terminado.")
     package_ids: Optional[list[str]] = Field(default_factory=list, alias="packageIds", description="Lista de IDs de paquetes disponibles para descarga cuando la solicitud ha terminado.")
