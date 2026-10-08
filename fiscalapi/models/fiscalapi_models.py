@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
 from fiscalapi.models.comercio_exterior_models import ComercioExteriorComplement
-from typing import Literal, Optional
+from typing import Optional
 from datetime import datetime
 
 # products models
@@ -604,7 +604,7 @@ class CancelInvoiceRequest(BaseDto):
     id: Optional[str] = Field(default=None, alias="id", description="ID de la factura a cancelar. Obligatorio cuando se cancela por referencias.")
     invoice_uuid: Optional[str] = Field(default=None, alias="invoiceUuid", description="UUID de la factura a cancelar. Obligatorio cuando se cancela por valores.")
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor de la factura. Obligatorio cuando se cancela por valores.")
-    cancellation_reason_code: Literal["01", "02", "03", "04"] = Field(default=..., alias="cancellationReasonCode", description="Código del motivo de cancelación.")
+    cancellation_reason_code: str = Field(default=..., alias="cancellationReasonCode", description="Código del motivo de cancelación, catálogo c_MotivoCancelacion del SAT: 01, 02, 03 o 04. El API valida el valor.")
     replacement_uuid: Optional[str] = Field(default=None, alias="replacementUuid", description="UUID de la factura de reemplazo. Obligatorio si el motivo de cancelación es '01'.")
     tax_credentials: Optional[list[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor. Obligatorio cuando se cancela por valores.")
 
