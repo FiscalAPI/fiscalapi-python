@@ -134,7 +134,20 @@ All example files are located in the `examples/` directory:
 - `examples/ejemplos-factura-comercio-exterior-valores.py` - Comercio Exterior examples (by values)
 - `examples/ejemplos-factura-comercio-exterior-referencias.py` - Comercio Exterior examples (by references)
 
-There is no unit test suite: changes are verified by running these examples against a live API.
+The examples are verified by running them against a live API.
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+`tests/` holds offline tests: `conftest.py` replaces `requests.request` in `base_service`, so each test
+runs the real service → `send_request` → pydantic path against a fixed JSON from `tests/fixtures/`
+(shaped like the API's camelCase responses, enums as numbers). `test_response_tolerance.py`
+characterizes how the SDK handles responses of upcoming API phases; a test whose name cites a task
+(for example `__fixed_by_SDK_012`) pins a known defect and must be inverted by that task.
 
 ## Dependencies
 
