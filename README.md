@@ -143,7 +143,7 @@ from fiscalapi import TaxFile
 # Subir certificado (CER)
 certificado_csd = TaxFile(
     person_id="3f3478b4-60fd-459e-8bfc-f8239fc96257",
-    tin="FUNK671228PH6",
+    tin="FUNK671228PH6",  # RFC de la persona (opcional)
     base64_file="MIIFgDCCA2igAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDM0NDYwDQYJKo...",
     file_type=0,  # 0 para certificado, 1 para llave privada
     password="12345678a"    
@@ -152,7 +152,7 @@ certificado_csd = TaxFile(
 # Subir llave privada (KEY)
 clave_privada_csd = TaxFile(
     person_id="3f3478b4-60fd-459e-8bfc-f8239fc96257",
-    tin="FUNK671228PH6",
+    tin="FUNK671228PH6",  # RFC de la persona (opcional)
     base64_file="MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIAg...",
     file_type=1,
     password="12345678a"
