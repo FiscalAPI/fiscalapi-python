@@ -151,7 +151,7 @@ class TaxFile(BaseDto):
         tin: Optional[str] = Field(default=None, alias="tin", description="RFC de la persona. Opcional al subir: si se omite, el API usa el RFC de la persona; si se envía, debe ser el RFC de la persona (sin distinguir mayúsculas) o el API responde 400 con la falla en Tin. El API siempre devuelve el RFC de la persona.")
         base64_file: Optional[str] = Field(default=None, alias="base64File", description="Archivo certificado o llave privada en formato base64.")
         file_type: Optional[int] = Field(default=None, alias="fileType", description="Tipo de archivo: 0 certificado CSD (.cer), 1 llave privada CSD (.key), 2 certificado FIEL (.cer), 3 llave privada FIEL (.key). El API valida el valor.")
-        password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada.")
+        password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada. Solo se envía al subir (tax_files.create()): en las consultas (get_list(), get_by_id() y la respuesta de create()) el API la devuelve vacía (''); solo get_default_values() la devuelve.")
         valid_from: Optional[datetime] = Field(default=None, alias="validFrom", description="Fecha de inicio de vigencia del certificado o llave privada.")
         valid_to: Optional[datetime] = Field(default=None, alias="validTo", description="Fecha de fin de vigencia del certificado o llave privada.")
         sequence: Optional[int] = Field(default=None, alias="sequence", description="Numero de secuencia que identifica el par entre certificado y llave privada.")
