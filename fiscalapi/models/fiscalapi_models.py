@@ -14,13 +14,13 @@ class ProductTax(BaseDto):
     
     rate: Decimal = Field(default=..., ge=0, le=1, alias="rate", description="Tasa de impuesto")
     
-    tax_id: Optional[Literal["001", "002", "003"]] = Field(default=None, alias="taxId", description="Impuesto")
+    tax_id: Optional[str] = Field(default=None, alias="taxId", description="Impuesto: clave del catálogo c_Impuesto del SAT (\"001\" ISR, \"002\" IVA, \"003\" IEPS). La valida el API.")
     tax: Optional[CatalogDto] = Field(default=None, alias="tax", description="Impuesto expandido")
 
-    tax_flag_id: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagId", description="Traslado o Retención")
+    tax_flag_id: Optional[str] = Field(default=None, alias="taxFlagId", description="Naturaleza del impuesto: \"T\" (traslado) o \"R\" (retención). La valida el API.")
     tax_flag: Optional[CatalogDto] = Field(default=None, alias="taxFlag", description="Traslado o Retención expandido")
     
-    tax_type_id: Optional[Literal["Tasa", "Cuota", "Exento"]] = Field(default=None, alias="taxTypeId", description="Tipo de impuesto")
+    tax_type_id: Optional[str] = Field(default=None, alias="taxTypeId", description="Tipo factor: clave del catálogo c_TipoFactor del SAT (\"Tasa\", \"Cuota\" o \"Exento\"). La valida el API.")
     tax_type: Optional[CatalogDto] = Field(default=None, alias="taxType",  description="Tipo de impuesto expandido")
     
     
@@ -67,11 +67,11 @@ class Person(BaseDto):
     email: Optional[str] = Field(default=None, alias="email", description="Correo electrónico de la persona. El API valida el formato.")
     password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard. Requerida al crear; al actualizar, None o vacía conserva la actual. El API nunca la devuelve.")
     phone_number: Optional[str] = Field(default=None, alias="phoneNumber", description="Teléfono de la persona.")
-    sat_tax_regime_id: Optional[Literal["601", "603", "605", "606", "607", "608", "610", "611", "612", "614", "615", "616", "620", "621", "622", "623", "624", "625", "626"]] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal del emisor.")
+    sat_tax_regime_id: Optional[str] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal: clave del catálogo c_RegimenFiscal del SAT. La valida el API.")
     sat_tax_regime: Optional[CatalogDto] = Field(default=None, alias="satTaxRegime", description="Código del régimen fiscal expandido.")
-    sat_cfdi_use_id: Optional[Literal["G01", "G02", "G03", "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "S01", "CP01", "CN01"]] = Field(default=None, alias="satCfdiUseId", description="Código de uso del CFDI.")
+    sat_cfdi_use_id: Optional[str] = Field(default=None, alias="satCfdiUseId", description="Código de uso del CFDI: clave del catálogo c_UsoCFDI del SAT. La valida el API.")
     sat_cfdi_use: Optional[CatalogDto] = Field(default=None, alias="satCfdiUse", description="Código de uso del CFDI expandido.")
-    user_type_id: Optional[Literal["T","C", "U"]] = Field(default=None, alias="userTypeId", description="Tipo de persona: C (cliente, por omisión al crear) o U (usuario). T (tenant) solo llega en respuestas: el API lo rechaza al crear y al actualizar solo lo acepta si la persona ya es T.")
+    user_type_id: Optional[str] = Field(default=None, alias="userTypeId", description="Tipo de persona: C (cliente, por omisión al crear) o U (usuario). T (tenant) solo llega en respuestas: el API lo rechaza al crear y al actualizar solo lo acepta si la persona ya es T.")
     user_type: Optional[CatalogDto] = Field(default=None, alias="userType", description="Tipo de persona expandido.")
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor (Tax Identification Number).")
     zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del emisor.")
@@ -246,7 +246,7 @@ class ItemTax(BaseDto):
     tax_code: Optional[str] = Field(default=None, alias="taxCode", description="Código del impuesto.")
     tax_type_code: Optional[str] = Field(default=None, alias="taxTypeCode", description="Tipo de factor.")
     tax_rate: Optional[Decimal] = Field(default=None, alias="taxRate", description="Tasa del impuesto.")
-    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
+    tax_flag_code: Optional[str] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -329,7 +329,7 @@ class PaidInvoiceTax(BaseDto):
     tax_code: str = Field(default=..., alias="taxCode", description="Código del impuesto.")
     tax_type_code: str = Field(default=..., alias="taxTypeCode", description="Tipo de factor.")
     tax_rate: Decimal = Field(default=..., alias="taxRate", description="Tasa del impuesto.")
-    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
+    tax_flag_code: Optional[str] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
     
     model_config = ConfigDict(populate_by_name=True)
     
@@ -379,7 +379,7 @@ class LocalTax(BaseDto):
     tax_name: Optional[str] = Field(default=None, alias="taxName", description="Nombre del impuesto local.")
     tax_rate: Optional[Decimal] = Field(default=None, alias="taxRate", description="Tasa del impuesto local.")
     tax_amount: Optional[Decimal] = Field(default=None, alias="taxAmount", description="Monto del impuesto local.")
-    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Traslado o Retención.")
+    tax_flag_code: Optional[str] = Field(default=None, alias="taxFlagCode", description="Traslado o Retención.")
 
     model_config = ConfigDict(populate_by_name=True)
 
