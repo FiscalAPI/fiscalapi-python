@@ -529,7 +529,7 @@ if api_response.succeeded:
     print(api_response.data.base64_file)     # PDF firmado en base64
 ```
 
-Tras una firma exitosa, `client.people.get_by_id(...)` refleja el nuevo estado en `manifest_status_id`.
+Tras una firma exitosa, todas las personas del tenant con el RFC del certificado quedan con `manifest_status_id` en `Signed`; `client.people.get_by_id(...)` lo refleja.
 
 ## 📋 Operaciones Principales
 
