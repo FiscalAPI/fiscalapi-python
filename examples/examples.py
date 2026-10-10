@@ -128,11 +128,10 @@ def main ():
     #     id="637245ad-86b5-43ab-ac20-eb94f04aa9e8", # Id de la persona
     #     legal_name="ESCUELA KEMPER URGATE", # Razon social
     #     tin="EKU9003173C9", # RFC
-    #     capital_regime="SA de CV",# Regimen de capital
     #     sat_tax_regime_id="601", # General de Ley Personas Morales
     #     sat_cfdi_use_id="G03", # Gastos en general
     #     zip_code="42501", # Codigo postal de la constancia de situacion fiscal
-    #     tax_password="12345678a", # Contraseña de los sellos (certificados SAT)
+    #     tax_password="12345678a", # Contraseña de la .key guardada en el perfil (el API no la usa para sellar)
     #     #email="newmail@gmail.com", # Correo electronico
     #     #password="NewPassword1234!", # Contraseña para acceder al dashboard
     # )

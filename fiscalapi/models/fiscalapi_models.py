@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
 from fiscalapi.models.comercio_exterior_models import ComercioExteriorComplement
-from typing import Literal, Optional
+from typing import Optional
 from datetime import datetime
 
 # products models
@@ -14,13 +14,13 @@ class ProductTax(BaseDto):
     
     rate: Decimal = Field(default=..., ge=0, le=1, alias="rate", description="Tasa de impuesto")
     
-    tax_id: Optional[Literal["001", "002", "003"]] = Field(default=None, alias="taxId", description="Impuesto")
+    tax_id: Optional[str] = Field(default=None, alias="taxId", description="Impuesto: clave del catálogo c_Impuesto del SAT (\"001\" ISR, \"002\" IVA, \"003\" IEPS). La valida el API.")
     tax: Optional[CatalogDto] = Field(default=None, alias="tax", description="Impuesto expandido")
 
-    tax_flag_id: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagId", description="Traslado o Retención")
+    tax_flag_id: Optional[str] = Field(default=None, alias="taxFlagId", description="Naturaleza del impuesto: \"T\" (traslado) o \"R\" (retención). La valida el API.")
     tax_flag: Optional[CatalogDto] = Field(default=None, alias="taxFlag", description="Traslado o Retención expandido")
     
-    tax_type_id: Optional[Literal["Tasa", "Cuota", "Exento"]] = Field(default=None, alias="taxTypeId", description="Tipo de impuesto")
+    tax_type_id: Optional[str] = Field(default=None, alias="taxTypeId", description="Tipo factor: clave del catálogo c_TipoFactor del SAT (\"Tasa\", \"Cuota\" o \"Exento\"). La valida el API.")
     tax_type: Optional[CatalogDto] = Field(default=None, alias="taxType",  description="Tipo de impuesto expandido")
     
     
@@ -48,33 +48,49 @@ class Product(BaseDto):
 
 # people models
 
+class CreditBalance(BaseModel):
+    """Saldo de una persona para un tipo de crédito (Person.balances).
+
+    Un tipo ausente tiene saldo 0; un tipo que este SDK no conoce conserva su número en credit_type.
+    """
+
+    credit_type: int = Field(default=..., alias="creditType", description="Tipo de crédito: 1 timbres, 2 créditos de validación.")
+    available: int = Field(default=..., alias="available", description="Saldo disponible.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class Person(BaseDto):
     """Modelo persona en FiscalAPI."""
 
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social de la persona sin régimen de capital.")
     email: Optional[str] = Field(default=None, alias="email", description="Correo electrónico de la persona. El API valida el formato.")
-    password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard.")
-    capital_regime: Optional[str] = Field(default=None, alias="CapitalRegime", description="[Deprecado] El API no expone este campo; se conserva por compatibilidad y se ignora.")
-    sat_tax_regime_id: Optional[Literal["601", "603", "605", "606", "607", "608", "610", "611", "612", "614", "615", "616", "620", "621", "622", "623", "624", "625", "626"]] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal del emisor.")
+    password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard. Requerida al crear; al actualizar, None o vacía conserva la actual. El API nunca la devuelve.")
+    phone_number: Optional[str] = Field(default=None, alias="phoneNumber", description="Teléfono de la persona.")
+    sat_tax_regime_id: Optional[str] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal: clave del catálogo c_RegimenFiscal del SAT. La valida el API.")
     sat_tax_regime: Optional[CatalogDto] = Field(default=None, alias="satTaxRegime", description="Código del régimen fiscal expandido.")
-    sat_cfdi_use_id: Optional[Literal["G01", "G02", "G03", "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "D01", "D02", "D03", "D04", "D05", "D06", "D07", "D08", "D09", "D10", "S01", "CP01", "CN01"]] = Field(default=None, alias="satCfdiUseId", description="Código de uso del CFDI.")
+    sat_cfdi_use_id: Optional[str] = Field(default=None, alias="satCfdiUseId", description="Código de uso del CFDI: clave del catálogo c_UsoCFDI del SAT. La valida el API.")
     sat_cfdi_use: Optional[CatalogDto] = Field(default=None, alias="satCfdiUse", description="Código de uso del CFDI expandido.")
-    user_type_id: Optional[Literal["T","C", "U"]] = Field(default=None, alias="userTypeId", description="Tipo de persona.")
+    user_type_id: Optional[str] = Field(default=None, alias="userTypeId", description="Tipo de persona: C (cliente, por omisión al crear) o U (usuario). T (tenant) solo llega en respuestas: el API lo rechaza al crear y al actualizar solo lo acepta si la persona ya es T.")
     user_type: Optional[CatalogDto] = Field(default=None, alias="userType", description="Tipo de persona expandido.")
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor (Tax Identification Number).")
     zip_code: Optional[str] = Field(default=None, alias="zipCode", description="Código postal del emisor.")
     curp: Optional[str] = Field(default=None, alias="curp", description="CURP de la persona.")
     base64_photo: Optional[str] = Field(default=None, alias="base64Photo", description="Foto de perfil en formato base64.")
-    tax_password: Optional[str] = Field(default=None, alias="taxPassword", description="Contraseña de los certificados CSD del emisor.")
+    tax_password: Optional[str] = Field(default=None, alias="taxPassword", description="Contraseña de la llave privada (.key) que la persona guarda en su perfil. El API no la usa para sellar (al timbrar usa la de los certificados registrados o la de tax_credentials). Con valor solo para la propia persona y el owner del tenant; los demás reciben None. Al actualizar, None la conserva y \"\" la borra.")
     available_balance: Optional[Decimal] = Field(default=None, alias="availableBalance", description="Saldo disponible en la cuenta.")
-    committed_balance: Optional[Decimal] = Field(default=None, alias="committedBalance", description="Saldo en tránsito.")
+    committed_balance: Optional[Decimal] = Field(default=None, alias="committedBalance", description="Campo heredado: el API ya no lo calcula y siempre vale 0 (solo lectura). Para el saldo use available_balance o balances.")
     available_validation_balance: Optional[int] = Field(default=None, alias="availableValidationBalance", description="Créditos de validación SAT disponibles en la cuenta.")
+    balances: Optional[list[CreditBalance]] = Field(default=None, alias="balances", description="Saldos por tipo de crédito (solo lectura). Solo aparecen los tipos que la persona ha tenido.")
     manifest_status_id: Optional[str] = Field(default=None, alias="manifestStatusId", description="Estado de la carta manifiesto de la persona.")
     manifest_status: Optional[CatalogDto] = Field(default=None, alias="manifestStatus", description="Estado de la carta manifiesto expandido.")
     tenant_id: Optional[str] = Field(default=None, alias="tenantId", description="ID del tenant al que pertenece el emisor.")
     tenant: Optional[CatalogDto] = Field(default=None, alias="tenant", description="Tenant expandido.")
+    is_owner: Optional[bool] = Field(default=None, alias="isOwner", description="True si la persona es el owner de su tenant (solo lectura).")
+    valid_to: Optional[datetime] = Field(default=None, alias="validTo", description="Fin de vigencia de la persona (solo lectura). La asigna el API; casi siempre es None y es informativa (no limita el timbrado ni el acceso al API).")
     country_id: Optional[str] = Field(default=None, alias="countryId", description="Código del país de residencia para extranjeros (catálogo c_Pais).")
     foreign_tin: Optional[str] = Field(default=None, alias="foreignTin", description="Número de identificación fiscal del extranjero.")
+    country: Optional[CatalogDto] = Field(default=None, alias="country", description="País de residencia fiscal expandido (solo lectura).")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -132,10 +148,10 @@ class TaxFile(BaseDto):
         """Modelo TaxFile que representa un componente de un par CSD: certificado (.cer) o llave privada (.key)."""
 
         person_id: Optional[str] = Field(default=None, alias="personId", description="Id de la persona propietaria del certificado.")
-        tin: Optional[str] = Field(default=None, alias="tin", description="RFC del propietario del certificado. Debe coincidir con el RFC del certificado.")
+        tin: Optional[str] = Field(default=None, alias="tin", description="RFC de la persona. Opcional al subir: si se omite, el API usa el RFC de la persona; si se envía, debe ser el RFC de la persona (sin distinguir mayúsculas) o el API responde 400 con la falla en Tin. El API siempre devuelve el RFC de la persona.")
         base64_file: Optional[str] = Field(default=None, alias="base64File", description="Archivo certificado o llave privada en formato base64.")
-        file_type: Optional[Literal[0, 1]] = Field(default=None, alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada.")
-        password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada.")
+        file_type: Optional[int] = Field(default=None, alias="fileType", description="Tipo de archivo: 0 certificado CSD (.cer), 1 llave privada CSD (.key), 2 certificado FIEL (.cer), 3 llave privada FIEL (.key). El API valida el valor.")
+        password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada. Solo se envía al subir (tax_files.create()): en las consultas (get_list(), get_by_id() y la respuesta de create()) el API la devuelve vacía (''); solo get_default_values() la devuelve.")
         valid_from: Optional[datetime] = Field(default=None, alias="validFrom", description="Fecha de inicio de vigencia del certificado o llave privada.")
         valid_to: Optional[datetime] = Field(default=None, alias="validTo", description="Fecha de fin de vigencia del certificado o llave privada.")
         sequence: Optional[int] = Field(default=None, alias="sequence", description="Numero de secuencia que identifica el par entre certificado y llave privada.")
@@ -185,11 +201,11 @@ class InvoiceRecipientEmployeeData(BaseDto):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class TaxCredential(BaseDto):
+class TaxCredential(BaseModel):
     """Modelo para los sellos del emisor (archivos .cer y .key)."""
     base64_file: str = Field(default=..., alias="base64File", description="Archivo en formato base64.")
-    file_type: Literal[0, 1] = Field(default=..., alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada.")
-    password: str = Field(default=..., alias="password", description="Contraseña del archivo .key independientemente de si es un archivo .cer o .key.")
+    file_type: int = Field(default=..., alias="fileType", description="Tipo de archivo: 0 para certificado, 1 para llave privada (el par CSD). El API valida el valor.")
+    password: Optional[str] = Field(default=None, alias="password", description="Contraseña de la llave privada. Requerida en el objeto .key (file_type 1); en el .cer el API no la usa.")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -230,7 +246,7 @@ class ItemTax(BaseDto):
     tax_code: Optional[str] = Field(default=None, alias="taxCode", description="Código del impuesto.")
     tax_type_code: Optional[str] = Field(default=None, alias="taxTypeCode", description="Tipo de factor.")
     tax_rate: Optional[Decimal] = Field(default=None, alias="taxRate", description="Tasa del impuesto.")
-    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
+    tax_flag_code: Optional[str] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -313,7 +329,7 @@ class PaidInvoiceTax(BaseDto):
     tax_code: str = Field(default=..., alias="taxCode", description="Código del impuesto.")
     tax_type_code: str = Field(default=..., alias="taxTypeCode", description="Tipo de factor.")
     tax_rate: Decimal = Field(default=..., alias="taxRate", description="Tasa del impuesto.")
-    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
+    tax_flag_code: Optional[str] = Field(default=None, alias="taxFlagCode", description="Código que indica la naturaleza del impuesto. (T)raslado o (R)etención.")
     
     model_config = ConfigDict(populate_by_name=True)
     
@@ -343,7 +359,7 @@ class InvoicePayment(BaseDto):
     payment_date: str = Field(default=..., alias="paymentDate", description="Fecha de pago.")
     payment_form_code: str = Field(default=..., alias="paymentFormCode", description="Código de la forma de pago.")
     
-    currency_code: Literal ["MXN", "USD", "EUR"] = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en el pago.")
+    currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en el pago: una clave del catálogo c_Moneda del SAT, en mayúsculas, distinta de XXX.")
     exchange_rate: Optional[Decimal] = Field(default=Decimal("1"), alias="exchangeRate", description="Tipo de cambio FIX conforme a la moneda registrada en la factura. Si la moneda es MXN, el tipo de cambio debe ser 1..")
     amount: Decimal = Field(default=..., description="Monto del pago.")
     source_bank_tin: str = Field(default=..., alias="sourceBankTin", description="RFC del banco origen. (Rfc del banco emisor del pago)")
@@ -363,7 +379,7 @@ class LocalTax(BaseDto):
     tax_name: Optional[str] = Field(default=None, alias="taxName", description="Nombre del impuesto local.")
     tax_rate: Optional[Decimal] = Field(default=None, alias="taxRate", description="Tasa del impuesto local.")
     tax_amount: Optional[Decimal] = Field(default=None, alias="taxAmount", description="Monto del impuesto local.")
-    tax_flag_code: Optional[Literal["T", "R"]] = Field(default=None, alias="taxFlagCode", description="Traslado o Retención.")
+    tax_flag_code: Optional[str] = Field(default=None, alias="taxFlagCode", description="Traslado o Retención.")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -588,7 +604,7 @@ class CancelInvoiceRequest(BaseDto):
     id: Optional[str] = Field(default=None, alias="id", description="ID de la factura a cancelar. Obligatorio cuando se cancela por referencias.")
     invoice_uuid: Optional[str] = Field(default=None, alias="invoiceUuid", description="UUID de la factura a cancelar. Obligatorio cuando se cancela por valores.")
     tin: Optional[str] = Field(default=None, alias="tin", description="RFC del emisor de la factura. Obligatorio cuando se cancela por valores.")
-    cancellation_reason_code: Literal["01", "02", "03", "04"] = Field(default=..., alias="cancellationReasonCode", description="Código del motivo de cancelación.")
+    cancellation_reason_code: str = Field(default=..., alias="cancellationReasonCode", description="Código del motivo de cancelación, catálogo c_MotivoCancelacion del SAT: 01, 02, 03 o 04. El API valida el valor.")
     replacement_uuid: Optional[str] = Field(default=None, alias="replacementUuid", description="UUID de la factura de reemplazo. Obligatorio si el motivo de cancelación es '01'.")
     tax_credentials: Optional[list[TaxCredential]] = Field(default=None, alias="taxCredentials", description="Sellos del emisor. Obligatorio cuando se cancela por valores.")
 
@@ -738,7 +754,8 @@ class DownloadRequest(BaseDto):
     download_request_status: Optional[CatalogDto] = Field(default=None, alias="downloadRequestStatus", description="Estado de la solicitud de descarga Fiscalapi.")
     
     last_attempt_date: Optional[datetime] = Field(default=None, alias="lastAttemptDate", description="Fecha del último intento para la solicitud asociada.")
-    next_attempt_date: Optional[datetime] = Field(default=None, alias="nextAttemptDate", description="Fecha del siguiente intento para la solicitud asociada.")
+    # Obsoleto: el API ya no devuelve nextAttemptDate (siempre era null). Se eliminará en una versión mayor.
+    next_attempt_date: Optional[datetime] = Field(default=None, alias="nextAttemptDate", description="Obsoleto: el API ya no lo devuelve; siempre era null porque Fiscalapi no programa un siguiente intento por solicitud. Se eliminará en una versión mayor; use last_attempt_date.")
     
     invoice_count: Optional[int] = Field(default=None, alias="invoiceCount", description="Número de CFDIs encontrados para la solicitud cuando la solicitud ha terminado.")
     package_ids: Optional[list[str]] = Field(default_factory=list, alias="packageIds", description="Lista de IDs de paquetes disponibles para descarga cuando la solicitud ha terminado.")

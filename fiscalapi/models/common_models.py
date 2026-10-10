@@ -10,6 +10,7 @@ class ApiResponse(BaseModel, Generic[T]):
     details: Optional[str] = Field(default=None, alias="details")
     data: Optional[T] = Field(default=None, alias="data")
     http_status_code: Optional[int] = Field(default=None, alias="httpStatusCode")
+    trace_identifier: Optional[str] = Field(default=None, alias="traceIdentifier", description="Identificador de la petición en los registros de FiscalAPI. Viene en los errores (por ejemplo, un 500 o un 502): inclúyalo al escribir a soporte@fiscalapi.com.")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -30,7 +31,7 @@ class ValidationFailure(BaseModel):
     """Modelo para errores de validación."""
     property_name: str = Field(alias="propertyName")
     error_message: str = Field(alias="errorMessage")
-    attempted_value: Optional[Any] = Field(default=None, alias="attemptedValue")
+    attempted_value: Optional[Any] = Field(default=None, alias="attemptedValue", description="Valor recibido. El de un secreto (contraseñas, códigos, tokens, archivos y contraseñas de CSD/FIEL) llega como \"[masked: n]\", o \"[masked]\" si es un objeto o lista que lo contiene.")
 
     model_config = ConfigDict(populate_by_name=True)
 
