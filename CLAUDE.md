@@ -146,8 +146,8 @@ python -m pytest
 `tests/` holds offline tests: `conftest.py` replaces `requests.request` in `base_service`, so each test
 runs the real service → `send_request` → pydantic path against a fixed JSON from `tests/fixtures/`
 (shaped like the API's camelCase responses, enums as numbers). `test_response_tolerance.py`
-characterizes how the SDK handles responses of upcoming API phases; a test whose name cites a task
-(for example `__fixed_by_SDK_012`) pins a known defect and must be inverted by that task.
+characterizes how the SDK handles API responses with values and fields it does not model yet; a test whose name
+contains `fixed_by` or `exposed_by` pins a known defect and must be inverted when the SDK models them.
 
 ## Dependencies
 

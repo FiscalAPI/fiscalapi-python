@@ -1,14 +1,15 @@
-"""Cambios de código del SDK en el ciclo de deuda técnica 2 (Fase III, C22).
+"""Contrato público que fijan estas pruebas.
 
-Los escenarios 1 a 3 viven también en los SDK de .NET, Node.js, PHP y Java (DEC-136), cuando el cambio aplica a cada uno:
+Los escenarios 1 a 3 viven también en los SDK de .NET, Node.js, PHP y Java, con el mismo resultado observable,
+cuando el cambio aplica a cada uno:
 
 1. persona: ``valid_to`` de solo lectura y ``committed_balance`` heredado; ``capital_regime``, ``stripeCustomerId`` y
-   ``subscriptionStatus`` fuera del modelo (SDK-043, SDK-044);
-2. certificados: ``tin`` opcional al subir (SDK-045) y ``file_type`` 2 y 3 de la FIEL (SDK-058);
-3. certificados sin ``update()``: el API retiró PUT tax-files (SDK-051).
+   ``subscriptionStatus`` fuera del modelo;
+2. certificados: ``tin`` opcional al subir y ``file_type`` 2 y 3 de la FIEL;
+3. certificados sin ``update()``: el API retiró PUT tax-files.
 
 Los escenarios 4 y 5 son solo de Python: el SDK deja de restringir con ``Literal`` las claves que valida el API y las
-envía tal cual, como los otros SDK (SDK-044, SDK-050, SDK-058; DEC-163 H2).
+envía tal cual, como los otros SDK.
 """
 from datetime import datetime
 from decimal import Decimal
@@ -39,7 +40,7 @@ def _envelope(data) -> dict:
     return {"data": data, "succeeded": True, "message": "", "details": "", "httpStatusCode": 200}
 
 
-# 1. Persona (SDK-043, SDK-044)
+# 1. Persona
 
 
 def test_person_from_response_reads_valid_to_and_committed_balance_and_drops_the_retired_fields(client, fake_api, api_json):
@@ -72,7 +73,7 @@ def test_person_create_sends_neither_valid_to_nor_the_retired_fields(client, fak
         assert key not in request["json"]
 
 
-# 2. Certificados: tin opcional (SDK-045) y file_type de la FIEL (SDK-058)
+# 2. Certificados: tin opcional y file_type de la FIEL
 
 
 @pytest.mark.parametrize("file_type", [2, 3])
@@ -90,7 +91,7 @@ def test_tax_file_create_without_tin_sends_the_file_type_as_a_number_and_no_tin(
     assert request["json"] == {"personId": PERSON_ID, "base64File": BASE64_CER, "fileType": file_type, "password": "12345678a"}
 
 
-# 3. Certificados sin update() (SDK-051)
+# 3. Certificados sin update()
 
 
 def test_tax_file_service_has_no_update(client):
@@ -110,7 +111,7 @@ def test_tax_file_delete_sends_delete_to_the_tax_file(client, fake_api):
     assert request["json"] is None
 
 
-# 4. Cancelación por valores: TaxCredential sin BaseDto (SDK-044) y motivo como texto (SDK-058)
+# 4. Cancelación por valores: TaxCredential sin BaseDto y motivo como texto
 
 
 @pytest.mark.parametrize("reason_code", ["02", "05"])
@@ -148,7 +149,7 @@ def test_tax_credential_is_not_a_base_dto():
     assert credential.password is None
 
 
-# 5. Claves de catálogo como texto: el SDK no las restringe, las valida el API (SDK-050, DEC-163 H2)
+# 5. Claves de catálogo como texto: el SDK no las restringe, las valida el API
 
 
 def test_catalog_keys_are_sent_as_is():

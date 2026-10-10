@@ -1,4 +1,4 @@
-"""SDK-060 (DEC-184, consistencia DEC-136 con Java): las respuestas de error exponen ``trace_identifier``.
+"""Las respuestas de error exponen ``trace_identifier``, igual que en los SDK de .NET, Node.js y Java.
 
 Los textos de los 5xx del API piden enviar el traceIdentifier a soporte. El cambio es aditivo: ``message``,
 ``details`` y ``http_status_code`` no cambian.

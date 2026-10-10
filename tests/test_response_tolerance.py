@@ -1,12 +1,13 @@
-"""Tolerancia del SDK a respuestas que el API devolverá en las próximas fases (SDK-001).
+"""Tolerancia del SDK a respuestas del API con valores y campos que el SDK todavía no modela.
 
-Son pruebas de caracterización: fijan el comportamiento ACTUAL. Una prueba cuyo nombre cita SDK-012
-documenta un defecto conocido; SDK-012 la invierte al corregirlo. Los casos son:
+Son pruebas de caracterización: fijan el comportamiento ACTUAL. Una prueba cuyo nombre incluye ``fixed_by``
+o ``exposed_by`` documenta un defecto conocido; se invierte cuando el SDK agregue el crédito de ticket y
+``availableTicketBalance``. Los casos son:
 
-1. una transacción de timbres con ``creditType: 3`` (créditos de ticket, Fase 1);
-2. una persona con el campo nuevo ``availableTicketBalance`` (Fase 1);
+1. una transacción de timbres con ``creditType: 3`` (créditos de ticket);
+2. una persona con el campo nuevo ``availableTicketBalance``;
 3. propiedades desconocidas en la envoltura, en ``data`` y en objetos anidados;
-4. ``globalInformation`` en la respuesta de una factura (BE-008).
+4. ``globalInformation`` en la respuesta de una factura.
 """
 from decimal import Decimal
 
@@ -108,7 +109,7 @@ def test_unknown_properties_on_the_envelope_the_page_and_a_person_are_ignored(cl
     assert "unknownObjectField" not in response.data.model_dump(by_alias=True)
 
 
-# 4. globalInformation en la respuesta de una factura (BE-008)
+# 4. globalInformation en la respuesta de una factura
 
 
 def test_invoice_with_global_information_deserializes_it(client, fake_api, api_json):
