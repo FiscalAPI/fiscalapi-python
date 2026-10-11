@@ -304,6 +304,7 @@ class InvoiceItem(BaseDto):
     customs_info: Optional[list[ItemCustomsInfo]] = Field(default=None, alias="customsInfo", description="Información aduanera.")
     property_info: Optional[list[ItemPropertyInfo]] = Field(default=None, alias="propertyInfo", description="Información predial.")
     parts: Optional[list[ItemPart]] = Field(default=None, alias="parts", description="Partes del concepto.")
+    ticket_id: Optional[str] = Field(default=None, alias="ticketId", description="Id del ticket de Auto CFDI que este concepto factura. Solo en una factura global de ingreso (tipo I con global_information) con el emisor por referencia (issuer.id); un ticket puede ir en varios conceptos, uno por grupo de objeto de impuesto e impuestos. En None no se envía.")
 
     model_config = ConfigDict(populate_by_name=True)
 

@@ -23,6 +23,10 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 - El SDK de Python no define interfaces que el integrador implemente: `FiscalApiClient` solo gana el atributo `tickets`; quien usa el cliente del SDK no cambia nada.
 - Ejemplo: `examples/ejemplos-tickets.py`.
 
+### Modelo `InvoiceItem`
+
+- `ticketId` en el concepto de la factura para ligar la factura global a los tickets (Auto CFDI); se omite si es nulo. En Python es `InvoiceItem.ticket_id` (`Optional[str]`, alias `ticketId`): en `None` no viaja en el JSON. Un 409 por tickets no disponibles trae `unavailableTickets` (`ticketId`, `status`) en `error_data`. Ejemplo: `examples/ejemplos-factura-global-tickets.py`.
+
 ### `ApiResponse`
 
 - `error_data` (`Optional[Any]`): nuevo miembro (aditivo) con el `data` crudo de una respuesta de error (el dict o la lista tal cual): por ejemplo `existingTicketId` en el 409 de `tickets.create` (`response.error_data["existingTicketId"]`) o `expectedTotal` y `computedTotal` en su 422. Es `None` en las respuestas exitosas y en los errores sin `data`. `data`, `message`, `details`, `http_status_code` y `trace_identifier` no cambian (en un error, `data` sigue en `None`).
