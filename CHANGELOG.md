@@ -2,6 +2,16 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
+## [Sin publicar]
+
+### Enum `CreditType`
+
+- Tipo de crédito `TICKET` (3) para transferir y leer créditos de ticket: `stamps.transfer_stamps()` con `credit_type=CreditType.TICKET` los transfiere con las mismas reglas que los timbres, y las transacciones (`stamps.get_list()`, `stamps.get_by_id()`) los devuelven como `CreditType.TICKET`. El saldo de créditos de ticket se lee en `balances` de la persona (`CreditBalance` con `credit_type` igual a `CreditType.TICKET`); un tipo ausente tiene saldo 0. Los valores existentes no cambian (`STAMP` 1, `VALIDATION` 2).
+
+### Modelo `StampTransaction`
+
+- Las transacciones con un tipo de crédito desconocido ya no fallan: el valor se conserva. Antes, `stamps.get_list()` y `stamps.get_by_id()` lanzaban `ValidationError` si una transacción traía un `creditType` que el SDK no conocía (por ejemplo el 3 antes de este cambio) y se perdía la respuesta completa. Ahora `StampTransaction.credit_type` es `Optional[Union[CreditType, int]]`: un tipo conocido sigue llegando como miembro de `CreditType` y uno desconocido llega como su número (`int`). El código que compara contra `CreditType` (`t.credit_type == CreditType.STAMP`) no cambia; si su código usa atributos del enum (`t.credit_type.name`), compruebe antes `isinstance(t.credit_type, CreditType)`.
+
 ## [4.0.433] - 2026-10-10
 
 ### Cambios incompatibles (BREAKING)

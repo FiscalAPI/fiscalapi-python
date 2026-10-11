@@ -50,13 +50,14 @@
 - **Búsqueda de información** en catálogos del SAT con filtros avanzados
 - **Acceso y búsqueda** en catálogos completos
 
-## 🎫 Gestión de Timbres y Créditos de Validación
+## 🎫 Gestión de Timbres, Créditos de Validación y Créditos de Ticket
 - **Gestión de folios fiscales**: compra timbres a FiscalAPI y transfiere/retira a las personas de tu organización según tus reglas de negocio
 - **Listar transacciones** del ledger con paginación
 - **Consultar transacciones** por ID
 - **Transferir timbres** entre personas
 - **Retirar timbres** de una persona
 - **Transferir y retirar créditos de validación SAT** con `credit_type=CreditType.VALIDATION`
+- **Transferir y retirar créditos de ticket** con `credit_type=CreditType.TICKET`; su saldo se lee en `balances` de la persona
 
 ## 🛡️ Validaciones SAT
 - **Estructura del XML** contra el Anexo 20 y los complementos declarados
@@ -400,6 +401,25 @@ params = StampTransactionParams(
 api_response = client.stamps.transfer_stamps(params)
 ```
 
+Los créditos de ticket se transfieren igual, con `credit_type=CreditType.TICKET`, y su saldo se lee en `balances` de la persona (un tipo ausente tiene saldo 0):
+
+```python
+from fiscalapi import CreditType, StampTransactionParams
+
+params = StampTransactionParams(
+    from_person_id="3f3478b4-60fd-459e-8bfc-f8239fc96257",
+    to_person_id="96b46762-d246-4a67-a562-510a25dbafa9",
+    amount=100,
+    comments="Asignación de créditos de ticket",
+    credit_type=CreditType.TICKET
+)
+
+api_response = client.stamps.transfer_stamps(params)
+
+person = client.people.get_by_id("96b46762-d246-4a67-a562-510a25dbafa9").data
+ticket_balance = next((b.available for b in person.balances or [] if b.credit_type == CreditType.TICKET), 0)
+```
+
 ### 10. Factura de Comercio Exterior
 
 El complemento se envía en `Invoice.complement.comercio_exterior`. Puede combinarse con carta porte en el mismo comprobante.
@@ -539,8 +559,8 @@ Tras una firma exitosa, todas las personas del tenant con el RFC del certificado
   Alta y administración de personas, gestión de certificados (CSD).
 - **Productos y Servicios**
   Administración de catálogos de productos, búsqueda en catálogos SAT.
-- **Timbres y créditos de validación**
-  Listar transacciones, transferir y retirar timbres o créditos de validación entre personas.
+- **Timbres, créditos de validación y créditos de ticket**
+  Listar transacciones, transferir y retirar timbres, créditos de validación o créditos de ticket entre personas.
 - **Validaciones SAT**
   Validar estructura, certificado, sellos, estatus en el SAT y listas negras 69-B de un CFDI o un RFC.
 - **Carta manifiesto**

@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from fiscalapi.models.common_models import BaseDto, CatalogDto
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
 from fiscalapi.models.comercio_exterior_models import ComercioExteriorComplement
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 
 # products models
@@ -54,7 +54,7 @@ class CreditBalance(BaseModel):
     Un tipo ausente tiene saldo 0; un tipo que este SDK no conoce conserva su número en credit_type.
     """
 
-    credit_type: int = Field(default=..., alias="creditType", description="Tipo de crédito: 1 timbres, 2 créditos de validación.")
+    credit_type: int = Field(default=..., alias="creditType", description="Tipo de crédito: 1 timbres, 2 créditos de validación, 3 créditos de ticket.")
     available: int = Field(default=..., alias="available", description="Saldo disponible.")
 
     model_config = ConfigDict(populate_by_name=True)
@@ -1011,12 +1011,13 @@ class Xml(BaseDto):
 class CreditType(IntEnum):
     """Tipo de crédito de una transacción de timbres.
 
-    Los saldos nunca se mezclan: STAMP afecta ``Person.available_balance`` y VALIDATION afecta
-    ``Person.available_validation_balance``.
+    Los saldos nunca se mezclan: STAMP afecta ``Person.available_balance``, VALIDATION afecta
+    ``Person.available_validation_balance`` y TICKET afecta el saldo de tipo TICKET en ``Person.balances``.
     """
 
     STAMP = 1
     VALIDATION = 2
+    TICKET = 3
 
 
 class StampTransactionType(IntEnum):
@@ -1055,7 +1056,9 @@ class StampTransaction(BaseDto):
     transaction_status: Optional[int] = Field(default=None, alias="transactionStatus", description="Estado de la transacción.")
     reference_id: Optional[str] = Field(default=None, alias="referenceId", description="ID de referencia de la transacción.")
     comments: Optional[str] = Field(default=None, alias="comments", description="Comentarios de la transacción.")
-    credit_type: Optional[CreditType] = Field(default=None, alias="creditType", description="Tipo de crédito que mueve la transacción: timbres o créditos de validación.")
+    # left_to_right: un tipo conocido llega como miembro de CreditType y uno que este SDK todavía no conoce
+    # conserva su número (int) en lugar de lanzar ValidationError y perder la respuesta completa.
+    credit_type: Optional[Union[CreditType, int]] = Field(default=None, alias="creditType", union_mode="left_to_right", description="Tipo de crédito que mueve la transacción: timbres, créditos de validación o créditos de ticket. Un tipo que este SDK no conoce conserva su número (int).")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -1066,6 +1069,6 @@ class StampTransactionParams(BaseModel):
     to_person_id: str = Field(default=..., alias="toPersonId", description="ID de la persona destino.")
     amount: int = Field(default=..., alias="amount", description="Cantidad de timbres a transferir.")
     comments: Optional[str] = Field(default=None, alias="comments", description="Comentarios de la transferencia.")
-    credit_type: CreditType = Field(default=CreditType.STAMP, alias="creditType", description="Tipo de crédito a transferir: STAMP (timbres, por defecto) o VALIDATION (créditos de validación SAT).")
+    credit_type: CreditType = Field(default=CreditType.STAMP, alias="creditType", description="Tipo de crédito a transferir: STAMP (timbres, por defecto), VALIDATION (créditos de validación SAT) o TICKET (créditos de ticket).")
 
     model_config = ConfigDict(populate_by_name=True)
