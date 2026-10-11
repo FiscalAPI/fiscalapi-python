@@ -11,6 +11,7 @@ class ApiResponse(BaseModel, Generic[T]):
     data: Optional[T] = Field(default=None, alias="data")
     http_status_code: Optional[int] = Field(default=None, alias="httpStatusCode")
     trace_identifier: Optional[str] = Field(default=None, alias="traceIdentifier", description="Identificador de la petición en los registros de FiscalAPI. Viene en los errores (por ejemplo, un 500 o un 502): inclúyalo al escribir a soporte@fiscalapi.com.")
+    error_data: Optional[Any] = Field(default=None, alias="errorData", description="El data crudo de una respuesta de error (dict o lista tal cual), por ejemplo existingTicketId en el 409 de tickets.create o expectedTotal y computedTotal en su 422. None en las respuestas exitosas y en los errores sin data; data no cambia (en un error sigue en None).")
 
     model_config = ConfigDict(populate_by_name=True)
 

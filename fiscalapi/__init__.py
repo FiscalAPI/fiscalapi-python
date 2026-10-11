@@ -75,6 +75,20 @@ from .models.sat_validation_models import (
     SatValidationStatus,
     SatValidationResult,
 )
+# Modelos de tickets (Auto CFDI)
+from .models.ticket_models import (
+    TicketStatus,
+    TicketEventType,
+    TicketActorType,
+    TicketIssuer,
+    TicketItemTax,
+    TicketItem,
+    TicketEvent,
+    Ticket,
+    TicketIngestionResult,
+    TicketCodeResult,
+    TicketListFilters,
+)
 
 # Modelos de dominio
 from .models.fiscalapi_models import (
@@ -175,6 +189,7 @@ from .services.tax_file_service import TaxFileService
 from .services.sat_validation_service import SatValidationService
 from .services.stamp_service import StampService
 from .services.manifest_service import ManifestService
+from .services.ticket_service import TicketService
 
 # Cliente principal
 from .services.fiscalapi_client import FiscalApiClient
@@ -311,6 +326,18 @@ __all__ = [
     "SatValidationTypeStatus",
     "SatValidationStatus",
     "SatValidationResult",
+    # Ticket models (Auto CFDI)
+    "TicketStatus",
+    "TicketEventType",
+    "TicketActorType",
+    "TicketIssuer",
+    "TicketItemTax",
+    "TicketItem",
+    "TicketEvent",
+    "Ticket",
+    "TicketIngestionResult",
+    "TicketCodeResult",
+    "TicketListFilters",
     # Servicios
     "BaseService",
     "ApiKeyService",
@@ -327,6 +354,7 @@ __all__ = [
     "SatValidationService",
     "StampService",
     "ManifestService",
+    "TicketService",
     # Cliente principal
     "FiscalApiClient",
 ]

@@ -61,6 +61,20 @@ from .sat_validation_models import (
     SatValidationStatus,
     SatValidationResult,
 )
+from .ticket_models import (
+    # Ticket models (Auto CFDI)
+    TicketStatus,
+    TicketEventType,
+    TicketActorType,
+    TicketIssuer,
+    TicketItemTax,
+    TicketItem,
+    TicketEvent,
+    Ticket,
+    TicketIngestionResult,
+    TicketCodeResult,
+    TicketListFilters,
+)
 from .fiscalapi_models import (
     # Product models
     ProductTax,
@@ -275,4 +289,16 @@ __all__ = [
     "SatValidationTypeStatus",
     "SatValidationStatus",
     "SatValidationResult",
+    # Ticket models (Auto CFDI)
+    "TicketStatus",
+    "TicketEventType",
+    "TicketActorType",
+    "TicketIssuer",
+    "TicketItemTax",
+    "TicketItem",
+    "TicketEvent",
+    "Ticket",
+    "TicketIngestionResult",
+    "TicketCodeResult",
+    "TicketListFilters",
 ]

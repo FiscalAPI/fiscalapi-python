@@ -565,11 +565,14 @@ Tras una firma exitosa, todas las personas del tenant con el RFC del certificado
   Validar estructura, certificado, sellos, estatus en el SAT y listas negras 69-B de un CFDI o un RFC.
 - **Carta manifiesto**
   Firmar la carta manifiesto de una persona con su e.firma (FIEL) y obtener el PDF resultante.
+- **Tickets (Auto CFDI)**
+  Ingerir ventas pagadas del punto de venta con Idempotency-Key opcional, consultarlas con filtros, reimprimir su código y cancelarlas.
 
 ## 📂 Más Ejemplos
 
 - [Gestión de Timbres](examples/ejemplos-timbres.py)
 - [Validaciones SAT](examples/ejemplos-validaciones-sat.py)
+- [Tickets de Auto CFDI](examples/ejemplos-tickets.py)
 - [Complementos de Pago](examples/ejemplos-facturas-de-complemento-pago.py)
 - [Facturas de Nómina](examples/ejemplos-facturas-de-nomina.py)
 - [Impuestos Locales (Por Valores)](examples/ejemplos-factura-impuestos-locales-valores.py)
