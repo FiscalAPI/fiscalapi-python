@@ -25,6 +25,7 @@ from fiscalapi import (
 BASE_URL = "https://sdk-tests.fiscalapi.invalid/api/v4/tickets"
 ISSUER_ID = "4b1c2d3e-0000-4000-8000-000000000002"
 TICKET_ID = "9f8e7d6c-0000-4000-8000-0000000000a1"
+GLOBAL_INVOICE_ID = "7c1d2e3f-0000-4000-8000-0000000000b2"
 IDEMPOTENCY_KEY = "pos-01-F-1001"
 
 INGESTED = {
@@ -255,6 +256,24 @@ def test_get_list_sends_every_filter_repeating_status(client, fake_api):
     assert ticket.payment_date == datetime(2026, 9, 1)
     assert ticket.status is TicketStatus.PENDING
     assert ticket.items is None and ticket.events is None
+
+
+def test_get_list_sends_details_and_global_invoice_id_when_assigned(client, fake_api):
+    fake_api.respond_with(_ok({"items": [], "pageNumber": 1, "totalPages": 0, "totalCount": 0,
+                               "hasPreviousPage": False, "hasNextPage": False}))
+
+    client.tickets.get_list(TicketListFilters(details=True, global_invoice_id=GLOBAL_INVOICE_ID))
+
+    assert fake_api.requests[0]["url"] == f"{BASE_URL}?details=true&globalInvoiceId={GLOBAL_INVOICE_ID}"
+
+
+def test_get_list_does_not_send_details_when_false(client, fake_api):
+    fake_api.respond_with(_ok({"items": [], "pageNumber": 1, "totalPages": 0, "totalCount": 0,
+                               "hasPreviousPage": False, "hasNextPage": False}))
+
+    client.tickets.get_list(TicketListFilters(details=False))
+
+    assert fake_api.requests[0]["url"] == BASE_URL
 
 
 def test_get_list_without_filters_sends_no_query(client, fake_api):

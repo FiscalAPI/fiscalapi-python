@@ -164,6 +164,8 @@ class TicketListFilters(BaseModel):
 
     status: Optional[list[Union[TicketStatus, str]]] = Field(default=None, alias="status", description="Uno o más estados; se envían repitiendo la llave status.")
     person_id: Optional[str] = Field(default=None, alias="personId", description="Persona emisora.")
+    details: Optional[bool] = Field(default=None, alias="details", description="Con true, cada ticket trae sus conceptos con impuestos (sin la historia).")
+    global_invoice_id: Optional[str] = Field(default=None, alias="globalInvoiceId", description="Factura global que ampara los tickets.")
     from_: Optional[date] = Field(default=None, alias="from", description="Primer día del pago (incluido), en fecha civil de México.")
     to: Optional[date] = Field(default=None, alias="to", description="Último día del pago (incluido), en fecha civil de México.")
     page_number: Optional[int] = Field(default=None, alias="pageNumber", description="Página, desde 1. Sin ella, el API devuelve la primera.")
@@ -172,9 +174,10 @@ class TicketListFilters(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     def to_query_params(self) -> list[tuple[str, str]]:
-        """Los filtros asignados como pares de la query string, con ``status`` repetido por cada estado."""
+        """Los filtros asignados como pares de la query string: ``status`` se repite por cada estado, y ``details``
+        solo viaja como ``true`` (``False`` no se envía)."""
         params: list[tuple[str, str]] = []
         for key, value in self.model_dump(mode="json", by_alias=True, exclude_none=True).items():
             values = value if isinstance(value, list) else [value]
-            params.extend((key, str(item)) for item in values)
+            params.extend((key, "true" if item is True else str(item)) for item in values if item is not False)
         return params
