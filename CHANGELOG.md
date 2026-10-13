@@ -2,6 +2,35 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
+## [4.0.439] - 2026-10-12
+
+### Enum `CreditType`
+
+- Tipo de crédito `TICKET` (3) para transferir y leer créditos de ticket: `stamps.transfer_stamps()` con `credit_type=CreditType.TICKET` los transfiere con las mismas reglas que los timbres, y las transacciones (`stamps.get_list()`, `stamps.get_by_id()`) los devuelven como `CreditType.TICKET`. El saldo de créditos de ticket se lee en `balances` de la persona (`CreditBalance` con `credit_type` igual a `CreditType.TICKET`); un tipo ausente tiene saldo 0. Los valores existentes no cambian (`STAMP` 1, `VALIDATION` 2).
+
+### Modelo `StampTransaction`
+
+- Las transacciones con un tipo de crédito desconocido ya no fallan: el valor se conserva. Antes, `stamps.get_list()` y `stamps.get_by_id()` lanzaban `ValidationError` si una transacción traía un `creditType` que el SDK no conocía (por ejemplo el 3 antes de este cambio) y se perdía la respuesta completa. Ahora `StampTransaction.credit_type` es `Optional[Union[CreditType, int]]`: un tipo conocido sigue llegando como miembro de `CreditType` y uno desconocido llega como su número (`int`). El código que compara contra `CreditType` (`t.credit_type == CreditType.STAMP`) no cambia; si su código usa atributos del enum (`t.credit_type.name`), compruebe antes `isinstance(t.credit_type, CreditType)`.
+
+### Servicio de tickets (Auto CFDI)
+
+- Servicio de tickets (Auto CFDI): `tickets.create` (con `Idempotency-Key` opcional), `get_list` con filtros, `get_by_id`, `get_code` y `cancel`, en `client.tickets` (`TicketService`):
+  - `create(ticket, idempotency_key=None)`: `POST /api/v4/tickets`; cobra 1 crédito de ticket y devuelve `TicketIngestionResult` (`id`, `ticket_code`, `qr_url`, `status`, `self_invoice_eligible`, `eligible_until` y los importes calculados). Con `idempotency_key` envía el header `Idempotency-Key` (sin ella no lo envía): repetir la key con el mismo cuerpo responde 200 con el ticket original y sin cobrar. Un folio y serie ya activos del emisor responden 409 y un total que no cuadra 422, como `ApiResponse` fallida con el texto del API en `details` y su `data` en `error_data`.
+  - `get_list(filters=None)`: `GET /api/v4/tickets` con `TicketListFilters`: `status` (uno o más; se repite la llave `status`), `person_id`, `details` (con `True` envía `details=true`: cada ticket trae sus conceptos con impuestos, sin la historia; `False` no se envía), `global_invoice_id` (factura global que ampara los tickets), `from_`/`to` (`date`, fecha civil de México; `from_` lleva guion bajo porque `from` es palabra reservada), `page_number` y `page_size`; los filtros en `None` no se envían.
+  - `get_by_id(ticket_id, details=False)`: con `details=True` trae `items` (con `item_taxes`) y `events`. `get_code(ticket_id)` devuelve `TicketCodeResult` (`ticket_code`, `qr_url`) para reimprimir. `cancel(ticket_id)` usa `DELETE` (solo desde `pending`; el crédito no se devuelve).
+- Modelos nuevos exportados desde `fiscalapi`: `Ticket`, `TicketIssuer`, `TicketItem`, `TicketItemTax`, `TicketEvent`, `TicketIngestionResult`, `TicketCodeResult` y `TicketListFilters`. `payment_date` es un `datetime` en hora civil de México (sin zona viaja como `yyyy-MM-ddTHH:mm:ss`); los decimales (`Decimal`) se envían tal cual.
+- Enums `TicketStatus`, `TicketEventType` y `TicketActorType` (`str, Enum`): `status`, `events[].type` y `events[].actor_type` son `Union[<enum>, str]`; un valor que el SDK no conoce llega como texto, sin `ValidationError`.
+- El SDK de Python no define interfaces que el integrador implemente: `FiscalApiClient` solo gana el atributo `tickets`; quien usa el cliente del SDK no cambia nada.
+- Ejemplo: `examples/ejemplos-tickets.py`.
+
+### Modelo `InvoiceItem`
+
+- `ticketId` en el concepto de la factura para ligar la factura global a los tickets (Auto CFDI); se omite si es nulo. En Python es `InvoiceItem.ticket_id` (`Optional[str]`, alias `ticketId`): en `None` no viaja en el JSON. Un 409 por tickets no disponibles trae `unavailableTickets` (`ticketId`, `status`) en `error_data`. Ejemplo: `examples/ejemplos-factura-global-tickets.py`.
+
+### `ApiResponse`
+
+- `error_data` (`Optional[Any]`): nuevo miembro (aditivo) con el `data` crudo de una respuesta de error (el dict o la lista tal cual): por ejemplo `existingTicketId` en el 409 de `tickets.create` (`response.error_data["existingTicketId"]`) o `expectedTotal` y `computedTotal` en su 422. Es `None` en las respuestas exitosas y en los errores sin `data`. `data`, `message`, `details`, `http_status_code` y `trace_identifier` no cambian (en un error, `data` sigue en `None`).
+
 ## [4.0.433] - 2026-10-10
 
 ### Cambios incompatibles (BREAKING)

@@ -114,6 +114,7 @@ class BaseService:
                         message=generic_error.message,
                         details=details_str,
                         trace_identifier=generic_error.trace_identifier,
+                        error_data=response_data.get("data"),
                         data=None
                     )
             except Exception:
@@ -125,6 +126,7 @@ class BaseService:
             message=generic_error.message or f"HTTP Error {status_code}",
             details=generic_error.details or raw_content,
             trace_identifier=generic_error.trace_identifier,
+            error_data=response_data.get("data"),
             data=None
         )
 

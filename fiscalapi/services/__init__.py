@@ -16,6 +16,7 @@ from .product_service import ProductService
 from .sat_validation_service import SatValidationService
 from .stamp_service import StampService
 from .tax_file_service import TaxFileService
+from .ticket_service import TicketService
 
 __all__ = [
     "BaseService",
@@ -34,4 +35,5 @@ __all__ = [
     "SatValidationService",
     "StampService",
     "TaxFileService",
+    "TicketService",
 ]

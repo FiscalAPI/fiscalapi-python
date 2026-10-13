@@ -26,7 +26,7 @@ def load_fixture(name: str) -> dict:
 class FakeApi:
     """Responde a cada petición del SDK con el cuerpo y el status configurados (200 por omisión) y registra las peticiones.
 
-    ``requests`` guarda, por petición, el método, la URL y el cuerpo JSON que armó el SDK (None si no lleva).
+    ``requests`` guarda, por petición, el método, la URL, el cuerpo JSON que armó el SDK (None si no lleva) y los headers.
     """
 
     def __init__(self) -> None:
@@ -41,7 +41,7 @@ class FakeApi:
 
     def request(self, method: str, url: str, **kwargs: Any) -> requests.Response:
         self.requested_urls.append(url)
-        self.requests.append({"method": method, "url": url, "json": kwargs.get("json")})
+        self.requests.append({"method": method, "url": url, "json": kwargs.get("json"), "headers": kwargs.get("headers")})
         response = requests.Response()
         response.status_code = self.status_code
         response.encoding = "utf-8"
