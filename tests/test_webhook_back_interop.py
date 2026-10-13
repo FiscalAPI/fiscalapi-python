@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from fiscalapi import WebhookEventTypes, webhooks
+from fiscalapi import WebhookEventTypes, WebhookVerificationException, webhooks
 from webhook_signing import generate_secret, headers
 
 EVENT_ID = "0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13"
@@ -115,6 +115,37 @@ def test_a_created_at_with_an_offset_is_read_in_utc():
 
     assert event.created_at == datetime(2026, 10, 12, 18, 47, 53, tzinfo=timezone.utc)
     assert event.created_at.utcoffset() == timedelta(0)
+    assert event.created_at.tzinfo is timezone.utc
+
+
+@pytest.mark.parametrize(
+    "created_at",
+    [
+        pytest.param('"1791830873"', id="epoch-como-texto"),
+        pytest.param("1791830873", id="epoch-como-numero"),
+        pytest.param('"2026-10-12"', id="fecha-sin-hora"),
+        pytest.param('"2026-10-12T18:47:53"', id="sin-zona"),
+        pytest.param('"2026-10-12T18:47Z"', id="sin-segundos"),
+        pytest.param('"12/10/2026 18:47:53"', id="no-iso"),
+    ],
+)
+def test_a_created_at_that_is_not_iso_8601_with_time_and_zone_is_rejected(created_at):
+    body = '{"id":"evt_1","type":"invoice.canceled","createdAt":' + created_at + ',"personId":null}'
+    secret = generate_secret()
+
+    with pytest.raises(WebhookVerificationException, match="no es un evento") as raised:
+        verify_delivered(headers("evt_1", TIMESTAMP, body, secret), body, secret)
+    assert raised.value.__cause__ is not None
+
+
+@pytest.mark.parametrize("created_at", ["2026-10-12T18:47:53Z", "2026-10-12T18:47:53.250Z", "2026-10-12T18:47:53+00:00"])
+def test_a_created_at_in_iso_8601_with_time_and_zone_is_read(created_at):
+    body = '{"id":"evt_1","type":"invoice.canceled","createdAt":"' + created_at + '","personId":null}'
+    secret = generate_secret()
+
+    event = verify_delivered(headers("evt_1", TIMESTAMP, body, secret), body, secret)
+
+    assert event.created_at.replace(microsecond=0) == datetime(2026, 10, 12, 18, 47, 53, tzinfo=timezone.utc)
     assert event.created_at.tzinfo is timezone.utc
 
 

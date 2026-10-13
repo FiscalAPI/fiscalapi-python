@@ -4,10 +4,13 @@ del timestamp.
 Los mismos escenarios viven en los SDK de .NET, Node.js, PHP y Java. El momento de la verificación se fija con
 ``webhooks._verify_at`` (segundos Unix del receptor), así el vector oficial (de 2021) verifica sin depender del reloj.
 """
+import base64
+import re
 import time
+import traceback
 from collections.abc import Mapping
 from datetime import timedelta
-from typing import Iterator, Optional, Union
+from typing import Callable, Iterator, Optional, Union
 
 import pytest
 
@@ -22,6 +25,7 @@ OFFICIAL_BODY = '{"test": 2432232314}'
 OFFICIAL_SIGNATURE = "v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OE="
 
 DEFAULT_SECONDS = 5 * 60
+NOT_UTF8 = "El cuerpo o un header no es texto UTF-8 válido."
 
 
 def official_headers(
@@ -163,6 +167,7 @@ def test_a_timestamp_altered_within_the_tolerance_is_rejected_because_it_is_sign
         "v1,",
         "v1,!!!",
         "v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OÉ=",
+        pytest.param("v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OE", id="v1-sin-relleno"),
     ],
 )
 def test_a_signature_header_without_a_valid_v1_signature_is_rejected(signature):
@@ -184,7 +189,7 @@ def test_a_body_with_a_lone_surrogate_is_rejected_even_when_signed_over_its_repl
     body = '{"test": "\ud800"}'
     signature = sign(OFFICIAL_ID, OFFICIAL_TIMESTAMP, body.encode("utf-8", "replace"), OFFICIAL_SECRET)
 
-    with pytest.raises(WebhookVerificationException) as raised:
+    with pytest.raises(WebhookVerificationException, match=re.escape(NOT_UTF8)) as raised:
         verify_at(OFFICIAL_TIMESTAMP, official_headers(signature=signature), body)
     assert isinstance(raised.value.__cause__, UnicodeEncodeError)
 
@@ -194,8 +199,17 @@ def test_a_bytes_body_that_is_not_utf8_is_rejected_even_when_its_bytes_are_signe
     body = b'{"test": "\xed\xa0\x80"}'
     signature = sign(OFFICIAL_ID, OFFICIAL_TIMESTAMP, body, OFFICIAL_SECRET)
 
-    with pytest.raises(WebhookVerificationException) as raised:
+    with pytest.raises(WebhookVerificationException, match=re.escape(NOT_UTF8)) as raised:
         verify_at(OFFICIAL_TIMESTAMP, official_headers(signature=signature), body)
+    assert isinstance(raised.value.__cause__, UnicodeDecodeError)
+
+
+def test_a_bytes_body_that_is_not_utf8_is_rejected_before_its_signature_is_checked():
+    # Mismo orden que los demás SDK: el cuerpo se lee como UTF-8 estricto antes de firmar, sin importar la firma.
+    body = b'{"test": "\xed\xa0\x80"}'
+
+    with pytest.raises(WebhookVerificationException, match=re.escape(NOT_UTF8)) as raised:
+        verify_at(OFFICIAL_TIMESTAMP, official_headers(), body)
     assert isinstance(raised.value.__cause__, UnicodeDecodeError)
 
 
@@ -306,7 +320,17 @@ def test_any_of_several_secrets_verifies_during_a_rotation():
         verify_at(OFFICIAL_TIMESTAMP, official_headers(), OFFICIAL_BODY, [other_secret])
 
 
-@pytest.mark.parametrize("secret", ["", "whsec_", "whsec_%%no-es-base64%%", "whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaSw\n"])
+@pytest.mark.parametrize(
+    "secret",
+    [
+        "",
+        "whsec_",
+        "whsec_%%no-es-base64%%",
+        pytest.param("whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaS", id="truncado"),
+        pytest.param("whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaSw\n", id="salto-de-linea-final"),
+        pytest.param("whsec_MfKQ9r8GKYqrTwjU PD8ILPZIo2LaLaSw", id="espacio-interno"),
+    ],
+)
 def test_a_malformed_secret_is_refused_as_a_configuration_error(secret):
     with pytest.raises(ValueError, match="secreto de firma") as raised:
         verify_at(OFFICIAL_TIMESTAMP, official_headers(), OFFICIAL_BODY, secret)
@@ -319,7 +343,8 @@ def test_a_malformed_secret_in_a_list_names_its_position_without_its_value():
     with pytest.raises(ValueError, match="posición 1") as in_list:
         webhooks.verify(official_headers(), OFFICIAL_BODY, [OFFICIAL_SECRET, malformed])
     assert "no-es-base64" not in str(in_list.value)
-    assert in_list.value.__cause__ is None and in_list.value.__suppress_context__
+    # Sin causa ni contexto encadenado: el error interno de base64 llevaría el secreto en las variables de su rastro.
+    assert in_list.value.__cause__ is None and in_list.value.__context__ is None
 
     with pytest.raises(TypeError, match="posición 1"):
         webhooks.verify(official_headers(), OFFICIAL_BODY, [OFFICIAL_SECRET, None])  # type: ignore[list-item]
@@ -351,3 +376,57 @@ def test_the_public_function_verifies_against_the_current_time():
     assert isinstance(webhooks.verify(headers, OFFICIAL_BODY, [OFFICIAL_SECRET]), WebhookEvent)
     with pytest.raises(WebhookVerificationException, match="difiere"):
         webhooks.verify(official_headers(), OFFICIAL_BODY, OFFICIAL_SECRET)
+
+
+# --- El secreto no queda expuesto ---
+
+# Sentry y otros rastreadores capturan las variables locales de cada marco y solo tapan las que se llaman "secret".
+_SECRET_LOCAL = re.compile(r"^\s+secret = ")
+
+
+def formatted_failure(call: Callable[[], object]) -> str:
+    """El rastro de la excepción de ``call`` con las variables locales de cada marco, sin las líneas ``secret = …``."""
+    try:
+        call()
+    except Exception as error:
+        formatted = "".join(traceback.TracebackException.from_exception(error, capture_locals=True).format())
+        return "\n".join(line for line in formatted.splitlines() if not _SECRET_LOCAL.match(line))
+    raise AssertionError("La verificación debía fallar.")
+
+
+def exposures(formatted: str, secret: str) -> list:
+    """Las formas del secreto (su base64 y los bytes de la llave) que aparecen en ``formatted``."""
+    encoded = secret[len("whsec_"):]
+    return [text for text in (encoded, repr(base64.b64decode(encoded))) if text in formatted]
+
+
+def test_the_signing_key_object_does_not_reveal_the_key():
+    secret = generate_secret()
+
+    key = webhooks._decode_secret(secret, "El secreto de firma")
+
+    assert repr(key) == "***" and str(key) == "***"
+    assert not hasattr(key, "__dict__")
+
+
+def test_a_failed_signature_check_does_not_expose_the_secret_in_captured_locals():
+    secret = generate_secret()
+
+    formatted = formatted_failure(lambda: verify_at(OFFICIAL_TIMESTAMP, official_headers(), OFFICIAL_BODY, [secret]))
+
+    assert "Ninguna firma" in formatted
+    assert exposures(formatted, secret) == []
+
+
+# Global y no local, para que el rastro solo lo pueda mostrar si el SDK lo deja en una variable suya.
+MALFORMED_SECRET = "whsec_%%no-es-base64%%"
+
+
+def test_a_malformed_secret_does_not_expose_any_secret_in_captured_locals():
+    secret = generate_secret()
+
+    formatted = formatted_failure(lambda: webhooks.verify(official_headers(), OFFICIAL_BODY, [secret, MALFORMED_SECRET]))
+
+    assert "posición 1" in formatted
+    assert exposures(formatted, secret) == []
+    assert "no-es-base64" not in formatted

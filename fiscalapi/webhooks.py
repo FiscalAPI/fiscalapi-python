@@ -46,6 +46,7 @@ _UNIX_SECONDS: Final = re.compile(r"[0-9]{1,19}")
 _MAX_UNIX_SECONDS: Final = 2 ** 63 - 1
 
 _NOT_AN_EVENT: Final = "El cuerpo firmado no es un evento de webhook en JSON."
+_NOT_UTF8: Final = "El cuerpo o un header no es texto UTF-8 válido."
 
 
 class WebhookVerificationException(Exception):
@@ -107,8 +108,9 @@ def _verify_at(
     signatures = _required_header(headers, _SIGNATURE_HEADER)
 
     _ensure_within_tolerance(timestamp, tolerance, now)
-    _ensure_signed(keys, _signed_content(event_id, timestamp, body), signatures)
-    return _read_event(body)
+    text = _body_text(body)
+    _ensure_signed(keys, _signed_content(event_id, timestamp, text), signatures)
+    return _read_event(text)
 
 
 def _ensure_arguments(headers: Mapping[str, str], body: Union[bytes, str], tolerance: timedelta) -> None:
@@ -123,30 +125,59 @@ def _ensure_arguments(headers: Mapping[str, str], body: Union[bytes, str], toler
         raise ValueError("La tolerancia no puede ser negativa.")
 
 
-def _signing_keys(secret: Union[str, Iterable[str]]) -> list[bytes]:
+class _SigningKey:
+    """La llave HMAC de un secreto de firma. Nunca se muestra: los rastreadores de errores (Sentry y otros) capturan las
+    variables locales de cada marco con ``repr()`` y solo tapan las que se llaman ``secret``."""
+
+    __slots__ = ("_key",)
+
+    def __init__(self, key: bytes) -> None:
+        self._key = key
+
+    @classmethod
+    def decode(cls, secret: str) -> Optional["_SigningKey"]:
+        """La llave del secreto (``whsec_…`` o sin el prefijo); None si no es base64. El texto del secreto solo vive en
+        variables llamadas ``secret``, y el error de base64 no se encadena porque su rastro llevaría el secreto."""
+        try:
+            return cls(base64.b64decode(secret[len(_SECRET_PREFIX):] if secret.startswith(_SECRET_PREFIX) else secret,
+                                        validate=True))
+        except ValueError:  # binascii.Error (no es base64) o texto no ASCII
+            return None
+
+    def __bool__(self) -> bool:
+        return bool(self._key)
+
+    def __repr__(self) -> str:
+        return "***"
+
+    __str__ = __repr__
+
+    def sign(self, content: bytes) -> str:
+        """La firma v1 de ``content``: HMAC-SHA256 en base64."""
+        return base64.b64encode(hmac.new(self._key, content, hashlib.sha256).digest()).decode("ascii")
+
+
+def _signing_keys(secret: Union[str, Iterable[str]]) -> list[_SigningKey]:
     if isinstance(secret, str):
         return [_decode_secret(secret, "El secreto de firma")]
     if isinstance(secret, (bytes, bytearray)) or not isinstance(secret, Iterable):
         raise TypeError("secret debe ser el secreto del endpoint (whsec_…) o una lista de secretos, como str.")
 
-    keys = [_decode_secret(each, f"El secreto de firma en la posición {index}") for index, each in enumerate(secret)]
+    # Cada secreto de la lista también se llama secret: es el nombre que tapan los rastreadores de errores.
+    keys = [_decode_secret(secret, f"El secreto de firma en la posición {index}") for index, secret in enumerate(secret)]
     if not keys:
         raise ValueError("Se necesita al menos un secreto de firma (whsec_…).")
     return keys
 
 
-def _decode_secret(secret: object, description: str) -> bytes:
+def _decode_secret(secret: object, description: str) -> _SigningKey:
     # Los mensajes nombran el secreto por su posición y nunca incluyen su valor: terminarían en los logs del receptor.
     if not isinstance(secret, str):
         raise TypeError(f"{description} no es un str.")
 
-    encoded = secret[len(_SECRET_PREFIX):] if secret.startswith(_SECRET_PREFIX) else secret
-    try:
-        key = base64.b64decode(encoded, validate=True)
-    except ValueError:  # binascii.Error (no es base64) o texto no ASCII
-        raise ValueError(
-            f"{description} no es whsec_ seguido de base64: cópielo completo del endpoint de webhooks."
-        ) from None
+    key = _SigningKey.decode(secret)
+    if key is None:
+        raise ValueError(f"{description} no es whsec_ seguido de base64: cópielo completo del endpoint de webhooks.")
     if not key:
         raise ValueError(f"{description} está vacío.")
     return key
@@ -176,18 +207,27 @@ def _ensure_within_tolerance(timestamp: str, tolerance: timedelta, now: int) -> 
         )
 
 
-def _signed_content(event_id: str, timestamp: str, body: Union[bytes, str]) -> bytes:
+def _body_text(body: Union[bytes, str]) -> str:
+    # Los bytes se leen como UTF-8 estricto antes de firmar, en el mismo orden que los demás SDK. Un texto UTF-8 válido
+    # vuelve a codificarse en los mismos bytes, así que se firma exactamente lo que llegó.
+    if isinstance(body, str):
+        return body
+    try:
+        return bytes(body).decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise WebhookVerificationException(_NOT_UTF8) from error
+
+
+def _signed_content(event_id: str, timestamp: str, text: str) -> bytes:
     # UTF-8 estricto: un texto con un sustituto suelto se rechaza en vez de firmarse con un carácter de reemplazo.
     try:
-        prefix = f"{event_id}.{timestamp}.".encode("utf-8")
-        raw = bytes(body) if isinstance(body, (bytes, bytearray)) else body.encode("utf-8")
+        return f"{event_id}.{timestamp}.{text}".encode("utf-8")
     except UnicodeEncodeError as error:
-        raise WebhookVerificationException("El cuerpo o un header no es texto UTF-8 válido.") from error
-    return prefix + raw
+        raise WebhookVerificationException(_NOT_UTF8) from error
 
 
-def _ensure_signed(keys: list[bytes], signed_content: bytes, signature_header: str) -> None:
-    expected = [_sign(key, signed_content) for key in keys]
+def _ensure_signed(keys: list[_SigningKey], signed_content: bytes, signature_header: str) -> None:
+    expected = [key.sign(signed_content) for key in keys]
     candidates = [
         signature
         for signature in map(_v1_signature, signature_header.split(_SIGNATURE_SEPARATOR))
@@ -200,10 +240,6 @@ def _ensure_signed(keys: list[bytes], signed_content: bytes, signature_header: s
         )
 
 
-def _sign(key: bytes, content: bytes) -> str:
-    return base64.b64encode(hmac.new(key, content, hashlib.sha256).digest()).decode("ascii")
-
-
 def _v1_signature(entry: str) -> Optional[str]:
     """La firma de una entrada ``v1,<base64>``; None si es de otra versión, no tiene versión o no es ASCII (una firma
     v1 siempre lo es)."""
@@ -213,12 +249,7 @@ def _v1_signature(entry: str) -> Optional[str]:
     return signature
 
 
-def _read_event(body: Union[bytes, str]) -> WebhookEvent:
-    try:
-        text = bytes(body).decode("utf-8") if isinstance(body, (bytes, bytearray)) else body
-    except UnicodeDecodeError as error:
-        raise WebhookVerificationException("El cuerpo firmado no es texto UTF-8 válido.") from error
-
+def _read_event(text: str) -> WebhookEvent:
     # json.loads ya rechaza el contenido sobrante después del evento; el literal null, una lista o un valor suelto se
     # leen sin error, pero model_validate los rechaza porque no son un objeto.
     try:
