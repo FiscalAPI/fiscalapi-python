@@ -75,6 +75,13 @@ from .ticket_models import (
     TicketCodeResult,
     TicketListFilters,
 )
+from .webhook_models import (
+    # Webhook models
+    WebhookEventTypes,
+    WebhookRelatedObject,
+    WebhookEventData,
+    WebhookEvent,
+)
 from .fiscalapi_models import (
     # Product models
     ProductTax,
@@ -301,4 +308,9 @@ __all__ = [
     "TicketIngestionResult",
     "TicketCodeResult",
     "TicketListFilters",
+    # Webhook models
+    "WebhookEventTypes",
+    "WebhookRelatedObject",
+    "WebhookEventData",
+    "WebhookEvent",
 ]

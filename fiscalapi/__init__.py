@@ -90,6 +90,14 @@ from .models.ticket_models import (
     TicketListFilters,
 )
 
+# Modelos de webhooks
+from .models.webhook_models import (
+    WebhookEventTypes,
+    WebhookRelatedObject,
+    WebhookEventData,
+    WebhookEvent,
+)
+
 # Modelos de dominio
 from .models.fiscalapi_models import (
     # Product models
@@ -193,6 +201,10 @@ from .services.ticket_service import TicketService
 
 # Cliente principal
 from .services.fiscalapi_client import FiscalApiClient
+
+# Verificación de webhooks (fiscalapi.webhooks.verify)
+from . import webhooks
+from .webhooks import WebhookVerificationException
 
 __all__ = [
     # Modelos base
@@ -338,6 +350,11 @@ __all__ = [
     "TicketIngestionResult",
     "TicketCodeResult",
     "TicketListFilters",
+    # Webhook models
+    "WebhookEventTypes",
+    "WebhookRelatedObject",
+    "WebhookEventData",
+    "WebhookEvent",
     # Servicios
     "BaseService",
     "ApiKeyService",
@@ -357,4 +374,7 @@ __all__ = [
     "TicketService",
     # Cliente principal
     "FiscalApiClient",
+    # Webhooks
+    "webhooks",
+    "WebhookVerificationException",
 ]

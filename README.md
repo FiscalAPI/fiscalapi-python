@@ -551,6 +551,63 @@ if api_response.succeeded:
 
 Tras una firma exitosa, todas las personas del tenant con el RFC del certificado quedan con `manifest_status_id` en `Signed`; `client.people.get_by_id(...)` lo refleja.
 
+### 12. Recibir webhooks
+
+FiscalAPI firma cada entrega con [Standard Webhooks](https://www.standardwebhooks.com) y el secreto `whsec_…` de su webhook. `webhooks.verify` comprueba la firma (en tiempo constante) y que `webhook-timestamp` no difiera más de 5 minutos del reloj del receptor, y devuelve el `WebhookEvent`. La firma es la única prueba de que la entrega viene de FiscalAPI.
+
+**Verifique el cuerpo crudo**: pase los bytes tal como llegaron (`request.get_data()` en Flask, `request.body` en Django, `await request.body()` en FastAPI), antes de deserializarlos. Un cuerpo deserializado y vuelto a serializar (por ejemplo, `json.dumps(request.json)`) cambia sus bytes y la firma deja de coincidir.
+
+```python
+import os
+import queue
+import threading
+
+from flask import Flask, request
+
+from fiscalapi import FiscalApiClient, FiscalApiSettings, WebhookEventTypes, WebhookVerificationException, webhooks
+
+app = Flask(__name__)
+client = FiscalApiClient(settings=FiscalApiSettings(api_url="...", api_key="...", tenant="..."))
+webhook_secret = os.environ["FISCALAPI_WEBHOOK_SECRET"]  # whsec_… del webhook, desde su configuración segura
+
+# La cola en memoria es ilustrativa: en producción use una cola durable (Celery, RQ, SQS…).
+events = queue.Queue()
+
+
+@app.post("/webhooks/fiscalapi")
+def receive_fiscalapi_webhook():
+    try:
+        event = webhooks.verify(request.headers, request.get_data(), webhook_secret)
+    except WebhookVerificationException:
+        return "", 400  # firma inválida, header faltante o timestamp fuera de tolerancia
+
+    # Responda 2xx rápido y procese después: FiscalAPI corta cada intento a los 15 s y lo reintenta.
+    events.put(event)
+    return "", 200
+
+
+def process_events():
+    while True:
+        event = events.get()
+        # La entrega es al menos una vez: event.id (el header webhook-id) se repite en cada reintento; descarte los ya
+        # procesados. El orden de llegada no está garantizado: el estado autoritativo se lee del recurso.
+        if event.type == WebhookEventTypes.INVOICE_CANCELED:
+            invoice = client.invoices.get_by_id(event.data.related_object.id)
+        elif event.type == WebhookEventTypes.DOWNLOAD_REQUEST_COMPLETED:
+            download_request = client.download_requests.get_by_id(event.data.related_object.id)
+        # Un tipo que no conoce se ignora: el catálogo puede crecer.
+
+
+threading.Thread(target=process_events, daemon=True).start()
+```
+
+- `WebhookEvent` es el mismo sobre para todo evento: `id`, `type` (texto; compárelo con las constantes de `WebhookEventTypes`), `created_at` (`datetime` en UTC), `person_id` (`None` si el recurso no tiene persona) y `data` con `related_object` (`id`, `type`, `url`), `status` y `previous_status`.
+- `related_object.url` es la ruta relativa del GET v4 del recurso (`/api/v4/invoices/{id}`); para leerlo, use el servicio de su tipo con `related_object.id`.
+- El botón "Enviar prueba" del webhook (`POST /api/v4/webhooks/{id}/test`) envía `WebhookEventTypes.WEBHOOK_TEST` (`webhook.test`), cuyo `related_object` es el webhook mismo (`type` `webhook`, `url` `/api/v4/webhooks/{id}`), sin persona ni estados; no se suscribe.
+- Durante una rotación del secreto, FiscalAPI firma con el nuevo y con el anterior por 24 h: pase ambos, `webhooks.verify(request.headers, body, [secreto_nuevo, secreto_anterior])`.
+- La tolerancia es configurable (`webhooks.verify(request.headers, body, secreto, timedelta(minutes=2))`); el valor por omisión es `webhooks.DEFAULT_TOLERANCE`.
+- Un secreto mal copiado (no es base64), una lista de secretos vacía o una tolerancia negativa lanzan `ValueError`, y un argumento `None` lanza `TypeError`, con la posición del secreto (nunca su valor): es un error de configuración, no de la entrega.
+
 ## 📋 Operaciones Principales
 
 - **Facturas (CFDI)**
@@ -567,6 +624,8 @@ Tras una firma exitosa, todas las personas del tenant con el RFC del certificado
   Firmar la carta manifiesto de una persona con su e.firma (FIEL) y obtener el PDF resultante.
 - **Tickets (Auto CFDI)**
   Ingerir ventas pagadas del punto de venta con Idempotency-Key opcional, consultarlas con filtros, reimprimir su código y cancelarlas.
+- **Webhooks**
+  Verificación de la firma Standard Webhooks de las entregas y lectura del evento (`webhooks.verify`, `WebhookEvent`).
 
 ## 📂 Más Ejemplos
 
