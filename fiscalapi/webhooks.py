@@ -1,7 +1,7 @@
 """Verificación de las entregas de webhooks de FiscalAPI.
 
 FiscalAPI firma cada entrega con Standard Webhooks (https://www.standardwebhooks.com): HMAC-SHA256 sobre
-``webhook-id.webhook-timestamp.cuerpo`` con el secreto ``whsec_…`` del endpoint, en el header ``webhook-signature`` como
+``webhook-id.webhook-timestamp.cuerpo`` con el secreto ``whsec_…`` del webhook, en el header ``webhook-signature`` como
 ``v1,<base64>``. La firma es la única prueba de que una entrega viene de FiscalAPI.
 
 Ejemplo::
@@ -62,7 +62,7 @@ def verify(
     secret: Union[str, Iterable[str]],
     tolerance: timedelta = DEFAULT_TOLERANCE,
 ) -> WebhookEvent:
-    """Verifica una entrega con el secreto del endpoint y devuelve su evento.
+    """Verifica una entrega con el secreto del webhook y devuelve su evento.
 
     Responda 2xx rápido y procese el evento después, fuera de la petición: FiscalAPI corta cada intento a los 15 s y lo
     reintenta. La entrega es al menos una vez: ``event.id`` (el header ``webhook-id``) se repite en cada reintento.
@@ -74,7 +74,7 @@ def verify(
             (``request.get_data()`` en Flask, ``request.body`` en Django, ``await request.body()`` en FastAPI). Un
             ``str`` se firma con su UTF-8. Un cuerpo deserializado y vuelto a serializar cambia sus bytes (espacios,
             orden, escapes) y su firma deja de coincidir.
-        secret: El secreto del endpoint (``whsec_…``, o sin el prefijo) o una lista de secretos: durante una rotación,
+        secret: El secreto del webhook (``whsec_…``, o sin el prefijo) o una lista de secretos: durante una rotación,
             FiscalAPI firma con el nuevo y con el anterior por 24 h y basta que una firma ``v1`` coincida con uno.
         tolerance: Tolerancia del timestamp; por omisión ``DEFAULT_TOLERANCE`` (5 minutos).
 
@@ -161,7 +161,7 @@ def _signing_keys(secret: Union[str, Iterable[str]]) -> list[_SigningKey]:
     if isinstance(secret, str):
         return [_decode_secret(secret, "El secreto de firma")]
     if isinstance(secret, (bytes, bytearray)) or not isinstance(secret, Iterable):
-        raise TypeError("secret debe ser el secreto del endpoint (whsec_…) o una lista de secretos, como str.")
+        raise TypeError("secret debe ser el secreto del webhook (whsec_…) o una lista de secretos, como str.")
 
     # Cada secreto de la lista también se llama secret: es el nombre que tapan los rastreadores de errores.
     keys = [_decode_secret(secret, f"El secreto de firma en la posición {index}") for index, secret in enumerate(secret)]

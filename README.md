@@ -553,7 +553,7 @@ Tras una firma exitosa, todas las personas del tenant con el RFC del certificado
 
 ### 12. Recibir webhooks
 
-FiscalAPI firma cada entrega con [Standard Webhooks](https://www.standardwebhooks.com) y el secreto `whsec_…` de su endpoint. `webhooks.verify` comprueba la firma (en tiempo constante) y que `webhook-timestamp` no difiera más de 5 minutos del reloj del receptor, y devuelve el `WebhookEvent`. La firma es la única prueba de que la entrega viene de FiscalAPI.
+FiscalAPI firma cada entrega con [Standard Webhooks](https://www.standardwebhooks.com) y el secreto `whsec_…` de su webhook. `webhooks.verify` comprueba la firma (en tiempo constante) y que `webhook-timestamp` no difiera más de 5 minutos del reloj del receptor, y devuelve el `WebhookEvent`. La firma es la única prueba de que la entrega viene de FiscalAPI.
 
 **Verifique el cuerpo crudo**: pase los bytes tal como llegaron (`request.get_data()` en Flask, `request.body` en Django, `await request.body()` en FastAPI), antes de deserializarlos. Un cuerpo deserializado y vuelto a serializar (por ejemplo, `json.dumps(request.json)`) cambia sus bytes y la firma deja de coincidir.
 
@@ -568,7 +568,7 @@ from fiscalapi import FiscalApiClient, FiscalApiSettings, WebhookEventTypes, Web
 
 app = Flask(__name__)
 client = FiscalApiClient(settings=FiscalApiSettings(api_url="...", api_key="...", tenant="..."))
-webhook_secret = os.environ["FISCALAPI_WEBHOOK_SECRET"]  # whsec_… del endpoint, desde su configuración segura
+webhook_secret = os.environ["FISCALAPI_WEBHOOK_SECRET"]  # whsec_… del webhook, desde su configuración segura
 
 # La cola en memoria es ilustrativa: en producción use una cola durable (Celery, RQ, SQS…).
 events = queue.Queue()
