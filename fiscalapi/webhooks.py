@@ -177,7 +177,7 @@ def _decode_secret(secret: object, description: str) -> _SigningKey:
 
     key = _SigningKey.decode(secret)
     if key is None:
-        raise ValueError(f"{description} no es whsec_ seguido de base64: cópielo completo del endpoint de webhooks.")
+        raise ValueError(f"{description} no es whsec_ seguido de base64: cópielo completo del webhook.")
     if not key:
         raise ValueError(f"{description} está vacío.")
     return key
