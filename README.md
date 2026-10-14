@@ -603,7 +603,7 @@ threading.Thread(target=process_events, daemon=True).start()
 
 - `WebhookEvent` es el mismo sobre para todo evento: `id`, `type` (texto; compárelo con las constantes de `WebhookEventTypes`), `created_at` (`datetime` en UTC), `person_id` (`None` si el recurso no tiene persona) y `data` con `related_object` (`id`, `type`, `url`), `status` y `previous_status`.
 - `related_object.url` es la ruta relativa del GET v4 del recurso (`/api/v4/invoices/{id}`); para leerlo, use el servicio de su tipo con `related_object.id`.
-- El botón "Enviar prueba" del endpoint (`POST webhook-endpoints/{id}/test`) envía `WebhookEventTypes.WEBHOOK_ENDPOINT_TEST`, cuyo `related_object` es el endpoint (`webhook_endpoint`), sin persona ni estados; no se suscribe.
+- El botón "Enviar prueba" del webhook (`POST /api/v4/webhooks/{id}/test`) envía `WebhookEventTypes.WEBHOOK_TEST` (`webhook.test`), cuyo `related_object` es el webhook mismo (`type` `webhook`, `url` `/api/v4/webhooks/{id}`), sin persona ni estados; no se suscribe.
 - Durante una rotación del secreto, FiscalAPI firma con el nuevo y con el anterior por 24 h: pase ambos, `webhooks.verify(request.headers, body, [secreto_nuevo, secreto_anterior])`.
 - La tolerancia es configurable (`webhooks.verify(request.headers, body, secreto, timedelta(minutes=2))`); el valor por omisión es `webhooks.DEFAULT_TOLERANCE`.
 - Un secreto mal copiado (no es base64), una lista de secretos vacía o una tolerancia negativa lanzan `ValueError`, y un argumento `None` lanza `TypeError`, con la posición del secreto (nunca su valor): es un error de configuración, no de la entrega.

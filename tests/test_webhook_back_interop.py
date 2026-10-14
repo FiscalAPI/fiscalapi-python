@@ -13,7 +13,7 @@ EVENT_ID = "0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13"
 PERSON_ID = "4b1c2d3e-0000-4000-8000-000000000002"
 INVOICE_ID = "9f8e7d6c-0000-4000-8000-0000000000a1"
 DOWNLOAD_REQUEST_ID = "3c2b1a09-0000-4000-8000-0000000000b7"
-ENDPOINT_ID = "6a5b4c3d-0000-4000-8000-0000000000c9"
+WEBHOOK_ID = "6a5b4c3d-0000-4000-8000-0000000000c9"
 TIMESTAMP = 1791830873  # 2026-10-12T18:47:53Z, el createdAt de los sobres
 
 # Los sobres de WebhookEnvelopeTests de fapi-back, con ids fijos.
@@ -29,11 +29,11 @@ COMPLETED_DOWNLOAD_REQUEST_BODY = (
     '"url":"/api/v4/download-requests/3c2b1a09-0000-4000-8000-0000000000b7"},"status":null,"previousStatus":null}}'
 )
 
-# El sobre de WebhookEvent.EndpointTest del back (POST webhook-endpoints/{id}/test): el recurso es el endpoint.
-ENDPOINT_TEST_BODY = (
-    '{"id":"0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13","type":"webhook_endpoint.test","createdAt":"2026-10-12T18:47:53Z",'
-    '"personId":null,"data":{"relatedObject":{"id":"6a5b4c3d-0000-4000-8000-0000000000c9","type":"webhook_endpoint",'
-    '"url":"/api/v4/webhook-endpoints/6a5b4c3d-0000-4000-8000-0000000000c9"},"status":null,"previousStatus":null}}'
+# El sobre de "Enviar prueba" del back (POST /api/v4/webhooks/{id}/test): el recurso es el webhook mismo.
+WEBHOOK_TEST_BODY = (
+    '{"id":"0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13","type":"webhook.test","createdAt":"2026-10-12T18:47:53Z",'
+    '"personId":null,"data":{"relatedObject":{"id":"6a5b4c3d-0000-4000-8000-0000000000c9","type":"webhook",'
+    '"url":"/api/v4/webhooks/6a5b4c3d-0000-4000-8000-0000000000c9"},"status":null,"previousStatus":null}}'
 )
 
 
@@ -77,17 +77,17 @@ def test_a_back_delivery_without_person_or_statuses_reads_them_as_none():
     assert event.data.previous_status is None
 
 
-def test_a_back_endpoint_test_delivery_points_to_the_endpoint_without_person_or_statuses():
+def test_a_back_webhook_test_delivery_points_to_the_webhook_without_person_or_statuses():
     secret = generate_secret()
-    delivery_headers = headers(EVENT_ID, TIMESTAMP, ENDPOINT_TEST_BODY, secret)
+    delivery_headers = headers(EVENT_ID, TIMESTAMP, WEBHOOK_TEST_BODY, secret)
 
-    event = verify_delivered(delivery_headers, ENDPOINT_TEST_BODY, secret)
+    event = verify_delivered(delivery_headers, WEBHOOK_TEST_BODY, secret)
 
-    assert event.type == WebhookEventTypes.WEBHOOK_ENDPOINT_TEST
+    assert event.type == WebhookEventTypes.WEBHOOK_TEST
     assert event.person_id is None
-    assert event.data.related_object.id == ENDPOINT_ID
-    assert event.data.related_object.type == "webhook_endpoint"
-    assert event.data.related_object.url == "/api/v4/webhook-endpoints/" + ENDPOINT_ID
+    assert event.data.related_object.id == WEBHOOK_ID
+    assert event.data.related_object.type == "webhook"
+    assert event.data.related_object.url == "/api/v4/webhooks/" + WEBHOOK_ID
     assert event.data.status is None
     assert event.data.previous_status is None
 
@@ -156,4 +156,4 @@ def test_the_event_type_constants_are_the_types_of_the_back():
     assert WebhookEventTypes.DOWNLOAD_REQUEST_COMPLETED == "download_request.completed"
     assert WebhookEventTypes.DOWNLOAD_REQUEST_ABANDONED == "download_request.abandoned"
     assert WebhookEventTypes.DOWNLOAD_RULE_SUSPENDED == "download_rule.suspended"
-    assert WebhookEventTypes.WEBHOOK_ENDPOINT_TEST == "webhook_endpoint.test"
+    assert WebhookEventTypes.WEBHOOK_TEST == "webhook.test"

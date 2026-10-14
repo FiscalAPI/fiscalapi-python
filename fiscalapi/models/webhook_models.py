@@ -43,17 +43,17 @@ class WebhookEventTypes:
     DOWNLOAD_RULE_SUSPENDED: Final = "download_rule.suspended"
     """La regla de descarga masiva quedó suspendida (``2`` → ``4``)."""
 
-    WEBHOOK_ENDPOINT_TEST: Final = "webhook_endpoint.test"
-    """Prueba de un endpoint: no se suscribe; solo llega al pulsar "Enviar prueba"
-    (``POST webhook-endpoints/{id}/test``), y solo a ese endpoint. Su ``related_object`` es el endpoint mismo
-    (``webhook_endpoint``), sin persona ni estados."""
+    WEBHOOK_TEST: Final = "webhook.test"
+    """Prueba de un webhook: no se suscribe; llega solo al pulsar "Enviar prueba"
+    (``POST /api/v4/webhooks/{id}/test``), y solo a ese webhook. Su ``related_object`` es el webhook mismo
+    (``type`` ``webhook``, ``url`` ``/api/v4/webhooks/{id}``), sin persona ni estados."""
 
 
 class WebhookRelatedObject(BaseModel):
     """El recurso al que se refiere un ``WebhookEvent``."""
 
     id: Optional[str] = Field(default=None, alias="id", description="Id del recurso: el que reciben los get_by_id de los servicios del SDK.")
-    type: Optional[str] = Field(default=None, alias="type", description="Tipo de recurso: invoice, download_request, download_rule o webhook_endpoint; el conjunto puede crecer.")
+    type: Optional[str] = Field(default=None, alias="type", description="Tipo de recurso: invoice, download_request, download_rule o webhook (el de WebhookEventTypes.WEBHOOK_TEST); el conjunto puede crecer.")
     url: Optional[str] = Field(default=None, alias="url", description="Ruta relativa del GET v4 del recurso (por ejemplo /api/v4/invoices/{id}), sin host: el mismo evento es idéntico en pruebas y en producción. Para leer el recurso use su servicio con id.")
 
     model_config = ConfigDict(populate_by_name=True)
