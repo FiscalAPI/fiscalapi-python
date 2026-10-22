@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fiscalapi.models.common_models import ApiResponse, PagedList
 from fiscalapi.models.fiscalapi_models import (
     CancelInvoiceRequest,
@@ -9,7 +11,7 @@ from fiscalapi.models.fiscalapi_models import (
     InvoiceStatusResponse,
     SendInvoiceRequest,
 )
-from fiscalapi.services.base_service import BaseService
+from fiscalapi.services.base_service import IDEMPOTENCY_KEY_HEADER, BaseService
 
 
 class InvoiceService(BaseService):
@@ -25,7 +27,7 @@ class InvoiceService(BaseService):
         endpoint = f"invoices/{invoice_id}"
         return self.send_request("GET", endpoint, Invoice, details=details)
 
-    def create(self, invoice: Invoice) -> ApiResponse[Invoice]:
+    def create(self, invoice: Invoice, idempotency_key: Optional[str] = None) -> ApiResponse[Invoice]:
         """
         Crea una nueva factura CFDI.
 
@@ -36,14 +38,20 @@ class InvoiceService(BaseService):
         - 'N': Nómina
         - 'T': Traslado
 
+        Con idempotency_key (hasta 64 caracteres ASCII visibles, sin espacios) se envía el header Idempotency-Key:
+        repetir la key con la misma petición en 24 h responde la respuesta original; con otra petición
+        responde 422, y mientras la original sigue en proceso, 409. Sin la key el header no se envía.
+
         Args:
             invoice: Modelo de factura con los datos requeridos.
+            idempotency_key: Valor del header Idempotency-Key, o None para no enviarlo.
 
         Returns:
             ApiResponse con la factura creada y timbrada.
         """
         endpoint = "invoices"
-        return self.send_request("POST", endpoint, Invoice, payload=invoice)
+        headers = {} if idempotency_key is None else {IDEMPOTENCY_KEY_HEADER: idempotency_key}
+        return self.send_request("POST", endpoint, Invoice, payload=invoice, headers=headers)
 
     def cancel(self, cancel_invoice_request: CancelInvoiceRequest) -> ApiResponse[CancelInvoiceResponse]:
         """Cancela una factura."""

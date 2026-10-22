@@ -5,9 +5,7 @@ from urllib.parse import urlencode
 
 from fiscalapi.models.common_models import ApiResponse, PagedList
 from fiscalapi.models.ticket_models import Ticket, TicketCodeResult, TicketIngestionResult, TicketListFilters
-from fiscalapi.services.base_service import BaseService
-
-IDEMPOTENCY_KEY_HEADER = "Idempotency-Key"
+from fiscalapi.services.base_service import IDEMPOTENCY_KEY_HEADER, BaseService
 
 
 class TicketService(BaseService):

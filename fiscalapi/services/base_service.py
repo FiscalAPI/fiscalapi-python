@@ -8,6 +8,9 @@ from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, Valid
 
 T = TypeVar('T')
 
+# Header que el integrador usa para reintentar una petición sin duplicarla (crear factura, timbres y tickets).
+IDEMPOTENCY_KEY_HEADER = "Idempotency-Key"
+
 
 class BaseService:
     def __init__(self, settings: FiscalApiSettings):

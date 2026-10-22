@@ -1,5 +1,7 @@
 """Servicio para gestionar transacciones de timbres (stamps)."""
 
+from typing import Optional
+
 from fiscalapi.models import (
     ApiResponse,
     FiscalApiSettings,
@@ -7,7 +9,7 @@ from fiscalapi.models import (
     StampTransaction,
     StampTransactionParams,
 )
-from fiscalapi.services.base_service import BaseService
+from fiscalapi.services.base_service import IDEMPOTENCY_KEY_HEADER, BaseService
 
 
 class StampService(BaseService):
@@ -41,20 +43,26 @@ class StampService(BaseService):
         endpoint = f"stamps/{transaction_id}"
         return self.send_request("GET", endpoint, StampTransaction)
 
-    def transfer_stamps(self, request: StampTransactionParams) -> ApiResponse[bool]:
+    def transfer_stamps(self, request: StampTransactionParams, idempotency_key: Optional[str] = None) -> ApiResponse[bool]:
         """Transfer stamps or validation credits from one person to another.
 
         Use ``request.credit_type`` to pick which balance moves: ``CreditType.STAMP`` (default) moves
         stamps, ``CreditType.VALIDATION`` moves SAT validation credits. The two balances never mix.
 
+        With ``idempotency_key`` (up to 64 visible ASCII characters, no spaces) the ``Idempotency-Key`` header is
+        sent: repeating the key with the same transfer within 24 hours answers the original response; with another
+        transfer, 422; while the original is still in progress, 409. Without it the header is not sent.
+
         Args:
             request: StampTransactionParams containing transfer details.
+            idempotency_key: Value of the Idempotency-Key header, or None to not send it.
 
         Returns:
             ApiResponse containing a boolean indicating success.
         """
         endpoint = "stamps"
-        return self.send_request("POST", endpoint, bool, payload=request)
+        headers = {} if idempotency_key is None else {IDEMPOTENCY_KEY_HEADER: idempotency_key}
+        return self.send_request("POST", endpoint, bool, payload=request, headers=headers)
 
     def withdraw_stamps(self, request: StampTransactionParams) -> ApiResponse[bool]:
         """Withdraw stamps or validation credits from a person.
