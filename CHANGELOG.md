@@ -4,10 +4,11 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 
 ## [Sin publicar]
 
-### Llave de idempotencia en crear factura y transferir timbres
+### Llave de idempotencia en crear factura, transferir timbres y crear ticket
 
 - `invoices.create(invoice, idempotency_key=None)`: `POST /api/v4/invoices` con el header `Idempotency-Key` opcional (hasta 64 caracteres ASCII visibles, sin espacios). Repetir la llave de idempotencia con la misma petición en 24 h devuelve la respuesta original; con otra petición, 422; con la original aún en proceso, 409. Sin `idempotency_key` no envía el header y el comportamiento no cambia.
 - `stamps.transfer_stamps(request, idempotency_key=None)`: `POST /api/v4/stamps` con la misma llave de idempotencia opcional y las mismas respuestas. `withdraw_stamps` no recibe la llave de idempotencia.
+- Crear ticket usa el mismo mecanismo de idempotencia de la API: una repetición con la misma llave de idempotencia devuelve la respuesta original (201) con `Idempotent-Replayed: true` en lugar del 200 con el ticket actual; la llave de idempotencia vence a las 24 h y es por persona. La firma del método no cambia.
 - El SDK no genera ni reintenta la llave de idempotencia: la pasa tal cual la da quien integra. La llave de idempotencia no cambia el cuerpo de la petición.
 - Cambio aditivo: las firmas existentes siguen igual y no hay dependencias nuevas.
 

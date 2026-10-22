@@ -250,7 +250,7 @@ api_response = client.invoices.create(invoice)
 Para reintentar la creación sin duplicar la factura, pasa una `idempotency_key` propia (hasta 64 caracteres). El SDK la envía como header `Idempotency-Key`; repetir la misma llave de idempotencia con la misma factura en 24 h devuelve la respuesta original:
 
 ```python
-api_response = client.invoices.create(invoice, idempotency_key="pos-01-F-1001")
+api_response = client.invoices.create(invoice, idempotency_key="550e8400-e29b-41d4-a716-446655440000")
 ```
 
 ### 6. Crear la Misma Factura de Ingreso (Por Valores)

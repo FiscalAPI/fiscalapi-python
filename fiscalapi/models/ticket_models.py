@@ -132,8 +132,8 @@ class Ticket(BaseModel):
 
 
 class TicketIngestionResult(BaseModel):
-    """Respuesta de ``tickets.create``: la misma forma en el 201 de un ticket nuevo y en el 200 de una repetición con la
-    misma Idempotency-Key y el mismo cuerpo."""
+    """Respuesta de ``tickets.create``: un ticket nuevo (201) y la repetición con la misma llave de idempotencia y el mismo
+    cuerpo devuelven la misma respuesta original."""
 
     id: Optional[str] = Field(default=None, alias="id", description="Id del ticket.")
     ticket_code: Optional[str] = Field(default=None, alias="ticketCode", description="Código sin guiones, como lo lleva el QR; se imprime en grupos (XXXX-XXXX-XXXX).")

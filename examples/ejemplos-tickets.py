@@ -8,7 +8,7 @@ Este archivo contiene ejemplos para:
 
 Reglas del endpoint POST /api/v4/tickets:
 - Ingerir un ticket cobra 1 credito de ticket al emisor.
-- Con Idempotency-Key, repetir la misma key con el mismo cuerpo responde 200 con el ticket original sin cobrar otra vez.
+- Con Idempotency-Key, repetir la misma llave de idempotencia con el mismo cuerpo, dentro de 24 h, devuelve la respuesta original (201) y no cobra otra vez.
 - El total debe cuadrar al centavo con los conceptos e impuestos (si no, 422 con data.expectedTotal y data.computedTotal).
 - Un folio y serie ya activos del emisor responden 409 (data.existingTicketId).
 """
@@ -16,6 +16,7 @@ Reglas del endpoint POST /api/v4/tickets:
 from datetime import date, datetime
 from decimal import Decimal
 from typing import Optional
+import uuid
 
 from fiscalapi import (
     FiscalApiClient,
@@ -87,7 +88,9 @@ def ingerir_ticket() -> Optional[str]:
     """
     Ingiere el ticket y devuelve su id; imprime el codigo y la URL del QR que van en el ticket de venta.
     """
-    response = client.tickets.create(construir_ticket(), idempotency_key="pos-01-F-1001")
+    # Una llave de idempotencia por operación: guárdala para reintentar el mismo ticket
+    idempotency_key = str(uuid.uuid4())
+    response = client.tickets.create(construir_ticket(), idempotency_key=idempotency_key)
     if not response.succeeded:
         # 409: folio y serie ya activos; 422: total que no cuadra, emisor sin CSD o sin creditos de ticket, etc.
         # error_data trae el data del error: existingTicketId (409) o expectedTotal y computedTotal (422).
