@@ -39,8 +39,8 @@ class InvoiceService(BaseService):
         - 'T': Traslado
 
         Con idempotency_key (hasta 64 caracteres ASCII visibles, sin espacios) se envía el header Idempotency-Key:
-        repetir la key con la misma petición en 24 h responde la respuesta original; con otra petición
-        responde 422, y mientras la original sigue en proceso, 409. Sin la key el header no se envía.
+        repetir la llave de idempotencia con la misma petición en 24 h devuelve la respuesta original; con otra petición
+        responde 422, y mientras la original sigue en proceso, 409. Sin llave de idempotencia el header no se envía.
 
         Args:
             invoice: Modelo de factura con los datos requeridos.

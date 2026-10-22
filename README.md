@@ -247,7 +247,7 @@ invoice = Invoice(
 api_response = client.invoices.create(invoice)
 ```
 
-Para reintentar la creación sin duplicar la factura, pasa una `idempotency_key` propia (hasta 64 caracteres). El SDK la envía como header `Idempotency-Key`; repetir la misma key con la misma factura en 24 h responde la respuesta original:
+Para reintentar la creación sin duplicar la factura, pasa una `idempotency_key` propia (hasta 64 caracteres). El SDK la envía como header `Idempotency-Key`; repetir la misma llave de idempotencia con la misma factura en 24 h devuelve la respuesta original:
 
 ```python
 api_response = client.invoices.create(invoice, idempotency_key="pos-01-F-1001")

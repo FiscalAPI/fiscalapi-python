@@ -50,7 +50,7 @@ class StampService(BaseService):
         stamps, ``CreditType.VALIDATION`` moves SAT validation credits. The two balances never mix.
 
         With ``idempotency_key`` (up to 64 visible ASCII characters, no spaces) the ``Idempotency-Key`` header is
-        sent: repeating the key with the same transfer within 24 hours answers the original response; with another
+        sent: repeating the idempotency key with the same transfer within 24 hours answers the original response; with another
         transfer, 422; while the original is still in progress, 409. Without it the header is not sent.
 
         Args:

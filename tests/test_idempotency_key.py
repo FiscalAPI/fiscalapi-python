@@ -1,7 +1,7 @@
 """Llave de idempotencia opcional en crear factura y transferir timbres.
 
-Con ``idempotency_key`` el SDK manda el header ``Idempotency-Key`` con ese valor, y sin ella no manda el header. La key
-no cambia el cuerpo de la petición. El SDK no genera ni reintenta la key: solo la pasa.
+Con ``idempotency_key`` el SDK manda el header ``Idempotency-Key`` con ese valor, y sin ella no manda el header. La llave de idempotencia
+no cambia el cuerpo de la petición. El SDK no genera ni reintenta la llave de idempotencia: solo la pasa.
 """
 from fiscalapi import Invoice, InvoiceIssuer, StampTransactionParams
 
