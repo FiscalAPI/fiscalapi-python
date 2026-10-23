@@ -1,7 +1,7 @@
 """Servicio de tickets de Auto CFDI (POST/GET/DELETE /api/v4/tickets).
 
 Los mismos escenarios viven en los SDK de .NET, Node.js, PHP y Java: el cuerpo exacto de la ingesta y el header
-Idempotency-Key solo si se pasa; las respuestas 201 y 200 de la ingesta; el 409 y el 422 con la forma de error del SDK
+Idempotency-Key solo si se pasa; la respuesta 201 de la ingesta; el 409 y el 422 con la forma de error del SDK
 (``details`` con el texto del API y ``data`` en None); la query de la lista con ``status`` repetido; el detalle con y sin
 ``details``; el código; la cancelación con DELETE, y un estado que el SDK no conoce, conservado como texto.
 """
@@ -26,7 +26,7 @@ BASE_URL = "https://sdk-tests.fiscalapi.invalid/api/v4/tickets"
 ISSUER_ID = "4b1c2d3e-0000-4000-8000-000000000002"
 TICKET_ID = "9f8e7d6c-0000-4000-8000-0000000000a1"
 GLOBAL_INVOICE_ID = "7c1d2e3f-0000-4000-8000-0000000000b2"
-IDEMPOTENCY_KEY = "pos-01-F-1001"
+IDEMPOTENCY_KEY = "550e8400-e29b-41d4-a716-446655440000"
 
 INGESTED = {
     "id": TICKET_ID,
@@ -158,16 +158,15 @@ def test_create_without_a_key_does_not_send_the_idempotency_key_header(client, f
     assert "Idempotency-Key" not in request["headers"]
 
 
-# b. Respuestas de la ingesta
+# b. Respuesta de la ingesta: la repetición con la misma llave de idempotencia devuelve esta misma 201
 
-@pytest.mark.parametrize("status_code", [201, 200])
-def test_create_reads_the_new_ticket_and_the_idempotent_replay_with_the_same_shape(client, fake_api, status_code):
-    fake_api.respond_with(_ok(INGESTED, status_code), status_code=status_code)
+def test_create_reads_the_new_ticket_with_its_shape(client, fake_api):
+    fake_api.respond_with(_ok(INGESTED, 201), status_code=201)
 
     response = client.tickets.create(_new_ticket(), IDEMPOTENCY_KEY)
 
     assert response.succeeded is True
-    assert response.http_status_code == status_code
+    assert response.http_status_code == 201
     assert response.error_data is None
     ingested = response.data
     assert ingested.id == TICKET_ID

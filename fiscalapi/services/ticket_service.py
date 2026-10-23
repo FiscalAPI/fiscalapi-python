@@ -5,9 +5,7 @@ from urllib.parse import urlencode
 
 from fiscalapi.models.common_models import ApiResponse, PagedList
 from fiscalapi.models.ticket_models import Ticket, TicketCodeResult, TicketIngestionResult, TicketListFilters
-from fiscalapi.services.base_service import BaseService
-
-IDEMPOTENCY_KEY_HEADER = "Idempotency-Key"
+from fiscalapi.services.base_service import IDEMPOTENCY_KEY_HEADER, BaseService
 
 
 class TicketService(BaseService):
@@ -16,9 +14,11 @@ class TicketService(BaseService):
     def create(self, ticket: Ticket, idempotency_key: Optional[str] = None) -> ApiResponse[TicketIngestionResult]:
         """Ingest a ticket and charge 1 ticket credit. POST /api/v4/tickets
 
-        With ``idempotency_key`` (up to 64 characters) the ``Idempotency-Key`` header is sent: repeating the key with
-        the same body answers 200 with the original ticket without charging again; with another body, 422. Without it
-        the header is not sent. An active folio and series of the issuer answers 409.
+        With ``idempotency_key`` (1 to 64 visible ASCII characters, no spaces) the ``Idempotency-Key`` header is sent:
+        repeating the same idempotency key with the same body, within 24 hours, returns the original response (201, with
+        the ``Idempotent-Replayed: true`` header) without registering another ticket or charging again; with another
+        body, 422; with the original still in progress, 409 with Retry-After. Without a key the header is not sent. An
+        active folio and series of the issuer answers 409.
 
         Args:
             ticket: Ticket to ingest.
