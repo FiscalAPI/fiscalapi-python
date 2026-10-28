@@ -2,6 +2,12 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
+## [Sin publicar]
+
+### `InvoicePayment` (obsoleto)
+
+- `source_bank_tin`, `source_bank_account`, `target_bank_tin` y `target_bank_account` son opcionales (`Optional[str]`, por omisión `None`), como en `PaymentComplement` y en el complemento de pago del SAT, que no exige ninguno y los prohíbe con formas de pago como `"01"` (efectivo). Un valor `None` no se envía. El código que ya los pasa no cambia.
+
 ## [4.0.462] - 2026-10-22
 
 ### Llave de idempotencia en crear factura, transferir timbres y crear ticket

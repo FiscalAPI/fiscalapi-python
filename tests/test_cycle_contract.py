@@ -189,3 +189,22 @@ def test_invoice_payment_accepts_any_currency_code_and_defaults_to_mxn():
 
     assert InvoicePayment(currency_code="CAD", **common).model_dump(by_alias=True)["currencyCode"] == "CAD"
     assert InvoicePayment(**common).currency_code == "MXN"
+
+
+BANK_KEYS = ("sourceBankTin", "sourceBankAccount", "targetBankTin", "targetBankAccount")
+
+
+def test_invoice_payment_bank_fields_are_optional_and_sent_as_given():
+    common = dict(payment_date="2026-10-08T10:00:00", amount=Decimal("100"), paid_invoices=[])
+    bank = dict(
+        source_bank_tin="BSM970519DU8",
+        source_bank_account="1234567891012131",
+        target_bank_tin="BBA830831LJ2",
+        target_bank_account="1234567890",
+    )
+
+    cash = InvoicePayment(payment_form_code="01", **common).model_dump(by_alias=True, exclude_none=True)
+    card = InvoicePayment(payment_form_code="28", **common, **bank).model_dump(by_alias=True, exclude_none=True)
+
+    assert not set(BANK_KEYS) & cash.keys()
+    assert [card[key] for key in BANK_KEYS] == list(bank.values())
