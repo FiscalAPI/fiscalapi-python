@@ -4,6 +4,10 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 
 ## [Sin publicar]
 
+### `PaymentComplement`
+
+- `foreign_bank_name` (`foreignBankName`, opcional): nombre del banco ordenante extranjero, el atributo `NomBancoOrdExt` del complemento de pago. El SAT lo exige cuando `source_bank_tin` es `XEXX010101000` (CRP20223); antes el modelo lo descartaba en silencio y el pago se rechazaba. Sin asignarlo no se envía, así que el código existente manda el mismo JSON.
+
 ### `InvoicePayment` (obsoleto)
 
 - `source_bank_tin`, `source_bank_account`, `target_bank_tin` y `target_bank_account` son opcionales (`Optional[str]`, por omisión `None`), como en `PaymentComplement` y en el complemento de pago del SAT, que no exige ninguno y los prohíbe con formas de pago como `"01"` (efectivo). Un valor `None` no se envía. El código que ya los pasa no cambia.

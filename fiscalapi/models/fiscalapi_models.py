@@ -404,6 +404,7 @@ class PaymentComplement(BaseDto):
     source_bank_account: Optional[str] = Field(default=None, alias="sourceBankAccount", description="Cuenta bancaria origen.")
     target_bank_tin: Optional[str] = Field(default=None, alias="targetBankTin", description="RFC del banco destino.")
     target_bank_account: Optional[str] = Field(default=None, alias="targetBankAccount", description="Cuenta bancaria destino.")
+    foreign_bank_name: Optional[str] = Field(default=None, alias="foreignBankName", description="Nombre del banco ordenante extranjero. Obligatorio cuando source_bank_tin es XEXX010101000.")
     paid_invoices: Optional[list["PaidInvoice"]] = Field(default=None, alias="paidInvoices", description="Facturas pagadas.")
 
     model_config = ConfigDict(populate_by_name=True)
