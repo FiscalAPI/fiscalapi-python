@@ -25,7 +25,7 @@ from fiscalapi import (
     TaxCredential,
     TaxFile,
 )
-from fiscalapi.models.fiscalapi_models import ItemTax, LocalTax, PaidInvoiceTax
+from fiscalapi.models.fiscalapi_models import ItemTax, LocalTax, PaidInvoiceTax, PaymentComplement
 
 BASE_URL = "https://sdk-tests.fiscalapi.invalid/api/v4"
 PERSON_ID = "4b1c2d3e-0000-4000-8000-000000000002"
@@ -189,3 +189,32 @@ def test_invoice_payment_accepts_any_currency_code_and_defaults_to_mxn():
 
     assert InvoicePayment(currency_code="CAD", **common).model_dump(by_alias=True)["currencyCode"] == "CAD"
     assert InvoicePayment(**common).currency_code == "MXN"
+
+
+BANK_KEYS = ("sourceBankTin", "sourceBankAccount", "targetBankTin", "targetBankAccount")
+
+
+def test_invoice_payment_bank_fields_are_optional_and_sent_as_given():
+    common = dict(payment_date="2026-10-08T10:00:00", amount=Decimal("100"), paid_invoices=[])
+    bank = dict(
+        source_bank_tin="BSM970519DU8",
+        source_bank_account="1234567891012131",
+        target_bank_tin="BBA830831LJ2",
+        target_bank_account="1234567890",
+    )
+
+    cash = InvoicePayment(payment_form_code="01", **common).model_dump(by_alias=True, exclude_none=True)
+    card = InvoicePayment(payment_form_code="28", **common, **bank).model_dump(by_alias=True, exclude_none=True)
+
+    assert not set(BANK_KEYS) & cash.keys()
+    assert [card[key] for key in BANK_KEYS] == list(bank.values())
+
+
+def test_payment_complement_sends_foreign_bank_name_only_when_given():
+    common = dict(payment_date="2026-10-08T10:00:00", payment_form_code="03", amount=Decimal("100"))
+
+    foreign = PaymentComplement(source_bank_tin="XEXX010101000", foreign_bank_name="BANK OF TOKY", **common)
+    national = PaymentComplement(source_bank_tin="BSM970519DU8", **common)
+
+    assert foreign.model_dump(by_alias=True, exclude_none=True)["foreignBankName"] == "BANK OF TOKY"
+    assert "foreignBankName" not in national.model_dump(by_alias=True, exclude_none=True)

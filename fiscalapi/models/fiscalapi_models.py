@@ -363,10 +363,10 @@ class InvoicePayment(BaseDto):
     currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en el pago: una clave del catálogo c_Moneda del SAT, en mayúsculas, distinta de XXX.")
     exchange_rate: Optional[Decimal] = Field(default=Decimal("1"), alias="exchangeRate", description="Tipo de cambio FIX conforme a la moneda registrada en la factura. Si la moneda es MXN, el tipo de cambio debe ser 1..")
     amount: Decimal = Field(default=..., description="Monto del pago.")
-    source_bank_tin: str = Field(default=..., alias="sourceBankTin", description="RFC del banco origen. (Rfc del banco emisor del pago)")
-    source_bank_account: str = Field(default=..., alias="sourceBankAccount", description="Cuenta bancaria origen. (Cuenta bancaria del banco emisor del pago)")
-    target_bank_tin: str = Field(default=..., alias="targetBankTin", description="RFC del banco destino. (Rfc del banco receptor del pago)")
-    target_bank_account: str = Field(default=..., alias="targetBankAccount", description="Cuenta bancaria destino (Cuenta bancaria del banco receptor del pago)")
+    source_bank_tin: Optional[str] = Field(default=None, alias="sourceBankTin", description="RFC del banco origen. (Rfc del banco emisor del pago)")
+    source_bank_account: Optional[str] = Field(default=None, alias="sourceBankAccount", description="Cuenta bancaria origen. (Cuenta bancaria del banco emisor del pago)")
+    target_bank_tin: Optional[str] = Field(default=None, alias="targetBankTin", description="RFC del banco destino. (Rfc del banco receptor del pago)")
+    target_bank_account: Optional[str] = Field(default=None, alias="targetBankAccount", description="Cuenta bancaria destino (Cuenta bancaria del banco receptor del pago)")
     paid_invoices: list[PaidInvoice] = Field(default=..., alias="paidInvoices", description="Facturas pagadas con el pago recibido.")
     
     model_config = ConfigDict(populate_by_name=True)
@@ -404,6 +404,7 @@ class PaymentComplement(BaseDto):
     source_bank_account: Optional[str] = Field(default=None, alias="sourceBankAccount", description="Cuenta bancaria origen.")
     target_bank_tin: Optional[str] = Field(default=None, alias="targetBankTin", description="RFC del banco destino.")
     target_bank_account: Optional[str] = Field(default=None, alias="targetBankAccount", description="Cuenta bancaria destino.")
+    foreign_bank_name: Optional[str] = Field(default=None, alias="foreignBankName", description="Nombre del banco ordenante extranjero. Obligatorio cuando source_bank_tin es XEXX010101000.")
     paid_invoices: Optional[list["PaidInvoice"]] = Field(default=None, alias="paidInvoices", description="Facturas pagadas.")
 
     model_config = ConfigDict(populate_by_name=True)
