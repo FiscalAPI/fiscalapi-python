@@ -2,7 +2,7 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
-## [Sin publicar]
+## [4.0.468] - 2026-10-28
 
 ### `PaymentComplement`
 
