@@ -2,7 +2,7 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION = "4.0.468"
+VERSION = "4.0.469"
 
 DESCRIPTION = "Genera facturas CFDI válidas ante el SAT consumiendo el API de https://www.fiscalapi.com"
 
@@ -36,20 +36,19 @@ setup(
     include_package_data=True,
     keywords=["factura", "cfdi", "facturacion", "mexico", "sat", "fiscalapi"],
     
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     
     install_requires=[
-        "pydantic>=2.0.0",
-        "requests>=2.0.0",
-        "urllib3>=1.0.0",
-        "certifi>=2023.0.0",
+        "pydantic>=2.4.0",
+        "requests>=2.33.0",
+        "urllib3>=2.8.0",
+        "certifi>=2026.10.18",
     ],
     
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",

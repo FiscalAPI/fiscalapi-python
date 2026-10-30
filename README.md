@@ -76,6 +76,8 @@
 
 ## 📦 Instalación
 
+Requiere **Python 3.10 o superior**.
+
 **pip**:
 ```bash
 pip install fiscalapi

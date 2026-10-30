@@ -151,16 +151,16 @@ contains `fixed_by` or `exposed_by` pins a known defect and must be inverted whe
 
 ## Dependencies
 
-- Python >= 3.9 (CI/CD uses Python 3.9.13)
-- pydantic >= 2.0.0 (validation & serialization)
-- requests >= 2.0.0 (HTTP client)
-- urllib3 >= 1.0.0
-- certifi >= 2023.0.0 (certificate store for non-local hosts)
+- Python >= 3.10 (CI/CD uses Python 3.12)
+- pydantic >= 2.4.0 (validation & serialization)
+- requests >= 2.33.0 (HTTP client)
+- urllib3 >= 2.8.0
+- certifi >= 2026.10.18 (certificate store for non-local hosts)
 
 ## Development Setup
 
 ```bash
-# Create virtual environment with Python 3.9+
+# Create virtual environment with Python 3.10+
 python -m venv venv
 
 # Activate (Windows)
