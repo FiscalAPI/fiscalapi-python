@@ -2,6 +2,16 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
+## [Sin publicar]
+
+### Cambios incompatibles (BREAKING)
+
+- Se requiere Python 3.10 o superior (Python 3.9 dejó de tener soporte en octubre de 2025). Para seguir en 3.9, fija la versión anterior del SDK.
+
+### Seguridad
+
+- Pisos mínimos: `urllib3>=2.8.0`, `requests>=2.33.0`, `certifi>=2026.10.18`, `pydantic>=2.4.0`, que corrigen avisos de seguridad (p. ej. GHSA-6q48-6c7w-9gw2). Sin cambios de API.
+
 ## [4.0.468] - 2026-10-28
 
 ### `PaymentComplement`

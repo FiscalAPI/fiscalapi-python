@@ -14,7 +14,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9.13"
+          python-version: "3.12"
 
       - name: Install build dependencies
         run: |
@@ -44,6 +44,9 @@ jobs:
           python -m build
 
       - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           twine check dist/*
-          twine upload --username __token__ --password ${{ secrets.PYPI_API_TOKEN }} dist/*
+          twine upload dist/*
