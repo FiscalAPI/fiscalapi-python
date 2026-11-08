@@ -20,20 +20,27 @@ TIMESTAMP = 1791830873  # 2026-10-12T18:47:53Z, el createdAt de los sobres
 CANCELED_INVOICE_BODY = (
     '{"id":"0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13","type":"invoice.canceled","createdAt":"2026-10-12T18:47:53Z",'
     '"personId":"4b1c2d3e-0000-4000-8000-000000000002","data":{"relatedObject":{"id":"9f8e7d6c-0000-4000-8000-0000000000a1",'
-    '"type":"invoice","url":"/api/v4/invoices/9f8e7d6c-0000-4000-8000-0000000000a1"},"status":"X","previousStatus":"C"}}'
+    '"type":"invoice","url":"/api/v4/invoices/9f8e7d6c-0000-4000-8000-0000000000a1"},"status":"X","previousStatus":"C","reason":null}}'
+)
+
+REJECTED_CANCELLATION_BODY = (
+    '{"id":"0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13","type":"invoice.cancellation_rejected","createdAt":"2026-10-12T18:47:53Z",'
+    '"personId":"4b1c2d3e-0000-4000-8000-000000000002","data":{"relatedObject":{"id":"9f8e7d6c-0000-4000-8000-0000000000a1",'
+    '"type":"invoice","url":"/api/v4/invoices/9f8e7d6c-0000-4000-8000-0000000000a1"},"status":"V","previousStatus":"C",'
+    '"reason":"rejectedByRecipient"}}'
 )
 
 COMPLETED_DOWNLOAD_REQUEST_BODY = (
     '{"id":"0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13","type":"download_request.completed","createdAt":"2026-10-12T18:47:53Z",'
     '"personId":null,"data":{"relatedObject":{"id":"3c2b1a09-0000-4000-8000-0000000000b7","type":"download_request",'
-    '"url":"/api/v4/download-requests/3c2b1a09-0000-4000-8000-0000000000b7"},"status":null,"previousStatus":null}}'
+    '"url":"/api/v4/download-requests/3c2b1a09-0000-4000-8000-0000000000b7"},"status":null,"previousStatus":null,"reason":null}}'
 )
 
 # El sobre de "Enviar prueba" del back (POST /api/v4/webhooks/{id}/test): el recurso es el webhook mismo.
 WEBHOOK_TEST_BODY = (
     '{"id":"0f6b2c1e-7d3a-4e8b-9c51-2a4d6e8f0b13","type":"webhook.test","createdAt":"2026-10-12T18:47:53Z",'
     '"personId":null,"data":{"relatedObject":{"id":"6a5b4c3d-0000-4000-8000-0000000000c9","type":"webhook",'
-    '"url":"/api/v4/webhooks/6a5b4c3d-0000-4000-8000-0000000000c9"},"status":null,"previousStatus":null}}'
+    '"url":"/api/v4/webhooks/6a5b4c3d-0000-4000-8000-0000000000c9"},"status":null,"previousStatus":null,"reason":null}}'
 )
 
 
@@ -60,6 +67,19 @@ def test_a_back_delivery_signed_during_a_rotation_verifies_with_either_secret_an
         assert event.data.related_object.url == "/api/v4/invoices/" + INVOICE_ID
         assert event.data.status == "X"
         assert event.data.previous_status == "C"
+        assert event.data.reason is None
+
+
+def test_a_rejected_cancellation_carries_the_reason():
+    secret = generate_secret()
+    delivery_headers = headers(EVENT_ID, TIMESTAMP, REJECTED_CANCELLATION_BODY, secret)
+
+    event = verify_delivered(delivery_headers, REJECTED_CANCELLATION_BODY, secret)
+
+    assert event.type == WebhookEventTypes.INVOICE_CANCELLATION_REJECTED
+    assert event.data.status == "V"
+    assert event.data.previous_status == "C"
+    assert event.data.reason == "rejectedByRecipient"
 
 
 def test_a_back_delivery_without_person_or_statuses_reads_them_as_none():
