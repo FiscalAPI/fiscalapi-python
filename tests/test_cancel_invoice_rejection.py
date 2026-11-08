@@ -1,9 +1,4 @@
-"""Cancelar factura (DELETE /api/v4/invoices) cuando el SAT rechaza la solicitud.
-
-El API responde 422 con ``succeeded`` en false, el mensaje genérico, "SAT <código>: <descripción>" en ``details`` y el
-acuse con el código por UUID en ``data``. El SDK no lanza: entrega esos campos y deja el data en ``error_data``. Los
-mismos escenarios viven en los SDK de .NET, Node.js, PHP y Java.
-"""
+"""Cancelar factura con rechazo del SAT: 422, ``succeeded`` en False y el acuse en ``error_data``."""
 from fiscalapi import CancelInvoiceRequest, CancelInvoiceResponse
 
 INVOICE_ID = "21c39425-9d0a-449b-a7ba-49335b85b062"

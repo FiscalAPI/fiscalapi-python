@@ -4,10 +4,19 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 
 ## [4.0.474] - 2026-11-07
 
+### Cambios incompatibles (BREAKING)
+
+- Cambio del API, no del SDK: cancelar factura (`invoices.cancel`) frente a un rechazo del SAT responde **422** con `succeeded` en `False`. Antes respondía 200 con `succeeded` en `True` y el código 203 en `data.invoice_uuids`. El SDK no lanza excepción.
+- En ese 422, `data` es `None`: el acuse va en `error_data` y el código del SAT en `details` (`SAT <código>: <descripción>`).
+- Migración: trate el 422 como rechazo y lea el código y el acuse en `details` y `error_data`, no en `data`.
+- Las validaciones previas al PAC responden **400**: UUID no canónico, sustituta inválida con motivo 01, y cancelación por valores cuando no hay una persona con CSD o hay más de una.
+- Si el PAC no trae el código del SAT, la respuesta es **502**.
+- Cancelar por valores un UUID que FiscalAPI no tiene ya no responde 404: responde el resultado del PAC con su acuse y no toca ninguna factura.
+
 ### Cancelación de facturas y webhooks
 
 - `WebhookEventData.reason` (nuevo, `Optional[str]`): el motivo de la transición. Todo evento lo trae; es `None` salvo en `invoice.cancellation_rejected`, donde dice por qué no procedió la cancelación: `rejectedByRecipient`, `expired`, `notRequested` o `notCancelable`. Es texto libre: pueden aparecer valores nuevos. Cambio aditivo: nada existente cambia.
-- `invoices.cancel` frente a un rechazo del SAT: el API responde 422 y el SDK no lanza. `succeeded` es `False`, `message` es el mensaje genérico, `details` trae `SAT <código>: <descripción>` y el acuse llega en `error_data` (`CancelInvoiceResponse.model_validate(response.error_data)` da `base64_cancellation_acknowledgement` e `invoice_uuids` con el código del SAT por UUID). No hay cambios de código: el comportamiento ya existía y ahora tiene prueba.
+- `invoices.cancel` frente a un rechazo del SAT: el API responde 422 y el SDK no lanza. `succeeded` es `False`, `message` es el mensaje genérico, `details` trae `SAT <código>: <descripción>` y el acuse llega en `error_data` (`CancelInvoiceResponse.model_validate(response.error_data)` da `base64_cancellation_acknowledgement` e `invoice_uuids` con el código del SAT por UUID). El SDK no cambia de código: el cambio es del API (ver *Cambios incompatibles*).
 
 ## [4.0.469] - 2026-10-30
 
