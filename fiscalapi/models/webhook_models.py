@@ -65,6 +65,7 @@ class WebhookEventData(BaseModel):
     related_object: Optional[WebhookRelatedObject] = Field(default=None, alias="relatedObject", description="El recurso que cambió de estado.")
     status: Optional[str] = Field(default=None, alias="status", description="Estado al que llegó el recurso, con los códigos públicos de la API v4 (factura V, C, X; solicitud de descarga 1, 2, 3, -1; regla de descarga 1..4, -1); None si el tipo de evento no lo lleva.")
     previous_status: Optional[str] = Field(default=None, alias="previousStatus", description="Estado del que salió el recurso, con los mismos códigos que status; None si no aplica.")
+    reason: Optional[str] = Field(default=None, alias="reason", description="Motivo de la transición. Todo evento lo trae; es None salvo en invoice.cancellation_rejected, donde dice por qué no procedió la cancelación (rejectedByRecipient, expired, notRequested o notCancelable). Es texto libre: pueden aparecer valores nuevos.")
 
     model_config = ConfigDict(populate_by_name=True)
 
