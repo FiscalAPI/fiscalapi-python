@@ -1,0 +1,25 @@
+{
+  "versionCode": "4.0",
+  "series": "F",
+  "date": "2000-01-01T00:00:00",
+  "paymentFormCode": "99",
+  "paymentMethodCode": "PPD",
+  "currencyCode": "MXN",
+  "typeCode": "I",
+  "expeditionZipCode": "20000",
+  "paymentConditions": "CondicionesDePago",
+  "exchangeRate": 1,
+  "exportCode": "01",
+  "issuer": {
+    "id": ""
+  },
+  "recipient": {
+    "id": ""
+  },
+  "items": [
+    {
+      "id": "",
+      "quantity": 1
+    }
+  ]
+}

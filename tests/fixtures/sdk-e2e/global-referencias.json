@@ -1,0 +1,80 @@
+{
+    "versionCode": "4.0",
+    "series": "F",
+    "date": "2000-01-01T00:00:00",
+    "paymentFormCode": "99",
+    "paymentMethodCode": "PUE",
+    "currencyCode": "MXN",
+    "typeCode": "I",
+    "expeditionZipCode": "42501",
+    "paymentConditions": "CondicionesDePago",
+    "exchangeRate": 1,
+    "exportCode": "01",
+    "globalInformation": {
+        "periodicityCode": "01",
+        "monthCode": "01",
+        "year": 2025
+    },
+    "issuer": {
+        "id": ""
+    },
+    "recipient": {
+        "id": ""
+    },
+    "items": [
+        {
+            "itemCode": "01010101",
+            "itemSku": "01010101",
+            "quantity": 1,
+            "unitOfMeasurementCode": "ACT",
+            "description": "Venta",
+            "unitPrice": 130,
+            "discount": 0,
+            "taxObjectCode": "02",
+            "itemTaxes": [
+                {
+                    "taxCode": "002",
+                    "taxTypeCode": "Tasa",
+                    "taxRate": 0.160000,
+                    "taxFlagCode": "T"
+                }
+            ]
+        },
+        {
+            "itemCode": "01010101",
+            "itemSku": "01010101",
+            "quantity": 1,
+            "unitOfMeasurementCode": "ACT",
+            "description": "Venta",
+            "unitPrice": 359.98,
+            "discount": 0,
+            "taxObjectCode": "02",
+            "itemTaxes": [
+                {
+                    "taxCode": "002",
+                    "taxTypeCode": "Tasa",
+                    "taxRate": 0.160000,
+                    "taxFlagCode": "T"
+                }
+            ]
+        },
+        {
+            "itemCode": "01010101",
+            "itemSku": "01010101",
+            "quantity": 1,
+            "unitOfMeasurementCode": "ACT",
+            "description": "Venta",
+            "unitPrice": 355.00,
+            "discount": 0,
+            "taxObjectCode": "02",
+            "itemTaxes": [
+                {
+                    "taxCode": "002",
+                    "taxTypeCode": "Tasa",
+                    "taxRate": 0.160000,
+                    "taxFlagCode": "T"
+                }
+            ]
+        }
+    ]
+}

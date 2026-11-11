@@ -337,15 +337,15 @@ class PaidInvoiceTax(BaseDto):
 class PaidInvoice(BaseDto):
     """Modelo para las facturas pagadas con el pago recibido."""
     uuid: str = Field(default=..., alias="uuid", description="UUID de la factura pagada.")
-    series: str = Field(default=..., alias="series", description="Serie de la factura pagada.")
+    series: Optional[str] = Field(default=None, alias="series", description="Serie de la factura pagada.")
        
     partiality_number: int = Field(default=..., alias="partialityNumber", description="Número de parcialidad.")
-    sub_total: Decimal = Field(default=..., alias="subTotal", description="Subtotal de la factura pagada.")
+    sub_total: Optional[Decimal] = Field(default=None, alias="subTotal", description="Subtotal de la factura pagada.")
     previous_balance: Decimal = Field(default=..., alias="previousBalance", description="Saldo anterior de la factura pagada.")
     payment_amount: Decimal = Field(default=..., alias="paymentAmount", description="Monto pagado de la factura.")
     remaining_balance: Decimal = Field(default=..., alias="remainingBalance", description="Saldo restante de la factura pagada.")
     
-    number: str = Field(default=..., alias="number", description="Folio de la factura pagada.")
+    number: Optional[str] = Field(default=None, alias="number", description="Folio de la factura pagada.")
     currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en la factura pagada.")
     tax_object_code: str = Field(default=..., alias="taxObjectCode", description="Código de obligaciones de impuesto.")
     equivalence: Optional[Decimal] = Field(default=Decimal("1"), description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")

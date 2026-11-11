@@ -2,6 +2,12 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
+## [Sin publicar]
+
+### Corregido
+
+- `PaidInvoice`: `series`, `subTotal` y `number` son opcionales, como en la API.
+
 ## [4.0.474] - 2026-11-07
 
 ### Cambios incompatibles (BREAKING)
