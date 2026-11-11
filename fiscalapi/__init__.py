@@ -18,6 +18,7 @@ from .models.common_models import (
     CatalogDto,
     FiscalApiSettings,
     PagedList,
+    PagedListFilters,
     ValidationFailure,
 )
 
@@ -75,6 +76,16 @@ from .models.sat_validation_models import (
     SatValidationStatus,
     SatValidationResult,
 )
+# Modelos de la persona de la credencial (GET /me)
+from .models.me_models import (
+    MeInfo,
+    PersonFeatures,
+    DeniedPermission,
+    PersonFeature,
+    PersonSubscription,
+    PersonSeatAssignment,
+)
+
 # Modelos de tickets (Auto CFDI)
 from .models.ticket_models import (
     TicketStatus,
@@ -103,9 +114,11 @@ from .models.fiscalapi_models import (
     # Product models
     ProductTax,
     Product,
+    ProductListFilters,
     # Person models
     CreditBalance,
     Person,
+    PersonListFilters,
     EmployeeData,
     EmployerData,
     TaxFile,
@@ -147,6 +160,8 @@ from .models.fiscalapi_models import (
     # Invoice models
     InvoiceResponse,
     Invoice,
+    InvoiceListOrder,
+    InvoiceListFilters,
     CancelInvoiceRequest,
     CancelInvoiceResponse,
     CreatePdfRequest,
@@ -197,6 +212,7 @@ from .services.tax_file_service import TaxFileService
 from .services.sat_validation_service import SatValidationService
 from .services.stamp_service import StampService
 from .services.manifest_service import ManifestService
+from .services.me_service import MeService
 from .services.ticket_service import TicketService
 
 # Cliente principal
@@ -213,13 +229,16 @@ __all__ = [
     "CatalogDto",
     "FiscalApiSettings",
     "PagedList",
+    "PagedListFilters",
     "ValidationFailure",
     # Product models
     "ProductTax",
     "Product",
+    "ProductListFilters",
     # Person models
     "CreditBalance",
     "Person",
+    "PersonListFilters",
     "EmployeeData",
     "EmployerData",
     "TaxFile",
@@ -295,6 +314,8 @@ __all__ = [
     # Invoice models
     "InvoiceResponse",
     "Invoice",
+    "InvoiceListOrder",
+    "InvoiceListFilters",
     "CancelInvoiceRequest",
     "CancelInvoiceResponse",
     "CreatePdfRequest",
@@ -338,6 +359,13 @@ __all__ = [
     "SatValidationTypeStatus",
     "SatValidationStatus",
     "SatValidationResult",
+    # Me models (GET /me)
+    "MeInfo",
+    "PersonFeatures",
+    "DeniedPermission",
+    "PersonFeature",
+    "PersonSubscription",
+    "PersonSeatAssignment",
     # Ticket models (Auto CFDI)
     "TicketStatus",
     "TicketEventType",
@@ -371,6 +399,7 @@ __all__ = [
     "SatValidationService",
     "StampService",
     "ManifestService",
+    "MeService",
     "TicketService",
     # Cliente principal
     "FiscalApiClient",

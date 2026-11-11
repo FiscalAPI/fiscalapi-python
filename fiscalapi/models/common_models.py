@@ -28,6 +28,23 @@ class PagedList(BaseModel, Generic[T]):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class PagedListFilters(BaseModel):
+    """Página de una lista (``get_list`` de facturas, personas y productos) y base de sus filtros. Cada filtro aplica solo
+    si se asigna; los que quedan en None no se envían."""
+
+    page_number: Optional[int] = Field(default=None, alias="pageNumber", description="Página, desde 1. Sin ella, el API devuelve la primera.")
+    page_size: Optional[int] = Field(default=None, alias="pageSize", description="Tamaño de página (1 a 50). Sin él, el API usa su tamaño por omisión.")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    def to_query_params(self) -> list[tuple[str, str]]:
+        """Los filtros asignados como pares de la query string, con los nombres camelCase del API y la página al final,
+        en el orden del contrato."""
+        filters = self.model_dump(mode="json", by_alias=True, exclude={"page_number", "page_size"})
+        page = {"pageNumber": self.page_number, "pageSize": self.page_size}
+        return [(key, str(value)) for key, value in [*filters.items(), *page.items()] if value is not None]
+
+
 class ValidationFailure(BaseModel):
     """Modelo para errores de validación."""
     property_name: str = Field(alias="propertyName")

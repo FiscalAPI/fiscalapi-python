@@ -1,10 +1,11 @@
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from typing import Any, Type, TypeVar, get_args, get_origin
+from typing import Any, Optional, Type, TypeVar, get_args, get_origin
+from urllib.parse import urlencode
 import certifi
 from pydantic import BaseModel
 import requests
-from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, ValidationFailure
+from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, PagedListFilters, ValidationFailure
 
 T = TypeVar('T')
 
@@ -132,6 +133,26 @@ class BaseService:
             error_data=response_data.get("data"),
             data=None
         )
+
+    @staticmethod
+    def _list_endpoint(
+        resource: str,
+        page_number: Optional[int],
+        page_size: Optional[int],
+        filters: Optional[PagedListFilters],
+    ) -> str:
+        """Endpoint de ``get_list``: la página o los filtros asignados en la query string; sin ninguno, solo el recurso.
+
+        Raises:
+            ValueError: Si se pasan ``filters`` junto con ``page_number`` o ``page_size``.
+        """
+        if filters is None:
+            filters = PagedListFilters(page_number=page_number, page_size=page_size)
+        elif page_number is not None or page_size is not None:
+            raise ValueError("Con filters, la página va en filters.page_number y filters.page_size.")
+
+        params = filters.to_query_params()
+        return f"{resource}?{urlencode(params)}" if params else resource
 
     def send_request(self, method: str, endpoint: str, response_model: Type[T], details: bool = False, **kwargs: Any) -> ApiResponse[T]:
         if details:

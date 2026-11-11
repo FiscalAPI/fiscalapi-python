@@ -12,6 +12,7 @@ from fiscalapi.services.sat_validation_service import SatValidationService
 from fiscalapi.services.stamp_service import StampService
 from fiscalapi.services.manifest_service import ManifestService
 from fiscalapi.services.ticket_service import TicketService
+from fiscalapi.services.me_service import MeService
 
 
 
@@ -31,4 +32,5 @@ class FiscalApiClient:
         self.sat_validations = SatValidationService(settings)
         self.manifests = ManifestService(settings)
         self.tickets = TicketService(settings)
+        self.me = MeService(settings)
         self.settings = settings
