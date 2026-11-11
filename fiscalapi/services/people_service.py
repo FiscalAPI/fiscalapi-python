@@ -1,7 +1,7 @@
 from typing import Optional
 
 from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, PagedList
-from fiscalapi.models.fiscalapi_models import Person
+from fiscalapi.models.fiscalapi_models import Person, TaxFile
 from fiscalapi.services.base_service import BaseService
 from fiscalapi.services.employee_service import EmployeeService
 from fiscalapi.services.employer_service import EmployerService
@@ -35,7 +35,12 @@ class PeopleService(BaseService):
     def get_by_id(self, person_id: str) -> ApiResponse[Person]:
         endpoint = f"people/{person_id}"
         return self.send_request("GET", endpoint, Person)
-    
+
+    def get_tax_files(self, person_id: str) -> ApiResponse[list[TaxFile]]:
+        """Lista los certificados (CSD y FIEL) de una persona, solo metadatos, sin el archivo ni la contraseña."""
+        endpoint = f"people/{person_id}/tax-files"
+        return self.send_request("GET", endpoint, list[TaxFile])
+
     # create person
     def create(self, person: Person) -> ApiResponse[Person]:
         endpoint = "people"

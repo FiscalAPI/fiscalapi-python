@@ -4,6 +4,10 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 
 ## [Sin publicar]
 
+### Agregado
+
+- `people.get_tax_files(person_id)`: lista los certificados CSD y FIEL de una persona (`GET /api/v4/people/{personId}/tax-files`). Devuelve solo metadatos (`id`, `person_id`, `tin`, `file_type`, `valid_from`, `valid_to`, `sequence`); no trae el archivo ni la contraseña.
+
 ### Corregido
 
 - `PaidInvoice`: `series`, `subTotal` y `number` son opcionales, como en la API.
