@@ -1,0 +1,82 @@
+{
+    "versionCode": "4.0",
+    "paymentFormCode": "99",
+    "paymentMethodCode": "PPD",
+    "currencyCode": "USD",
+    "typeCode": "I",
+    "expeditionZipCode": "42501",
+    "series": "Serie",
+    "date": "2000-01-01T00:00:00",
+    "paymentConditions": "CondicionesDePago",
+    "exportCode": "02",
+    "issuer": {
+        "id": ""
+    },
+    "recipient": {
+        "id": ""
+    },
+    "items": [
+        {
+            "itemCode": "50211503",
+            "itemSku": "131494-1055",
+            "quantity": 2,
+            "unitOfMeasurementCode": "H87",
+            "description": "Cigarros",
+            "unitPrice": 200.00,
+            "discount": 0,
+            "taxObjectCode": "02",
+            "itemTaxes": [
+                {
+                    "taxCode": "002",
+                    "taxTypeCode": "Tasa",
+                    "taxRate": 0.160000,
+                    "taxFlagCode": "T"
+                },
+                {
+                    "taxCode": "001",
+                    "taxTypeCode": "Tasa",
+                    "taxRate": 0.100000,
+                    "taxFlagCode": "R"
+                }
+            ]
+        }
+    ],
+    "complement": {
+        "comercioExterior": {
+            "claveDePedimentoId": "A1",
+            "certificadoOrigen": 0,
+            "incotermId": "FOB",
+            "tipoCambioUSD": 17.4948,
+            "emisor": {
+                "domicilio": {
+                    "calle": "CALLE DEL PAPEL",
+                    "coloniaId": "0214",
+                    "localidadId": "01",
+                    "municipioId": "014",
+                    "estadoId": "QUE",
+                    "paisId": "MEX",
+                    "codigoPostalId": "76199"
+                }
+            },
+            "receptor": {
+                "numRegIdTrib": "123456789",
+                "domicilio": {
+                    "calle": "ST. A",
+                    "estado": "TX",
+                    "paisId": "USA",
+                    "codigoPostal": "00000"
+                }
+            },
+            "mercancias": [
+                {
+                    "noIdentificacion": "131494-1055",
+                    "fraccionArancelariaId": "2402200100",
+                    "cantidadAduana": 117.64,
+                    "unidadAduanaId": "01",
+                    "valorUnitarioAduana": 3.40,
+                    "valorDolares": 400.00
+                }
+            ]
+        }
+    }
+}

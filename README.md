@@ -108,6 +108,10 @@ settings = FiscalApiSettings(
 from fiscalapi import FiscalApiClient
 
 client = FiscalApiClient(settings=settings)
+
+# Opcional: valida la credencial. Responde la persona de la API key, su tenant, el ambiente, sus features y saldos
+# (401 si la API key o el tenant no son válidos)
+me = client.me.get()
 ```
 
 ## 🔄 Modos de Operación
@@ -253,6 +257,23 @@ Para reintentar la creación sin duplicar la factura, pasa una `idempotency_key`
 
 ```python
 api_response = client.invoices.create(invoice, idempotency_key="550e8400-e29b-41d4-a716-446655440000")
+```
+
+Para listar facturas con filtros pasa un `InvoiceListFilters` en `filters`; los filtros en `None` no se envían. `people.get_list` y `products.get_list` buscan con `search` (`PersonListFilters` y `ProductListFilters`).
+
+```python
+from datetime import date
+from fiscalapi import InvoiceListFilters, InvoiceListOrder
+
+# Facturas vigentes de un receptor en septiembre, las más recientes primero
+invoices = client.invoices.get_list(filters=InvoiceListFilters(
+    recipient_tin="<rfc_receptor>",
+    status_id="V",
+    from_=date(2026, 9, 1),
+    to=date(2026, 9, 30),
+    order=InvoiceListOrder.DESC,
+    page_size=50
+))
 ```
 
 ### 6. Crear la Misma Factura de Ingreso (Por Valores)

@@ -6,6 +6,7 @@ from .common_models import (
     CatalogDto,
     FiscalApiSettings,
     PagedList,
+    PagedListFilters,
     ValidationFailure,
 )
 from .carta_porte_models import (
@@ -61,6 +62,15 @@ from .sat_validation_models import (
     SatValidationStatus,
     SatValidationResult,
 )
+from .me_models import (
+    # Me models (GET /me)
+    MeInfo,
+    PersonFeatures,
+    DeniedPermission,
+    PersonFeature,
+    PersonSubscription,
+    PersonSeatAssignment,
+)
 from .ticket_models import (
     # Ticket models (Auto CFDI)
     TicketStatus,
@@ -86,9 +96,11 @@ from .fiscalapi_models import (
     # Product models
     ProductTax,
     Product,
+    ProductListFilters,
     # Person models
     CreditBalance,
     Person,
+    PersonListFilters,
     EmployeeData,
     EmployerData,
     TaxFile,
@@ -130,6 +142,8 @@ from .fiscalapi_models import (
     # Invoice models
     InvoiceResponse,
     Invoice,
+    InvoiceListOrder,
+    InvoiceListFilters,
     CancelInvoiceRequest,
     CancelInvoiceResponse,
     CreatePdfRequest,
@@ -171,6 +185,7 @@ __all__ = [
     "CatalogDto",
     "FiscalApiSettings",
     "PagedList",
+    "PagedListFilters",
     "ValidationFailure",
     # Carta Porte models
     "UbicacionDomicilio",
@@ -209,9 +224,11 @@ __all__ = [
     # Product models
     "ProductTax",
     "Product",
+    "ProductListFilters",
     # Person models
     "CreditBalance",
     "Person",
+    "PersonListFilters",
     "EmployeeData",
     "EmployerData",
     "TaxFile",
@@ -253,6 +270,8 @@ __all__ = [
     # Invoice models
     "InvoiceResponse",
     "Invoice",
+    "InvoiceListOrder",
+    "InvoiceListFilters",
     "CancelInvoiceRequest",
     "CancelInvoiceResponse",
     "CreatePdfRequest",
@@ -296,6 +315,13 @@ __all__ = [
     "SatValidationTypeStatus",
     "SatValidationStatus",
     "SatValidationResult",
+    # Me models (GET /me)
+    "MeInfo",
+    "PersonFeatures",
+    "DeniedPermission",
+    "PersonFeature",
+    "PersonSubscription",
+    "PersonSeatAssignment",
     # Ticket models (Auto CFDI)
     "TicketStatus",
     "TicketEventType",

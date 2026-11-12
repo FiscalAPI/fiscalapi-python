@@ -1,7 +1,7 @@
 from typing import Optional
 
 from fiscalapi.models.common_models import ApiResponse, FiscalApiSettings, PagedList
-from fiscalapi.models.fiscalapi_models import Person
+from fiscalapi.models.fiscalapi_models import Person, PersonListFilters, TaxFile
 from fiscalapi.services.base_service import BaseService
 from fiscalapi.services.employee_service import EmployeeService
 from fiscalapi.services.employer_service import EmployerService
@@ -26,16 +26,41 @@ class PeopleService(BaseService):
             self._employer = EmployerService(self.settings)
         return self._employer
 
-    # get paged list of people
-    def get_list(self, page_number: int, page_size: int) -> ApiResponse[PagedList[Person]]:
-        endpoint = f"people?pageNumber={page_number}&pageSize={page_size}"
+    def get_list(
+        self,
+        page_number: Optional[int] = None,
+        page_size: Optional[int] = None,
+        *,
+        filters: Optional[PersonListFilters] = None,
+    ) -> ApiResponse[PagedList[Person]]:
+        """Obtiene una lista paginada de personas, con la página o con filtros. GET /api/v4/people
+
+        Los filtros en None no se envían; sin página ni filtros, la lista es la de siempre (primera página).
+
+        Args:
+            page_number: Página, desde 1.
+            page_size: Tamaño de página (1 a 50).
+            filters: Búsqueda, tipo de persona y página; en lugar de page_number y page_size.
+
+        Returns:
+            ApiResponse con la página de personas.
+
+        Raises:
+            ValueError: Si se pasan filters junto con page_number o page_size.
+        """
+        endpoint = self._list_endpoint("people", page_number, page_size, filters)
         return self.send_request("GET", endpoint, PagedList[Person])
     
     # get person by id
     def get_by_id(self, person_id: str) -> ApiResponse[Person]:
         endpoint = f"people/{person_id}"
         return self.send_request("GET", endpoint, Person)
-    
+
+    def get_tax_files(self, person_id: str) -> ApiResponse[list[TaxFile]]:
+        """Lista los certificados (CSD y FIEL) de una persona, solo metadatos, sin el archivo ni la contraseña."""
+        endpoint = f"people/{person_id}/tax-files"
+        return self.send_request("GET", endpoint, list[TaxFile])
+
     # create person
     def create(self, person: Person) -> ApiResponse[Person]:
         endpoint = "people"

@@ -1,0 +1,136 @@
+{
+    "versionCode": "4.0",
+    "series": "F",
+    "date": "2000-01-01T00:00:00",
+    "paymentMethodCode": "PUE",
+    "currencyCode": "MXN",
+    "typeCode": "N",
+    "expeditionZipCode": "39074",
+    "exportCode": "01",
+    "issuer": {
+        "tin": "OÑO120726RX3",
+        "legalName": "ORGANICOS ÑAVEZ OSORIO",
+        "taxRegimeCode": "601",
+        "employerData": {
+            "employerRegistration": "27112029",
+            "satFundSourceId": "IP"
+        },
+        "taxCredentials": [
+            {
+                "base64File": "MIIF1DCCA7ygAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDM0MzkwDQYJKoZIhvcNAQELBQAwggErMQ8wDQYDVQQDDAZBQyBVQVQxLjAsBgNVBAoMJVNFUlZJQ0lPIERFIEFETUlOSVNUUkFDSU9OIFRSSUJVVEFSSUExGjAYBgNVBAsMEVNBVC1JRVMgQXV0aG9yaXR5MSgwJgYJKoZIhvcNAQkBFhlvc2Nhci5tYXJ0aW5lekBzYXQuZ29iLm14MR0wGwYDVQQJDBQzcmEgY2VycmFkYSBkZSBjYWxpejEOMAwGA1UEEQwFMDYzNzAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBDSVVEQUQgREUgTUVYSUNPMREwDwYDVQQHDAhDT1lPQUNBTjERMA8GA1UELRMIMi41LjQuNDUxJTAjBgkqhkiG9w0BCQITFnJlc3BvbnNhYmxlOiBBQ0RNQS1TQVQwHhcNMjMwNTE4MTI1NTE2WhcNMjcwNTE4MTI1NTE2WjCB+zEzMDEGA1UEAxQqT1JHQU5JQ09TINFBVkVaIE9TT1JJTyBTLkEgREUgQy5WIFNBIERFIENWMTMwMQYDVQQpFCpPUkdBTklDT1Mg0UFWRVogT1NPUklPIFMuQSBERSBDLlYgU0EgREUgQ1YxMzAxBgNVBAoUKk9SR0FOSUNPUyDRQVZFWiBPU09SSU8gUy5BIERFIEMuViBTQSBERSBDVjElMCMGA1UELRQcT9FPMTIwNzI2UlgzIC8gVkFEQTgwMDkyN0RKMzEeMBwGA1UEBRMVIC8gVkFEQTgwMDkyN0hTUlNSTDA1MRMwEQYDVQQLEwpTdWN1cnNhbCAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlAF4PoRqITQAEjFBzzfiT/NSN2yvb7Iv1ZMe4qD7tBxBxazRCx+GnimfpR+eaM744RlRDUj+hZfWcsOMn+q65UEIP+Xq5V1NbO1LZDse9uG1fLLSmptfKjyfvTtmBNYBjC3G6YmRv5qVw81CIS4aQOSMXKD+lrxjmRUhV9EAtXVoqGxvyDKeeX4caKuRz8mlrnR8/SMbnpobe5BNoXPrpDbEypemiJXe40pjsltY0RV3b0W0JtJQABUwZ9xn0lPYHY2q7IxYfohibv+o9ldXOXY6tivBZFfbGQSUp7CevC55+Y6uqh35Pi1o0nt/vBVgUOVPNM8d4TvGbXsE0G2J7QIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQsFAAOCAgEAFp52XykMXfFUtjQqA2zzLPrPIDSMEpkm1vWY0qfz2gC2TlVpbDCWH2vFHpP8D14OifXOmYkws2cvLyE0uBN6se4zXxVHBpTEq+93rvu/tjvMU6r7DISDwB0EX5kmKIFcOugET3/Eq1mxZ6mrI0K26RaEUz+HVyR0EQ2Ll5CLExDkPYV/am0gynhn6QPkxPNbcbm77PEIbH7zc+t7ZB5sgQ6LnubgnKNZDn8bNhkuM1jqFkh7h0owhlJrOvATgrDSLnrot8FoLFkrWQD4uA5udGRwXn5QWx0QM5ScNiSgSRilSFEyXn6rH/CJLO05Sx5OwJJTaxFbAyOXnoNdPMzbQAziaW78478nCNZVSrKWpjwWpScirtM2zcQ9fywd/a3CG66Ff29zasfhHJCp29TIjj1OURp6l1CKc16+UxjuVJ1z5Xh7v3s8S2gtmuYP1sUXPvAEYuVp9CFW87QVMtl3+nGlyJEzSAW/yaps9ua5RmyJK0Mjk1zyXjOJoIY75CIOMN8oqVAxmLJg5XftXJSekGpxybw9aq9qOJdmxVcZoAFaYg4MAdKViBoYxfWfEm4q/ihRz4asnzLp9NJWTXN1YH94rJrK7JSEq820flgr1kiL7z7n1rgWMvhJH9nHriG3yRkno/8OdLJxOSXd7MKZfZx0EWDX8toqWyE7zia8aPM=",
+                "fileType": 0,
+                "password": "12345678a"
+            },
+            {
+                "base64File": "MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIAgEAAoIBAQACAggAMBQGCCqGSIb3DQMHBAgwggS8AgEAMASCBMh4EHl7aNSCaMDA1VlRoXCZ5UUmqErAbucRFLOMmsAaFFEdAecnfgJf0IlyJpvyNOGiSwXgY6uZtS0QJmmupWTlQATxbN4xeN7csx7yCMYxMiWXLyTbjVIWzzsFVKHbsxCudz6UDqMZ3aXEEPDDbPECXJC4FxqzuUgifN4QQuIvxfPbk23m3Vtqu9lr/xMrDNqLZ4RiqY2062kgQzGzekq8CSC97qBAbb8SFMgakFjeHN0JiTGaTpYCpGbu4d+i3ZrQ0mlYkxesdvCLqlCwVM0RTMJsNQ8vpBpRDzH372iOTLCO/gXtV8pEsxpUzG9LSUBo7xSMd1/lcfdyqVgnScgUm8/+toxk6uwZkUMWWvp7tqrMYQFYdR5CjiZjgAWrNorgMmawBqkJU6KQO/CpXVn99U1fANPfQoeyQMgLt35k0JKynG8MuWsgb4EG9Z6sRmOsCQQDDMKwhBjqcbEwN2dL4f1HyN8wklFCyYy6j1NTKU2AjRMXVu4+OlAp5jpjgv08RQxEkW/tNMSSBcpvOzNr64u0M692VA2fThR3UMQ/MZ2yVM6yY3GgIu2tJmg08lhmkoLpWZIMy7bZjj/AEbi7B3wSF4vDYZJcr/Djeezm3MMSghoiOIRSqtBjwf7ZjhA2ymdCsrzy7XSMVekT0y1S+ew1WhnzUNKQSucb6V2yRwNbm0EyeEuvVyHgiGEzCrzNbNHCfoFr69YCUi8itiDfiV7/p7LJzD8J/w85nmOkI/9p+aZ2EyaOdThqBmN4CtoDi5ixz/1EElLn7KVI4d/DZsZ4ZMu76kLAy94o0m6ORSbHX5hw12+P5DgGaLu/Dxd9cctRCkvcUdagiECuKGLJpxTJvEBQoZqUB8AJFgwKcNLl3Z5KAWL5hV0t1h8i3N4HllygqpfUSQMLWCtlGwdI4XGlGI5CmnjrL2Uj8sj9C0zSNqZVnAXFMV9f2ND9W6YJqfU89BQ6Y4QQRMGjXcVF7c78bn5r6zI+Qv2QKm3YiGCfuIa64B+PB/BdithpOuBPn5X5Zxc8ju/kYjJk7sau7VtKJseGOJ1bqOq99VzaxoHjzoJgthLHtni9WtGAnnQy7GMWGW4Un2yObHCxvQxx/rIZEaQiCGfRXOcZIZuXBe5xeHJFGrekDxu3YyumEnLWvsirDF3qhpUtxqvbkTuZw2xT3vTR+oWZpSEnYTd3k/09Eb0ovOPLkbhvcvCEeoI91EJvU+KI4Lm7ZsuTUSpECrHiS3uPOjboCigOWGayKzUHUICNrGK0zxgZXhhl6V7y9pImRl34ID/tZhr3veW4pQKgscv6sQjGJzaph2oCP7uZC6arGWcFpc2pgfBcobmOXYPWKskU3eWKClHBJnJ8MoOru+ObOb+izPhINHOmzP26TnKzFxdZiL+onxjadPYslcLtqlmOYpb/5hHgGOvitLhCLHCp0gYNB2uzj0sVxNs3k7k43KrlO5L6gp1KVaIw2a1yZzOCqDWWcePfKM3Mii9JdVyfHZLRRjFCQiOYo41AltHU+9IcaoT4J/j7pKw5tnlu2VaMlnN0dISpoq/ak0m4YjTd3XdRQeH9ktWmclkc65LdLKf9hIqjVqvOhQUJYkuT7OPgr+o7Z9BnClXMz1/CYWftwQE=",
+                "fileType": 1,
+                "password": "12345678a"
+            }
+        ]
+    },
+    "recipient": {
+        "tin": "CACX7605101P8",
+        "legalName": "XOCHILT CASAS CHAVEZ",
+        "zipCode": "36257",
+        "taxRegimeCode": "605",
+        "cfdiUseCode": "CN01",
+        "employeeData": {
+            "curp": "XEXX010101HNEXXXA4",
+            "socialSecurityNumber": "80997742673",
+            "laborRelationStartDate": "2021-09-01",
+            "seniority": "P88W",
+            "satContractTypeId": "01",
+            "satTaxRegimeTypeId": "02",
+            "employeeNumber": "273",
+            "satJobRiskId": "1",
+            "satPaymentPeriodicityId": "04",
+            "integratedDailySalary": 221.48,
+            "satPayrollStateId": "GRO"
+        }
+    },
+    "complement": {
+        "payroll": {
+            "version": "1.2",
+            "payrollTypeCode": "O",
+            "paymentDate": "2023-05-16T00:00:00",
+            "initialPaymentDate": "2023-05-01T00:00:00",
+            "finalPaymentDate": "2023-05-16T00:00:00",
+            "daysPaid": 15,
+            "earnings": {
+                "earnings": [
+                    {
+                        "earningTypeCode": "001",
+                        "code": "P001",
+                        "concept": "Sueldos, Salarios Rayas y Jornales",
+                        "taxedAmount": 3322.20,
+                        "exemptAmount": 0.0
+                    },
+                    {
+                        "earningTypeCode": "038",
+                        "code": "P540",
+                        "concept": "Compensacion",
+                        "taxedAmount": 100.0,
+                        "exemptAmount": 0.0
+                    },
+                    {
+                        "earningTypeCode": "038",
+                        "code": "P550",
+                        "concept": "Compensación Garantizada Extraordinaria",
+                        "taxedAmount": 2200.0,
+                        "exemptAmount": 0.0
+                    },
+                    {
+                        "earningTypeCode": "038",
+                        "code": "P530",
+                        "concept": "Servicio Extraordinario",
+                        "taxedAmount": 200.0,
+                        "exemptAmount": 0.0
+                    },
+                    {
+                        "earningTypeCode": "001",
+                        "code": "P506",
+                        "concept": "Otras Prestaciones",
+                        "taxedAmount": 1500.0,
+                        "exemptAmount": 0.0
+                    },
+                    {
+                        "earningTypeCode": "001",
+                        "code": "P505",
+                        "concept": "Remuneración al Desempeño Legislativo",
+                        "taxedAmount": 17500.0,
+                        "exemptAmount": 0.0
+                    }
+                ],
+                "otherPayments": [
+                    {
+                        "otherPaymentTypeCode": "002",
+                        "code": "o002",
+                        "concept": "Subsidio para el empleo efectivamente entregado al trabajador",
+                        "amount": 0.0,
+                        "subsidyCaused": 0.0
+                    }
+                ]
+            },
+            "deductions": [
+                {
+                    "deductionTypeCode": "002",
+                    "code": "D002",
+                    "concept": "ISR",
+                    "amount": 4716.61
+                },
+                {
+                    "deductionTypeCode": "004",
+                    "code": "D525",
+                    "concept": "Redondeo",
+                    "amount": 0.81
+                },
+                {
+                    "deductionTypeCode": "001",
+                    "code": "D510",
+                    "concept": "Cuota Trabajador ISSSTE",
+                    "amount": 126.78
+                }
+            ]
+        }
+    }
+}

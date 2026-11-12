@@ -1,11 +1,11 @@
 from decimal import Decimal
-from enum import IntEnum
+from enum import Enum, IntEnum
 from pydantic import BaseModel, ConfigDict, Field
-from fiscalapi.models.common_models import BaseDto, CatalogDto
+from fiscalapi.models.common_models import BaseDto, CatalogDto, PagedListFilters
 from fiscalapi.models.carta_porte_models import CartaPorteComplement
 from fiscalapi.models.comercio_exterior_models import ComercioExteriorComplement
-from typing import Optional, Union
-from datetime import datetime
+from typing import Literal, Optional, Union
+from datetime import date, datetime
 
 # products models
 
@@ -46,6 +46,14 @@ class Product(BaseDto):
     
     model_config = ConfigDict(populate_by_name=True)
 
+
+class ProductListFilters(PagedListFilters):
+    """Filtros de ``products.get_list`` (GET /api/v4/products). Sin ninguno, la lista es la de siempre (primera página;
+    sin ``page_size``, el API usa 10)."""
+
+    search: Optional[str] = Field(default=None, alias="search", description="Texto a buscar, de 2 a 100 caracteres y sin distinguir mayúsculas: los productos cuya descripción o clave de producto o servicio del SAT lo contiene.")
+
+
 # people models
 
 class CreditBalance(BaseModel):
@@ -65,7 +73,8 @@ class Person(BaseDto):
 
     legal_name: Optional[str] = Field(default=None, alias="legalName", description="Razón social de la persona sin régimen de capital.")
     email: Optional[str] = Field(default=None, alias="email", description="Correo electrónico de la persona. El API valida el formato.")
-    password: Optional[str]  = Field(default=None, alias="password", description="Contraseña para acceder al dashboard. Requerida al crear; al actualizar, None o vacía conserva la actual. El API nunca la devuelve.")
+    password: Optional[str] = Field(default=None, alias="password", description="Contraseña para acceder al dashboard. Opcional al crear (sin ella la persona no inicia sesión con contraseña) y obligatoria solo si login_enabled es True; al actualizar, None o vacía conserva la actual. En None no se envía. El API nunca la devuelve.")
+    login_enabled: Optional[bool] = Field(default=None, alias="loginEnabled", description="Acceso al portal (inicio de sesión en el dashboard); no afecta a la API key. Al crear, None o False: la persona nace sin acceso. Al actualizar, None no se envía y no cambia el acceso actual; True lo da (la persona debe tener contraseña o recibirla en password) y False lo quita. Solo lo cambia el owner del tenant, y el owner siempre lo tiene. En las respuestas llega el acceso efectivo.")
     phone_number: Optional[str] = Field(default=None, alias="phoneNumber", description="Teléfono de la persona.")
     sat_tax_regime_id: Optional[str] = Field(default=None, alias="satTaxRegimeId", description="Código del régimen fiscal: clave del catálogo c_RegimenFiscal del SAT. La valida el API.")
     sat_tax_regime: Optional[CatalogDto] = Field(default=None, alias="satTaxRegime", description="Código del régimen fiscal expandido.")
@@ -93,6 +102,14 @@ class Person(BaseDto):
     country: Optional[CatalogDto] = Field(default=None, alias="country", description="País de residencia fiscal expandido (solo lectura).")
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class PersonListFilters(PagedListFilters):
+    """Filtros de ``people.get_list`` (GET /api/v4/people). Sin ninguno, la lista es la de siempre (primera página;
+    sin ``page_size``, el API usa 50)."""
+
+    search: Optional[str] = Field(default=None, alias="search", description="Texto a buscar, de 2 a 100 caracteres y sin distinguir mayúsculas: las personas cuya razón social, RFC o correo lo contiene.")
+    user_type_id: Optional[str] = Field(default=None, alias="userTypeId", description="Tipo de persona (Person.user_type_id): T (tenant), U (usuario) o C (cliente), en mayúsculas.")
 
 
 class EmployeeData(BaseDto):
@@ -337,15 +354,15 @@ class PaidInvoiceTax(BaseDto):
 class PaidInvoice(BaseDto):
     """Modelo para las facturas pagadas con el pago recibido."""
     uuid: str = Field(default=..., alias="uuid", description="UUID de la factura pagada.")
-    series: str = Field(default=..., alias="series", description="Serie de la factura pagada.")
+    series: Optional[str] = Field(default=None, alias="series", description="Serie de la factura pagada.")
        
     partiality_number: int = Field(default=..., alias="partialityNumber", description="Número de parcialidad.")
-    sub_total: Decimal = Field(default=..., alias="subTotal", description="Subtotal de la factura pagada.")
+    sub_total: Optional[Decimal] = Field(default=None, alias="subTotal", description="Subtotal de la factura pagada.")
     previous_balance: Decimal = Field(default=..., alias="previousBalance", description="Saldo anterior de la factura pagada.")
     payment_amount: Decimal = Field(default=..., alias="paymentAmount", description="Monto pagado de la factura.")
     remaining_balance: Decimal = Field(default=..., alias="remainingBalance", description="Saldo restante de la factura pagada.")
     
-    number: str = Field(default=..., alias="number", description="Folio de la factura pagada.")
+    number: Optional[str] = Field(default=None, alias="number", description="Folio de la factura pagada.")
     currency_code: str = Field(default="MXN", alias="currencyCode", description="Código de la moneda utilizada en la factura pagada.")
     tax_object_code: str = Field(default=..., alias="taxObjectCode", description="Código de obligaciones de impuesto.")
     equivalence: Optional[Decimal] = Field(default=Decimal("1"), description="Equivalencia de la moneda. Este campo es obligatorio cuando la moneda del documento relacionado (PaidInvoice.CurrencyCode) difiere de la moneda en que se realiza el pago ( InvoicePayment.CurrencyCode).")
@@ -600,6 +617,30 @@ class Invoice(BaseDto):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class InvoiceListOrder(str, Enum):
+    """Valores de ``InvoiceListFilters.order``: el orden de la lista por fecha de creación."""
+
+    ASC = "asc"
+    DESC = "desc"
+
+
+class InvoiceListFilters(PagedListFilters):
+    """Filtros de ``invoices.get_list`` (GET /api/v4/invoices). Sin ninguno, la lista es la de siempre (primera página,
+    de la más antigua a la más reciente; sin ``page_size``, el API usa 10). ``from_`` lleva el guion bajo porque ``from``
+    es palabra reservada de Python."""
+
+    from_: Optional[date] = Field(default=None, alias="from", description="Primer día de la fecha de la factura (incluido), en fecha civil de México. Va junto con to.")
+    to: Optional[date] = Field(default=None, alias="to", description="Último día de la fecha de la factura (incluido), en fecha civil de México. Va junto con from_.")
+    issuer_tin: Optional[str] = Field(default=None, alias="issuerTin", description="RFC del emisor, exacto.")
+    recipient_tin: Optional[str] = Field(default=None, alias="recipientTin", description="RFC del receptor, exacto.")
+    type_code: Optional[str] = Field(default=None, alias="typeCode", description="Tipo de comprobante (c_TipoDeComprobante): I, E, T, P o N.")
+    status_id: Optional[str] = Field(default=None, alias="statusId", description="Estatus de la factura: B (borrador), V (vigente), C (cancelando) o X (cancelada).")
+    series: Optional[str] = Field(default=None, alias="series", description="Serie, exacta.")
+    number: Optional[str] = Field(default=None, alias="number", description="Folio, exacto.")
+    uuid: Optional[str] = Field(default=None, alias="uuid", description="Folio fiscal (UUID).")
+    order: Optional[Literal["asc", "desc"]] = Field(default=None, alias="order", description="Orden por fecha de creación: asc o desc (las más recientes primero); acepta InvoiceListOrder. Sin él, el API usa asc.")
+
+
         
 class CancelInvoiceRequest(BaseDto):
     """Modelo de cancelación de factura."""
@@ -751,6 +792,8 @@ class DownloadRequest(BaseDto):
     
     sat_request_status_id: Optional[str] = Field(default=None, alias="satRequestStatusId", description="Estado actual de la solicitud. DESCONOCIDO, ACEPTADA, EN PROCESO, TERMINADA, ERROR, RECHAZADA, VENCIDA.")
     sat_request_status: Optional[CatalogDto] = Field(default=None, alias="satRequestStatus", description="Estado de la solicitud SAT.")
+    sat_status_code: Optional[str] = Field(default=None, alias="satStatusCode", description="Código (CodEstatus) de la última respuesta del SAT, a la solicitud o a su verificación.")
+    sat_message: Optional[str] = Field(default=None, alias="satMessage", description="Mensaje de la última respuesta del SAT, a la solicitud o a su verificación.")
     
     download_request_status_id: Optional[str] = Field(default=None, alias="downloadRequestStatusId", description="ID del estado de la solicitud de Fiscalapi.")
     download_request_status: Optional[CatalogDto] = Field(default=None, alias="downloadRequestStatus", description="Estado de la solicitud de descarga Fiscalapi.")

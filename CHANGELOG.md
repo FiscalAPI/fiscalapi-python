@@ -2,6 +2,26 @@
 
 Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a quien usa el SDK.
 
+## [4.0.475] - 2026-11-12
+
+### Agregado
+
+- Filtros en las listas de facturas, personas y productos, con el patrón de `tickets.get_list(filters)`: se pasan como `get_list(filters=...)` (argumento solo por nombre). Cada filtro asignado viaja en la query string y uno en `None` no se envía; sin filtros, la lista es la de siempre. Pasar `filters` junto con `page_number` o `page_size` lanza `ValueError`: con filtros, la página va en `filters.page_number` y `filters.page_size`.
+  - `invoices.get_list(filters=InvoiceListFilters(...))`: `GET /api/v4/invoices` con `from_`/`to` (`datetime.date`, fecha civil de México; van juntos), `issuer_tin`, `recipient_tin`, `type_code` (I, E, T, P o N), `status_id` (B, V, C o X), `series`, `number`, `uuid`, `order`, `page_number` y `page_size` (1 a 50). `order` es `"asc"` (por omisión) o `"desc"` (las más recientes primero), por fecha de creación; acepta también `InvoiceListOrder.ASC` e `InvoiceListOrder.DESC`, y cualquier otro valor lanza `ValidationError` al crear el filtro.
+  - `people.get_list(filters=PersonListFilters(...))`: `GET /api/v4/people` con `search` (2 a 100 caracteres; razón social, RFC o correo), `user_type_id` (T, U o C), `page_number` y `page_size`.
+  - `products.get_list(filters=ProductListFilters(...))`: `GET /api/v4/products` con `search` (descripción o clave de producto o servicio del SAT), `page_number` y `page_size`.
+  - `get_list(page_number, page_size)` sigue existiendo y se comporta igual, por posición o por nombre. Los dos argumentos ahora son opcionales: `get_list()` pide la lista sin query.
+- `me.get()` (`FiscalApiClient.me`, `MeService`): `GET /api/v4/me`. Devuelve `MeInfo`, la persona de la API key: `id`, `legal_name`, `tin`, `email`, `tenant_id`, `environment` (Development, Test o Production), `is_owner`, `features` (`PersonFeatures`: `roles`, `permissions`, `denied` con `DeniedPermission`, `features` con `PersonFeature`, `subscription` con `PersonSubscription` y `seat_assignments` con `PersonSeatAssignment`) y `balances` (`list[CreditBalance]`; un tipo ausente tiene saldo 0). Sirve para validar una credencial: con una API key o un tenant que no son válidos responde 401.
+- `Person.login_enabled` (`Optional[bool]`, `loginEnabled` en el JSON), el acceso al portal: al crear, en `None` o `False`, la persona nace sin acceso. En `people.update`, en `None` no se envía y no cambia el acceso; `True` lo da y `False` lo quita. Solo lo cambia el owner, el owner siempre lo tiene y no afecta a la API key. En las respuestas llega el acceso efectivo.
+- `Person.password` es opcional al crear: en `None` no se envía, y solo es obligatoria si `login_enabled` es `True`.
+- `people.get_tax_files(person_id)`: lista los certificados CSD y FIEL de una persona (`GET /api/v4/people/{personId}/tax-files`). Devuelve solo metadatos (`id`, `person_id`, `tin`, `file_type`, `valid_from`, `valid_to`, `sequence`); no trae el archivo ni la contraseña.
+- Quien usa el cliente del SDK no cambia nada. Quien sustituye `InvoiceService`, `PeopleService` o `ProductService` por una subclase o un doble de pruebas con su propio `get_list` debe aceptar el argumento `filters`.
+- `satStatusCode` y `satMessage` en la solicitud de descarga: código y mensaje de la última respuesta del SAT.
+
+### Corregido
+
+- `PaidInvoice`: `series`, `subTotal` y `number` son opcionales, como en la API.
+
 ## [4.0.474] - 2026-11-07
 
 ### Cambios incompatibles (BREAKING)
