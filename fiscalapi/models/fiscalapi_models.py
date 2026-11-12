@@ -792,6 +792,8 @@ class DownloadRequest(BaseDto):
     
     sat_request_status_id: Optional[str] = Field(default=None, alias="satRequestStatusId", description="Estado actual de la solicitud. DESCONOCIDO, ACEPTADA, EN PROCESO, TERMINADA, ERROR, RECHAZADA, VENCIDA.")
     sat_request_status: Optional[CatalogDto] = Field(default=None, alias="satRequestStatus", description="Estado de la solicitud SAT.")
+    sat_status_code: Optional[str] = Field(default=None, alias="satStatusCode", description="Código (CodEstatus) de la última respuesta del SAT, a la solicitud o a su verificación.")
+    sat_message: Optional[str] = Field(default=None, alias="satMessage", description="Mensaje de la última respuesta del SAT, a la solicitud o a su verificación.")
     
     download_request_status_id: Optional[str] = Field(default=None, alias="downloadRequestStatusId", description="ID del estado de la solicitud de Fiscalapi.")
     download_request_status: Optional[CatalogDto] = Field(default=None, alias="downloadRequestStatus", description="Estado de la solicitud de descarga Fiscalapi.")

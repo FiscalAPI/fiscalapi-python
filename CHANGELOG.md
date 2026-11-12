@@ -16,6 +16,7 @@ Cambios del SDK y notas de comportamiento del API de FiscalAPI que afectan a qui
 - `Person.password` es opcional al crear: en `None` no se envía, y solo es obligatoria si `login_enabled` es `True`.
 - `people.get_tax_files(person_id)`: lista los certificados CSD y FIEL de una persona (`GET /api/v4/people/{personId}/tax-files`). Devuelve solo metadatos (`id`, `person_id`, `tin`, `file_type`, `valid_from`, `valid_to`, `sequence`); no trae el archivo ni la contraseña.
 - Quien usa el cliente del SDK no cambia nada. Quien sustituye `InvoiceService`, `PeopleService` o `ProductService` por una subclase o un doble de pruebas con su propio `get_list` debe aceptar el argumento `filters`.
+- `satStatusCode` y `satMessage` en la solicitud de descarga: código y mensaje de la última respuesta del SAT.
 
 ### Corregido
 
